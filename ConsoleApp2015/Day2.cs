@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Common;
 
 namespace ConsoleApp2015
 {
 
-    public class Day2
+    public class Day2 : IDay
     {
 
         string input = @"4x23x21

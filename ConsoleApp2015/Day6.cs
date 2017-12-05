@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Common;
 
 namespace ConsoleApp2015
 {
-    public class Day6
+    public class Day6 : IDay
     {
         private string input = @"turn off 660,55 through 986,197
 turn off 341,304 through 638,850

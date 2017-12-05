@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+using Common;
 
 namespace ConsoleApp
 {
-    class Day2
+    class Day2 : IDay
     {
         private string input = @"116	1259	1045	679	1334	157	277	1217	218	641	1089	136	247	1195	239	834
 269	1751	732	3016	260	6440	5773	4677	306	230	6928	7182	231	2942	2738	3617

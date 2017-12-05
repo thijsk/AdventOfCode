@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Common;
 
 namespace ConsoleApp
 {
-    public class Day4
+    public class Day4 : IDay
     {
         private string input = @"sayndz zfxlkl attjtww cti sokkmty brx fhh suelqbp
 xmuf znkhaes pggrlp zia znkhaes znkhaes

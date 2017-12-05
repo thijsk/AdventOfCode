@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using Common;
 
 namespace ConsoleApp2015
 {
-    internal class Day8
+    internal class Day8 : IDay
     {
-        private string input = File.ReadAllText("day8.txt");
+        private readonly string input = File.ReadAllText("day8.txt");
 
 
         public int Part1()

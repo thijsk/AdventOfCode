@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using Common;
 
 namespace ConsoleApp2015
 {
-    public class Day5
+    public class Day5 : IDay
     {
         private string input = @"uxcplgxnkwbdwhrp
 suerykeptdsutidb

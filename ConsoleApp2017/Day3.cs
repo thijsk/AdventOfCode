@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Win32.SafeHandles;
+using Common;
 
 namespace ConsoleApp
 {
-    public class Day3
+    public class Day3 : IDay
     {
         private int input = 289326;
         //private int input = 1024;

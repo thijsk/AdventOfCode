@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
+using Common;
 
 namespace ConsoleApp2015
 {
 
 
-    public class Day4
+    public class Day4 : IDay
     {
         string input = @"iwrupvqb";
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Common;
 
 namespace ConsoleApp2015
 {
@@ -6,7 +7,7 @@ namespace ConsoleApp2015
     {
         static void Main(string[] args)
         {
-            var day = new Day8();
+            IDay day = new Day15();
 
             Console.WriteLine(day.Part1());
             Console.WriteLine(day.Part2());

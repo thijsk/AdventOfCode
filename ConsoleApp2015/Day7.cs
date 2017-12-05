@@ -1,16 +1,14 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace ConsoleApp2015
 {
-    public class Day7
+    public class Day7: IDay
+
     {
-        private string input = @"lf AND lq -> ls
+    private string input = @"lf AND lq -> ls
 iu RSHIFT 1 -> jn
 bo OR bu -> bv
 gj RSHIFT 1 -> hc
@@ -351,230 +349,231 @@ NOT hn -> ho
 he RSHIFT 5 -> hh";
 
 
-        public interface IValueProvider
+    public interface IValueProvider
+    {
+        ushort Value();
+    }
+
+    public class Constant : IValueProvider
+    {
+        private ushort constant;
+
+        public Constant(string val)
         {
-            ushort Value();
+            constant = ushort.Parse(val.Trim());
         }
 
-        public class Constant : IValueProvider
+        public Constant(ushort val)
         {
-            private ushort constant;
-
-            public Constant(string val)
-            {
-                constant = ushort.Parse(val.Trim());
-            }
-
-            public Constant(ushort val)
-            {
-                constant = val;
-            }
-            public ushort Value()
-            {
-                return constant;
-            }
+            constant = val;
         }
 
-        class Wire : IValueProvider
+        public ushort Value()
         {
-            internal string Name;
-
-            public IValueProvider Input;
-            private ushort cachedValue = 0;
-            private bool isCached;
-
-            public Wire()
-            {
-                
-            }
-
-            public Wire(IValueProvider inp)
-            {
-                Input = inp;
-            }
-
-            public ushort Value()
-            {
-                if (!isCached)
-                    cachedValue = Input.Value();
-                isCached = true;
-                return cachedValue;
-            }
-
-            public void ClearCache()
-            {
-                isCached = false;
-            }
+            return constant;
         }
+    }
 
-        class AndGate : IValueProvider
+    class Wire : IValueProvider
+    {
+        internal string Name;
+
+        public IValueProvider Input;
+        private ushort cachedValue = 0;
+        private bool isCached;
+
+        public Wire()
         {
-            public IValueProvider Input1;
-            public IValueProvider Input2;
-
-            public ushort Value()
-            {
-                return (ushort) (Input1.Value() & Input2.Value());
-            }
-        }
-
-        class OrGate : IValueProvider
-        {
-            public IValueProvider Input1;
-            public IValueProvider Input2;
-
-            public ushort Value()
-            {
-                return (ushort) (Input1.Value() | Input2.Value());
-            }
 
         }
 
-        public class LShiftGate : IValueProvider
+        public Wire(IValueProvider inp)
         {
+            Input = inp;
+        }
 
-            public IValueProvider Input1;
-            public ushort ShiftAmount;
+        public ushort Value()
+        {
+            if (!isCached)
+                cachedValue = Input.Value();
+            isCached = true;
+            return cachedValue;
+        }
 
-            public ushort Value()
+        public void ClearCache()
+        {
+            isCached = false;
+        }
+    }
+
+    class AndGate : IValueProvider
+    {
+        public IValueProvider Input1;
+        public IValueProvider Input2;
+
+        public ushort Value()
+        {
+            return (ushort) (Input1.Value() & Input2.Value());
+        }
+    }
+
+    class OrGate : IValueProvider
+    {
+        public IValueProvider Input1;
+        public IValueProvider Input2;
+
+        public ushort Value()
+        {
+            return (ushort) (Input1.Value() | Input2.Value());
+        }
+
+    }
+
+    public class LShiftGate : IValueProvider
+    {
+
+        public IValueProvider Input1;
+        public ushort ShiftAmount;
+
+        public ushort Value()
+        {
+            return (ushort) (Input1.Value() << ShiftAmount);
+        }
+
+    }
+
+    public class RShiftGate : IValueProvider
+    {
+
+        public IValueProvider Input1;
+        public ushort ShiftAmount;
+
+        public ushort Value()
+        {
+            return (ushort) (Input1.Value() >> ShiftAmount);
+        }
+    }
+
+    class NotGate : IValueProvider
+    {
+        public IValueProvider Input1;
+
+        public ushort Value()
+        {
+            return (ushort) ~Input1.Value();
+        }
+    }
+
+    Dictionary<string, Wire> wires = new Dictionary<string, Wire>();
+    List<IValueProvider> gates = new List<IValueProvider>();
+
+    public int Part1()
+    {
+        wires.Clear();
+        gates.Clear();
+
+        Build();
+
+        foreach (var wireentry in wires.OrderBy(d => d.Key))
+        {
+            var wire = wireentry.Value;
+            Console.WriteLine("{0}: {1}", wire.Name, wire.Value());
+        }
+
+        return wires["a"].Value();
+    }
+
+    public int Part2()
+    {
+        wires.Clear();
+        gates.Clear();
+
+        Build();
+
+        wires["b"].Input = new Constant(wires["a"].Value());
+        foreach (var wire in wires.Values)
+        {
+            wire.ClearCache();
+        }
+        return wires["a"].Value();
+    }
+
+    private void Build()
+    {
+        foreach (var line in input.Split("\r\n"))
+        {
+            Console.WriteLine(line);
+            var parts = line.Split("->");
+            var operand = parts[0].Trim();
+            var result = parts[1].Trim();
+
+            Wire currentWire = GetWireByName(result);
+
+            var operandparts = operand.Split(' ');
+
+            IValueProvider value = null;
+
+            if (operand.Contains("AND"))
             {
-                return (ushort) (Input1.Value() << ShiftAmount);
+                var obj = new AndGate();
+                obj.Input1 = GetIValueProvider(operandparts[0].Trim());
+                obj.Input2 = GetIValueProvider(operandparts[2].Trim());
+                value = obj;
             }
-
-        }
-
-        public class RShiftGate : IValueProvider
-        {
-
-            public IValueProvider Input1;
-            public ushort ShiftAmount;
-
-            public ushort Value()
+            else if (operand.Contains("OR"))
             {
-                return (ushort) (Input1.Value() >> ShiftAmount);
+                var obj = new OrGate();
+                obj.Input1 = GetIValueProvider(operandparts[0].Trim());
+                obj.Input2 = GetIValueProvider(operandparts[2].Trim());
+                value = obj;
             }
-        }
-
-        class NotGate : IValueProvider
-        {
-            public IValueProvider Input1;
-
-            public ushort Value()
+            else if (operand.Contains("RSHIFT"))
             {
-                return (ushort) ~Input1.Value();
+                var obj = new RShiftGate();
+                obj.Input1 = GetIValueProvider(operandparts[0].Trim());
+                obj.ShiftAmount = ushort.Parse(operandparts[2].Trim());
+                value = obj;
             }
-        }
-
-        Dictionary<string, Wire> wires = new Dictionary<string, Wire>();
-        List<IValueProvider> gates = new List<IValueProvider>();
-
-        public int Part1()
-        {
-            wires.Clear();
-            gates.Clear();
-
-            Build();
-
-            foreach (var wireentry in wires.OrderBy(d => d.Key))
+            else if (operand.Contains("LSHIFT"))
             {
-                var wire = wireentry.Value;
-                Console.WriteLine("{0}: {1}", wire.Name, wire.Value());
+                var obj = new LShiftGate();
+                obj.Input1 = GetIValueProvider(operandparts[0].Trim());
+                obj.ShiftAmount = ushort.Parse(operandparts[2].Trim());
+                value = obj;
             }
-
-            return wires["a"].Value();
-        }
-
-        public int Part2()
-        {
-            wires.Clear();
-            gates.Clear();
-
-            Build();
-
-            wires["b"].Input = new Constant(wires["a"].Value());
-            foreach (var wire in wires.Values)
+            else if (operand.Contains("NOT"))
             {
-               wire.ClearCache();
+                var obj = new NotGate();
+                obj.Input1 = GetIValueProvider(operandparts[1].Trim());
+                value = obj;
             }
-            return wires["a"].Value();
-        }
-
-        private void Build()
-        {
-            foreach (var line in input.Split("\r\n"))
+            else if (operandparts.Length == 1)
             {
-                Console.WriteLine(line);
-                var parts = line.Split("->");
-                var operand = parts[0].Trim();
-                var result = parts[1].Trim();
-
-                Wire currentWire = GetWireByName(result);
-
-                var operandparts = operand.Split(' ');
-
-                IValueProvider value = null;
-
-                if (operand.Contains("AND"))
-                {
-                    var obj = new AndGate();
-                    obj.Input1 = GetIValueProvider(operandparts[0].Trim());
-                    obj.Input2 = GetIValueProvider(operandparts[2].Trim());
-                    value = obj;
-                }
-                else if (operand.Contains("OR"))
-                {
-                    var obj = new OrGate();
-                    obj.Input1 = GetIValueProvider(operandparts[0].Trim());
-                    obj.Input2 = GetIValueProvider(operandparts[2].Trim());
-                    value = obj;
-                }
-                else if (operand.Contains("RSHIFT"))
-                {
-                    var obj = new RShiftGate();
-                    obj.Input1 = GetIValueProvider(operandparts[0].Trim());
-                    obj.ShiftAmount = ushort.Parse(operandparts[2].Trim());
-                    value = obj;
-                }
-                else if (operand.Contains("LSHIFT"))
-                {
-                    var obj = new LShiftGate();
-                    obj.Input1 = GetIValueProvider(operandparts[0].Trim());
-                    obj.ShiftAmount = ushort.Parse(operandparts[2].Trim());
-                    value = obj;
-                }
-                else if (operand.Contains("NOT"))
-                {
-                    var obj = new NotGate();
-                    obj.Input1 = GetIValueProvider(operandparts[1].Trim());
-                    value = obj;
-                }
-                else if (operandparts.Length == 1)
-                {
-                    var obj = GetIValueProvider(operandparts[0].Trim());
-                    value = obj;
-                }
-                gates.Add(value);
-                currentWire.Input = value;
+                var obj = GetIValueProvider(operandparts[0].Trim());
+                value = obj;
             }
+            gates.Add(value);
+            currentWire.Input = value;
         }
+    }
 
-        private Wire GetWireByName(string name)
+    private Wire GetWireByName(string name)
+    {
+        if (!wires.TryGetValue(name, out var currentWire))
         {
-            if (!wires.TryGetValue(name, out var currentWire))
-            {
-                currentWire = new Wire();
-                currentWire.Name = name;
-                wires.Add(name, currentWire);
-            }
-            return currentWire;
+            currentWire = new Wire();
+            currentWire.Name = name;
+            wires.Add(name, currentWire);
         }
+        return currentWire;
+    }
 
-        private IValueProvider GetIValueProvider(string p0)
-        {
+    private IValueProvider GetIValueProvider(string p0)
+    {
 
-            if (ushort.TryParse(p0, out var value))
-                return new Constant(value);
-            return GetWireByName(p0);
-        }
+        if (ushort.TryParse(p0, out var value))
+            return new Constant(value);
+        return GetWireByName(p0);
+    }
     }
 }
