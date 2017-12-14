@@ -2,7 +2,7 @@
 using System.Linq;
 using Common;
 
-namespace ConsoleApp
+namespace ConsoleApp2017
 {
     public class Day4 : IDay
     {

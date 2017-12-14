@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Common
@@ -14,5 +15,11 @@ namespace Common
                     (t1, t2) => t1.Concat(new T[] { t2 }));
         }
 
+        public static IEnumerable<IEnumerable<T>> PowerSet<T>(this IEnumerable<T> source)
+        {
+            var list = source.ToList();
+            return Enumerable.Range(0, 1 << list.Count)
+                .Select(s => Enumerable.Range(0, list.Count).Where(i => (s & (1 << i)) != 0).Select(i => list[i]));
+        }
     }
 }

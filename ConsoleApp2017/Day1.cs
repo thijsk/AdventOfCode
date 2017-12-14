@@ -1,7 +1,7 @@
 ﻿using System;
 using Common;
 
-namespace ConsoleApp
+namespace ConsoleApp2017
 {
     class Day1 : IDay
     {

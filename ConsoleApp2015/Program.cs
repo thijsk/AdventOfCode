@@ -7,7 +7,7 @@ namespace ConsoleApp2015
     {
         static void Main(string[] args)
         {
-            IDay day = new Day15();
+            IDay day = new Day20();
 
             Console.WriteLine(day.Part1());
             Console.WriteLine(day.Part2());

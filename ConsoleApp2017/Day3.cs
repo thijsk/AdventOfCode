@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Common;
 
-namespace ConsoleApp
+namespace ConsoleApp2017
 {
     public class Day3 : IDay
     {
