@@ -7,7 +7,7 @@ namespace ConsoleApp2017
     {
         static void Main(string[] args)
         {
-            IDay day = new Day9();
+            IDay day = new Day12();
             Console.WriteLine("Part1 : " + day.Part1());
             Console.WriteLine("Part2 : " + day.Part2());
             Console.ReadLine();
