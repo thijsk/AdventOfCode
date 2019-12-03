@@ -1,23 +1,10 @@
 ﻿// Generated code -- http://www.redblobgames.com/grids/hexagons/
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Common
 {
-    struct Point
-    {
-        public Point(double x, double y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-
-        public readonly double x;
-        public readonly double y;
-    }
-
     public struct Hex
     {
         public Hex(int q, int r, int s)
