@@ -18,7 +18,7 @@ namespace ConsoleApp2019
         //private const string input = "123456789012";
         //private (int, int) dimension = (3, 2);
 
-        public int Part1()
+        public long Part1()
         {
             var layers = Convert(input, dimension);
 
@@ -56,7 +56,7 @@ namespace ConsoleApp2019
             return layers;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var layers = Convert(input, dimension).Reverse();
             var layersize = dimension.Item1 * dimension.Item2;

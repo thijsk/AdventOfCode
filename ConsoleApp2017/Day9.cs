@@ -5,7 +5,7 @@ namespace ConsoleApp2017
 {
     class Day9 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             string input = File.ReadAllText("day9.txt");
 
@@ -58,7 +58,7 @@ namespace ConsoleApp2017
             return sum;
         }
 
-        public int Part2()
+        public long Part2()
         {
             string input = File.ReadAllText("day9.txt");
 

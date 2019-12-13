@@ -8,7 +8,7 @@ namespace ConsoleApp2015
     class Day11 : IDay
     {
         private string input = "hepxcrrq";
-        public int Part1()
+        public long Part1()
         {
             //input = "aziabca";
             Console.WriteLine(input);
@@ -90,7 +90,7 @@ namespace ConsoleApp2015
 
         }
 
-        public int Part2()
+        public long Part2()
         {
             //input = "aziabca";
             Console.WriteLine(input);

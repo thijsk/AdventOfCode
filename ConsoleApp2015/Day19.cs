@@ -55,7 +55,7 @@ e => OMg";
                 @"CRnCaCaCaSiRnBPTiMgArSiRnSiRnMgArSiRnCaFArTiTiBSiThFYCaFArCaCaSiThCaPBSiThSiThCaCaPTiRnPBSiThRnFArArCaCaSiThCaSiThSiRnMgArCaPTiBPRnFArSiThCaSiRnFArBCaSiRnCaPRnFArPMgYCaFArCaPTiTiTiBPBSiThCaPTiBPBSiRnFArBPBSiRnCaFArBPRnSiRnFArRnSiRnBFArCaFArCaCaCaSiThSiThCaCaPBPTiTiRnFArCaPTiBSiAlArPBCaCaCaCaCaSiRnMgArCaSiThFArThCaSiThCaSiRnCaFYCaSiRnFYFArFArCaSiRnFYFArCaSiRnBPMgArSiThPRnFArCaSiRnFArTiRnSiRnFYFArCaSiRnBFArCaSiRnTiMgArSiThCaSiThCaFArPRnFArSiRnFArTiTiTiTiBCaCaSiRnCaCaFYFArSiThCaPTiBPTiBCaSiThSiRnMgArCaF"
             ;
 
-        public int Part1()
+        public long Part1()
         {
             var replacements = inputreplacements.Split('\n').Select(i => i.Trim().Split(" => "));
 
@@ -70,7 +70,7 @@ e => OMg";
             return results.Distinct().Count();
         }
 
-        public int Part2()
+        public long Part2()
         {
             var replacements = inputreplacements.Split('\n').Select(i => i.Trim().Split(" => "));
 

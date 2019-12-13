@@ -7,7 +7,7 @@ namespace ConsoleApp2015
     {
         private string input = @"1321131112";
 
-        public int Part1()
+        public long Part1()
         {
             string str = input;
 
@@ -21,7 +21,7 @@ namespace ConsoleApp2015
             return str.Length;
         }
 
-        public int Part2()
+        public long Part2()
         {
             string str = input;
 

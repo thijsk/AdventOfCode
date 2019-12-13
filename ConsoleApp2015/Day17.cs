@@ -33,7 +33,7 @@ namespace ConsoleApp2015
             public int Size;
         }
     
-        public int Part1()
+        public long Part1()
         {
             List<Container> containers = ParseInput();
 
@@ -60,7 +60,7 @@ namespace ConsoleApp2015
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
             List<Container> containers = ParseInput();
 

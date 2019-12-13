@@ -8,7 +8,7 @@ namespace ConsoleApp2017
 {
     internal class Day7 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             var programlist = ParseInput();
 
@@ -18,7 +18,7 @@ namespace ConsoleApp2017
             return root.Weight;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var programlist = ParseInput();
             var root = programlist.Where(p => !programlist.Any(i => i.ChildNames.Contains(p.Name))).First();

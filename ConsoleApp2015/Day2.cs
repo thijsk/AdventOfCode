@@ -1007,7 +1007,7 @@ namespace ConsoleApp2015
 29x4x8
 21x2x22
 14x12x8";
-        public int Part1()
+        public long Part1()
         {
             var total = 0;
 
@@ -1032,7 +1032,7 @@ namespace ConsoleApp2015
 
         }
 
-        public int Part2()
+        public long Part2()
         {
             var total = 0;
 

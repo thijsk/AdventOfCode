@@ -23,7 +23,7 @@ namespace ConsoleApp2019
         //const string input2 = "U5,R2,D3";
 
 
-        public int Part1()
+        public long Part1()
         {
             var lines1 = ConvertToLines(input1);
             var line1points = lines1.SelectMany(ToPoints).Distinct();
@@ -119,7 +119,7 @@ namespace ConsoleApp2019
             }
         }
 
-        public int Part2()
+        public long Part2()
         {
             var lines1 = ConvertToLines(input1);
             var line1points = lines1.SelectMany(l => ToPoints(l).SkipLast(1)).ToArray();

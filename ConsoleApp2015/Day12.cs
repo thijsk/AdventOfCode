@@ -7,7 +7,7 @@ namespace ConsoleApp2015
 {
     class Day12 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             var str = File.ReadAllText("day12.txt");
             var j = JToken.Parse(str);
@@ -28,7 +28,7 @@ namespace ConsoleApp2015
             }
             return sum;
         }
-        public int Part2()
+        public long Part2()
         {
             var str = File.ReadAllText("day12.txt");
             var j = JToken.Parse(str);

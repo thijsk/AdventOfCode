@@ -520,7 +520,7 @@ zax xza admbc lvpzfeh auxn rwasj
 kebx eild nrskdr meja jxczomh gcne";
 
 
-        public int Part1()
+        public long Part1()
         {
             int okCount = 0;
             var phrases = input.Split('\n');
@@ -534,7 +534,7 @@ kebx eild nrskdr meja jxczomh gcne";
             return okCount;
         }
 
-        public int Part2()
+        public long Part2()
         {
             int okCount = 0;
             var phrases = input.Split('\n');

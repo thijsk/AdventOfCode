@@ -8,7 +8,7 @@ namespace ConsoleApp2019
 {
     class Day4 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             var ok = 0;
             for (var number = 138307; number <= 654504; number++)
@@ -37,7 +37,7 @@ namespace ConsoleApp2019
             return number.ToString().ToCharArray().Select(c => int.Parse(c.ToString())).ToArray();
         }
 
-        public int Part2()
+        public long Part2()
         {
             var ok = 0;
             for (var number = 138307; number <= 654504; number++)

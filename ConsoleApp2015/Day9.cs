@@ -100,7 +100,7 @@ Norrath to Straylight = 115
 Norrath to Arbre = 135
 Straylight to Arbre = 127";
 
-        public int Part1()
+        public long Part1()
         {
 //            input = @"London to Dublin = 464
 //London to Belfast = 518
@@ -180,7 +180,7 @@ Straylight to Arbre = 127";
         }
 
 
-        public int Part2()
+        public long Part2()
         {
             //            input = @"London to Dublin = 464
             //London to Belfast = 518

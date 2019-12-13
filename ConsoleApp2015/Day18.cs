@@ -7,7 +7,7 @@ namespace ConsoleApp2015
 {
     class Day18 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             var start = ParseInput();
 
@@ -26,7 +26,7 @@ namespace ConsoleApp2015
             return count;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var start = ParseInput();
 

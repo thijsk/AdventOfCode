@@ -23,7 +23,7 @@ Candy: capacity 0, durability -1, flavor 0, texture 5, calories 8";
         }
 
 
-        public int Part1()
+        public long Part1()
         {
 //            input = @"Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 //Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3";
@@ -66,7 +66,7 @@ Candy: capacity 0, durability -1, flavor 0, texture 5, calories 8";
             return bestresult;
         }
 
-        public int Part2()
+        public long Part2()
         {
             //            input = @"Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
             //Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3";

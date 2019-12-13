@@ -23,7 +23,7 @@ namespace ConsoleApp2017
 919	615	335	816	138	97	881	790	855	89	451	789	423	108	95	116";
 
 
-        public int Part1()
+        public long Part1()
         {
             var linetext = input.Split('\n');
             var sum = 0;
@@ -48,7 +48,7 @@ namespace ConsoleApp2017
         }
 
 
-        public int Part2()
+        public long Part2()
         {
             var linetext = input.Split('\n');
             var sum = 0;

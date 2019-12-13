@@ -523,7 +523,7 @@ trees: 3
 cars: 2
 perfumes: 1";
 
-        public int Part1()
+        public long Part1()
         {
             var aunts = ParseInput();
             var ticker = ParseInput2();
@@ -579,7 +579,7 @@ perfumes: 1";
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var aunts = ParseInput();
             var ticker = ParseInput2();

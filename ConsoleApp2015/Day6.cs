@@ -305,7 +305,7 @@ turn off 209,780 through 572,894
 turn on 766,112 through 792,868
 turn on 222,12 through 856,241";
 
-        public int Part1()
+        public long Part1()
         {
             var lights = new bool[1000,1000];
             lights.Initialize();
@@ -363,7 +363,7 @@ turn on 222,12 through 856,241";
             return count;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var lights = new int[1000, 1000];
             lights.Initialize();

@@ -21,7 +21,7 @@ namespace ConsoleApp2017
             }
         }
 
-        public int Part1()
+        public long Part1()
         {
             int left = 0;
             int right = 0;
@@ -77,7 +77,7 @@ namespace ConsoleApp2017
 
         }
 
-        public int Part2()
+        public long Part2()
         {
             int left = 0;
             int right = 0;

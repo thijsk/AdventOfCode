@@ -23,7 +23,7 @@ namespace ConsoleApp2015
             }
         }
 
-        public int Part1()
+        public long Part1()
         {
             int horizontal = 0;
             int vertical = 0;
@@ -66,7 +66,7 @@ namespace ConsoleApp2015
         }
 
 
-        public int Part2()
+        public long Part2()
         {
             int santahorizontal = 0;
             int santavertical = 0;

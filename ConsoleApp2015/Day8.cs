@@ -9,7 +9,7 @@ namespace ConsoleApp2015
         private readonly string input = File.ReadAllText("day8.txt");
 
 
-        public int Part1()
+        public long Part1()
         {
             //input = "\"\"\n\"abc\"\"aaa\\\"aaa\"\"\\x27\"";
 
@@ -48,7 +48,7 @@ namespace ConsoleApp2015
             return numcode - nummem;
         }
 
-        public int Part2()
+        public long Part2()
         {
             //input = "\"\"\n\"abc\"\n\"aaa\\\"aaa\"\n\"\\x27\"";
 

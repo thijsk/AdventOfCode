@@ -81,14 +81,14 @@ namespace ConsoleApp2015
 
 
                 //boss turn
-                Hero.HitPoints -= Boss.Damage - Effects.Keys.Sum(e => e.)
+                Hero.HitPoints -= Boss.Damage - Effects.Keys.Sum(e => e.Armor);
 
             }
         }
 
         const string input = @"";
 
-        public int Part1()
+        public long Part1()
         {
             var spells = CreateSpells();
 
@@ -139,7 +139,7 @@ namespace ConsoleApp2015
             };
         }
 
-        public int Part2()
+        public long Part2()
         {
             return -1;
         }

@@ -28,7 +28,7 @@ namespace ConsoleApp2017
             nw = 5
 
         }
-        public int Part1()
+        public long Part1()
         {
             var directions = input.Split(',').Select(i =>
             {
@@ -48,7 +48,7 @@ namespace ConsoleApp2017
             return Hex.Distance(start, current);
         }
 
-        public int Part2()
+        public long Part2()
         {
             var directions = input.Split(',').Select(i =>
             {

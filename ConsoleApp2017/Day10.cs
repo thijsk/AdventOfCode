@@ -8,7 +8,7 @@ namespace ConsoleApp2017
     class Day10 : IDay
     {
         private string input = @"189,1,111,246,254,2,0,120,215,93,255,50,84,15,94,62";
-        public int Part1()
+        public long Part1()
         {
 
             int position = 0;
@@ -49,7 +49,7 @@ namespace ConsoleApp2017
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
 
             int position = 0;

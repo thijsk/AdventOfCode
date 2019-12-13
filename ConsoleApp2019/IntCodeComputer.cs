@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,22 +7,20 @@ namespace ConsoleApp2019
 {
     public class IntCodeComputer
     {
-        private int[] memory;
+        private long[] memory;
+        long relativeBase = 0;
+        long position = 0;
+        long[] modes;
 
-
-        public IntCodeComputer(int[] intCode)
+        public IntCodeComputer(long[] intCode)
         {
-            this.memory = (int[])intCode.Clone();
+            memory = (long[])intCode.Clone();
         }
 
-        public int[] Execute(Func<int, int> onInput, Action<int, int> onOutput)
+        public long[] Execute(BlockingCollection<long> inputs, BlockingCollection<long> outputs)
         {
-            int position = 0;
-            var outputs = new List<int>();
-            bool exit = false;
 
-            int inputNumber = 0;
-            int outputNumber = 0;
+            bool exit = false;
 
             while (!exit)
             {
@@ -31,84 +30,73 @@ namespace ConsoleApp2019
                 var mode2 = (instruction / 1000) % 10;
                 var mode3 = (instruction / 10000) % 10;
 
+                modes = new[] { 0, mode1, mode2, mode3 };
+
+                // values for each mode:
+                // 0 postion mode
+                // 1 immediate mode
+                // 2 relative mode
+
+                // opcodes
+                // 1 add
+                // 2 multiply
+                // 3 read input
+                // 4 post output
+                // 5 jump-if-true
+                // 6 jump-if-false
+                // 7 less-than
+                // 8 equals
+                // 9 set relative base
+                // 99 terminate
+
+                //Console.WriteLine($"{opcode} with mode {mode1}{mode2}{mode3}");
+
                 switch (opcode)
                 {
-                    case 1: // addd
+                    case 1: // add
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var arg3 = memory[position + 3];
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
 
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
-                            if (mode3 == 0)
-                            {
-                                memory[arg3] = value1 + value2;
-                            }
-                            else
-                            {
-                                memory[position + 3] = value1 + value2;
-                            }
+                            var result = value1 + value2;
+
+                            SetValue(3, result);
+
                             position += 4;
                             break;
                         }
                     case 2: // multiply
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var arg3 = memory[position + 3];
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
 
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
-                            if (mode3 == 0)
-                            {
-                                memory[arg3] = value1 * value2;
-                            }
-                            else
-                            {
-                                memory[position + 3] = value1 * value2;
-                            }
+                            var result = value1 * value2;
+
+                            SetValue(3, result);
+
                             position += 4;
                             break;
                         }
                     case 3: // read input
                         {
-                            var arg1 = memory[position + 1];
-                            if (mode1 == 0)
-                            {
-                                memory[arg1] = onInput(inputNumber);
-                            }
-                            else
-                            {
-                                memory[position + 1] = onInput(inputNumber);
-                            }
-                            inputNumber++;
+                            SetValue(1, inputs.Take());
+
                             position += 2;
                             break;
                         }
                     case 4: // write output
                         {
-                            var arg1 = memory[position + 1];
-                            if (mode1 == 0)
-                            {
-                                outputs.Add(memory[arg1]);
-                                onOutput?.Invoke(outputNumber, memory[arg1]);
-                            }
-                            else
-                            {
-                                outputs.Add(arg1);
-                                onOutput?.Invoke(outputNumber, arg1);
-                            }
-                            outputNumber++;
+                            var result = GetValue(1);
+
+                            outputs.Add(result);
+
                             position += 2;
                             break;
                         }
                     case 5: // jump-if-true
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
                             if (value1 != 0)
                             {
                                 position = value2;
@@ -121,10 +109,8 @@ namespace ConsoleApp2019
                         }
                     case 6: // jump-if-false
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
                             if (value1 == 0)
                             {
                                 position = value2;
@@ -137,55 +123,107 @@ namespace ConsoleApp2019
                         }
                     case 7: // less than
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var arg3 = memory[position + 3];
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
                             var result = value1 < value2 ? 1 : 0;
-                            if (mode3 == 0)
-                            {
-                                memory[arg3] = result;
-                            }
-                            else
-                            {
-                                memory[position + 3] = result;
-                            }
+
+                            SetValue(3, result);
+
                             position += 4;
                             break;
                         }
                     case 8: // equals
                         {
-                            var arg1 = memory[position + 1];
-                            var arg2 = memory[position + 2];
-                            var arg3 = memory[position + 3];
-                            var value1 = mode1 == 0 ? memory[arg1] : arg1;
-                            var value2 = mode2 == 0 ? memory[arg2] : arg2;
+                            var value1 = GetValue(1);
+                            var value2 = GetValue(2);
                             var result = value1 == value2 ? 1 : 0;
-                            if (mode3 == 0)
-                            {
-                                memory[arg3] = result;
-                            }
-                            else
-                            {
-                                memory[position + 3] = result;
-                            }
+
+                            SetValue(3, result);
+
                             position += 4;
+                            break;
+                        }
+                    case 9:
+                        {
+                            var value = GetValue(1);
+                            relativeBase += value;
+                            position += 2;
                             break;
                         }
                     case 99:
                         exit = true;
                         break;
                     default:
-                        Console.WriteLine("Invalid opcode " + opcode);
-                        return new[] { position };
+                        throw new Exception($"Invalid opcode {opcode} at position {position}");
                 }
-
-
             }
 
             return memory;
         }
 
+        private void SetMemory(long index, long value)
+        {
+            if (index >= memory.Length)
+            {
+                ResizeMemory(index + 1);
+            }
+            memory[index] = value;
+        }
+
+        private void ResizeMemory(long size)
+        {
+            var tmp = new long[size + 1];
+            memory.CopyTo(tmp, 0);
+            memory = tmp;
+        }
+
+        private void SetValue(long arg, long result)
+        {
+            long mode = modes[arg];
+            long argValue = GetMemory(position + arg);
+
+            if (mode == 0)
+            {
+                SetMemory(argValue, result);
+            }
+            else if (mode == 1)
+            {
+                SetMemory((position + arg), result);
+            }
+            else if (mode == 2)
+            {
+                SetMemory((relativeBase + argValue), result);
+            }
+        }
+        
+        private long GetMemory(long index)
+        {
+            if (index >= memory.Length)
+            {
+                ResizeMemory(index + 1);
+            }
+            return memory[index];
+        }
+
+
+        private long GetValue(long arg)
+        {
+            long mode = modes[arg];
+            long argValue = GetMemory(position + arg);
+
+            if (mode == 0)
+            {
+                return GetMemory(argValue);
+            }
+            else if (mode == 1)
+            {
+                return argValue;
+            }
+            else if (mode == 2)
+            {
+                return GetMemory(relativeBase + argValue);
+            }
+            throw new Exception("invalid mode");
+        }
     }
 }

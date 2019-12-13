@@ -1006,7 +1006,7 @@ iduapzclhhyfladn
 fbpyzxdfmkrtfaeg
 yzsmlbnftftgwadz";
 
-        public int Part1()
+        public long Part1()
         {
             var count = 0;
 
@@ -1032,7 +1032,7 @@ yzsmlbnftftgwadz";
             return count;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var count = 0;
 

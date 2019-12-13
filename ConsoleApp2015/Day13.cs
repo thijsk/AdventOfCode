@@ -70,7 +70,7 @@ Mallory would lose 66 happiness units by sitting next to Eric.
 Mallory would lose 75 happiness units by sitting next to Frank.
 Mallory would lose 99 happiness units by sitting next to George.";
 
-        public int Part1()
+        public long Part1()
         {
             List<Rule> rules = Parse(input);
 
@@ -123,7 +123,7 @@ Mallory would lose 99 happiness units by sitting next to George.";
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
             List<Rule> rules = Parse(input);
 

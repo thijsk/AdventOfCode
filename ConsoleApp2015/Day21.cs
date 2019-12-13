@@ -36,7 +36,7 @@ Armor: 1";
             public int Armor;
         }
 
-        public int Part1()
+        public long Part1()
         {
             List<Item> weapons, armors, rings;
             Shop(out weapons, out armors, out rings);
@@ -104,7 +104,7 @@ Armor: 1";
             rings.Add(new Item("Defense + 3", 80, 0, 3));
         }
 
-        public int Part2()
+        public long Part2()
         {
             List<Item> weapons, armors, rings;
             Shop(out weapons, out armors, out rings);

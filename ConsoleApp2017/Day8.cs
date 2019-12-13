@@ -8,7 +8,7 @@ namespace ConsoleApp2017
 {
     class Day8 : IDay
     {
-        public int Part1()
+        public long Part1()
         {
             var registers = new Dictionary<string, int>();
             var instructions = ParseInput();
@@ -54,7 +54,7 @@ namespace ConsoleApp2017
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var registers = new Dictionary<string, int>();
             var instructions = ParseInput();

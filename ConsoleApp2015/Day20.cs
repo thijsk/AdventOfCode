@@ -7,7 +7,7 @@ namespace ConsoleApp2015
     {
         private int input = 29000000;
 
-        public int Part1()
+        public long Part1()
         {
             //var presents = 0;
             //var housenumber = 1;
@@ -49,7 +49,7 @@ namespace ConsoleApp2015
             return min;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var houses = new int[input/10];
             var min = int.MaxValue;

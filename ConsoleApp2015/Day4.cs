@@ -11,7 +11,7 @@ namespace ConsoleApp2015
     {
         string input = @"bgvyzdsv";
 
-        public int Part1()
+        public long Part1()
         {
             var md5 = MD5.Create();
 
@@ -32,7 +32,7 @@ namespace ConsoleApp2015
             return 0;
         }
 
-        public int Part2()
+        public long Part2()
         {
             var md5 = MD5.Create();
 

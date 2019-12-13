@@ -10,7 +10,7 @@ namespace ConsoleApp2019
         {
         }
 
-        public int Part1()
+        public long Part1()
         {
             var totalFuel = 0;
 
@@ -28,7 +28,7 @@ namespace ConsoleApp2019
             return (int)Math.Floor(mass / 3d) - 2;
         }
 
-        public int Part2()
+        public long Part2()
         {
 
             var totalFuel = 0;

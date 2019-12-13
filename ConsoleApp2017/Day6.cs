@@ -10,7 +10,7 @@ namespace ConsoleApp2017
 
         
 
-        public int Part1()
+        public long Part1()
         {
             //input = @"0	2	7	0";
 
@@ -55,7 +55,7 @@ namespace ConsoleApp2017
             return input.Split('\t').Select(m => m.Trim()).Select(n => int.Parse(n)).ToArray();
         }
 
-        public int Part2()
+        public long Part2()
         {
             //input = @"0	2	7	0";
 

@@ -1907,7 +1907,7 @@ BCX)KB5
             return result;
         }
 
-        public int Part1()
+        public long Part1()
         {
             ParseInput();
 
@@ -1927,7 +1927,7 @@ BCX)KB5
             }
         }
 
-        public int Part2()
+        public long Part2()
         {
             ParseInput();
 

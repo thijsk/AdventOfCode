@@ -467,7 +467,7 @@ he RSHIFT 2 -> hf";
     Dictionary<string, Wire> wires = new Dictionary<string, Wire>();
     List<IValueProvider> gates = new List<IValueProvider>();
 
-    public int Part1()
+    public long Part1()
     {
         wires.Clear();
         gates.Clear();
@@ -483,7 +483,7 @@ he RSHIFT 2 -> hf";
         return wires["a"].Value();
     }
 
-    public int Part2()
+    public long Part2()
     {
         wires.Clear();
         gates.Clear();

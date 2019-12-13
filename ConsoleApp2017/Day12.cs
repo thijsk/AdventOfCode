@@ -14,7 +14,7 @@ namespace ConsoleApp2017
             public List<Program> Pipes = new List<Program>();
         }
 
-        public int Part1()
+        public long Part1()
         {
             var programs = new List<Program>();
 
@@ -52,7 +52,7 @@ namespace ConsoleApp2017
 
         }
 
-        public int Part2()
+        public long Part2()
         {
             var programs = new List<Program>();
 
