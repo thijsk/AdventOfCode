@@ -5,7 +5,7 @@ namespace ConsoleApp2015
 {
     class Day10 : IDay
     {
-        private string input = @"3113322113";
+        private string input = @"1321131112";
 
         public int Part1()
         {

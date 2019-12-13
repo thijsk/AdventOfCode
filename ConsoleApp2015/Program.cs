@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Common;
 
 namespace ConsoleApp2015
@@ -7,10 +9,18 @@ namespace ConsoleApp2015
     {
         static void Main(string[] args)
         {
-            IDay day = new Day20();
+            var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
+                 .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name.Substring(3)));
 
-            Console.WriteLine(day.Part1());
-            Console.WriteLine(day.Part2());
+            foreach (var dayClass in dayClasses.TakeLast(1))
+            {
+                Console.WriteLine(dayClass.Name);
+
+                IDay day = (IDay)Activator.CreateInstance(dayClass);
+                Console.WriteLine("Part1 : " + day.Part1());
+                Console.WriteLine("Part2 : " + day.Part2());
+            }
+
             Console.ReadLine();
         }
     }

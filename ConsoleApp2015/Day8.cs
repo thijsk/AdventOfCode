@@ -45,8 +45,6 @@ namespace ConsoleApp2015
                 nummem += linemem;
             }
 
-            Console.WriteLine(numcode);
-            Console.WriteLine(nummem);
             return numcode - nummem;
         }
 
@@ -73,8 +71,6 @@ namespace ConsoleApp2015
                 numenc += lineenc;
             }
 
-            Console.WriteLine(numcode);
-            Console.WriteLine(numenc);
             return numenc - numcode;
         }
     }

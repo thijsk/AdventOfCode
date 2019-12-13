@@ -7,7 +7,7 @@ namespace ConsoleApp2015
 {
     class Day11 : IDay
     {
-        private string input = "vzbxkghb";
+        private string input = "hepxcrrq";
         public int Part1()
         {
             //input = "aziabca";

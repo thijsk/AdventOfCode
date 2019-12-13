@@ -35,7 +35,7 @@ namespace ConsoleApp2019
 
             var minDistance = intersections.Select(p => Math.Abs(p.x) + Math.Abs(p.y)).Where(d => d > 0).Min();
 
-            Draw(line1points, line2points, intersections);
+            //Draw(line1points, line2points, intersections);
 
             return minDistance;
         }

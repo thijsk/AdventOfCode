@@ -6,26 +6,26 @@ namespace ConsoleApp2015
 {
     class Day17 : IDay
     {
-        private string input = @"43
-3
-4
-10
-21
+        private string input = @"33
+14
+18
+20
+45
+35
+16
+35
+1
+13
+18
+13
+50
 44
-4
+48
 6
-47
+24
 41
-34
-17
-17
-44
-36
-31
-46
-9
-27
-38";
+30
+42";
 
         struct Container
         {

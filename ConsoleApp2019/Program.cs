@@ -10,9 +10,9 @@ namespace ConsoleApp2019
         static void Main(string[] args)
         {
             var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
-                 .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => t.Name);
+                 .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name.Substring(3)));
 
-            foreach (var dayClass in dayClasses)
+            foreach (var dayClass in dayClasses.TakeLast(1))
             {
                 Console.WriteLine(dayClass.Name);
 

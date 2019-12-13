@@ -9,7 +9,7 @@ namespace ConsoleApp2015
 
     public class Day4 : IDay
     {
-        string input = @"iwrupvqb";
+        string input = @"bgvyzdsv";
 
         public int Part1()
         {
