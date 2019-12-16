@@ -181,11 +181,6 @@ namespace ConsoleApp2019
                 {
                     periodz = step;
                 }
-
-                //foreach (var moon in moons)
-                //{
-                //    Console.WriteLine($"pos=<x={moon.position.x}, y={moon.position.y}, z={moon.position.z}>, vel=<x={moon.velocity.x}, y={moon.velocity.y}, z={moon.velocity.z}>");
-                //}
             }
             Console.WriteLine($"{periodx} {periody} {periodz}");
             Math2.LeastCommonMultiple(4, 4, 5);

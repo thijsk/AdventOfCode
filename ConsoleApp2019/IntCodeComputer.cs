@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleApp2019
@@ -152,6 +153,7 @@ namespace ConsoleApp2019
                         }
                     case 99:
                         exit = true;
+                        outputs.CompleteAdding();
                         break;
                     default:
                         throw new Exception($"Invalid opcode {opcode} at position {position}");
@@ -195,7 +197,7 @@ namespace ConsoleApp2019
                 SetMemory((relativeBase + argValue), result);
             }
         }
-        
+
         private long GetMemory(long index)
         {
             if (index >= memory.Length)
@@ -225,5 +227,11 @@ namespace ConsoleApp2019
             }
             throw new Exception("invalid mode");
         }
+
+        public static long[] ParseIntcodeString(string input)
+        {
+            return input.Split(',').Select(i => long.Parse(i)).ToArray();
+        }
+
     }
 }
