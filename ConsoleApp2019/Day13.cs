@@ -115,11 +115,13 @@ namespace ConsoleApp2019
             int paddley = 0, bally = 0;
             int paddlex = 0, ballx = 0;
 
-            Task.Run(() =>
+            var output = Task.Run(() =>
             {
                 while (!outputs.IsCompleted)
                 {
                     long x;
+                    while (outputs.Count == 0)
+                    { Thread.Sleep(1); }
                     while (outputs.TryTake(out x))
                     {
                         var y = outputs.Take();
@@ -162,8 +164,6 @@ namespace ConsoleApp2019
                     {
                         inputs.Add(0);
                     }
-
-                    Thread.Sleep(10);
                 }
             });
 
@@ -178,8 +178,8 @@ namespace ConsoleApp2019
                 }
             });
 
-            runner.Wait();
-            Thread.Sleep(1000);
+            Task.WaitAll(runner, output);
+            Thread.Sleep(100);
             Console.WriteLine("done");
             return score;
         }
