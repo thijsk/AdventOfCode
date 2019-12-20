@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Common
 {
-    public static class IEnumerableExtensions
+    public static partial class IEnumerableExtensions
     {
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
         {
@@ -19,6 +19,11 @@ namespace Common
             var list = source.ToList();
             return Enumerable.Range(0, 1 << list.Count)
                 .Select(s => Enumerable.Range(0, list.Count).Where(i => (s & (1 << i)) != 0).Select(i => list[i]));
+        }
+
+        public static IEnumerator<T> GetCircularEnumerator<T>(this IEnumerable<T> t)
+        {
+            return new CircularEnumarator<T>(t.GetEnumerator());
         }
     }
 }

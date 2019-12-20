@@ -20,6 +20,16 @@
             this.y = y;
         }
 
+        public override bool Equals(object other)
+        {
+            if (!(other is Point<T>) || other == null)
+            {
+                return false;
+            }
+            var otherPoint = (Point<T>)other;
+            return this.x.Equals(otherPoint.x) && this.y.Equals(otherPoint.y);
+        }
+
         public readonly T x;
         public readonly T y;
     }
