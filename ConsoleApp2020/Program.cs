@@ -5,7 +5,7 @@ using Common;
 
 namespace ConsoleApp2020
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {

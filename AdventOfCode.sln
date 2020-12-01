@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2019", "ConsoleApp2019\ConsoleApp2019.csproj", "{A632B2BF-F7D7-4D89-AE4C-D6B79D292109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2020", "ConsoleApp2020\ConsoleApp2020.csproj", "{0D457D62-2A8F-4AFD-956E-F436A9070766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2020", "ConsoleApp2020\ConsoleApp2020.csproj", "{0D457D62-2A8F-4AFD-956E-F436A9070766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
