@@ -12,7 +12,7 @@ namespace ConsoleApp2020
     {
         public long Part1()
         {
-            var input = File.ReadAllLines("Day01.txt").Select(l => Int32.Parse(l)).ToArray();
+            var input = File.ReadAllLines("Day01.txt").Select(Int32.Parse).ToArray();
 
             for (int i = 0; i < input.Length; i++)
             {
@@ -31,7 +31,7 @@ namespace ConsoleApp2020
 
         public long Part2()
         {
-            var input = File.ReadAllLines("Day01.txt").Select(l => Int32.Parse(l)).ToArray();
+            var input = File.ReadAllLines("Day01.txt").Select(Int32.Parse).ToArray();
 
             for (int i = 0; i < input.Length; i++)
             {

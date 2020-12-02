@@ -5,11 +5,11 @@ namespace Common
 {
     public static partial class IEnumerableExtensions
     {
-        private class CircularEnumarator<T> : IEnumerator<T>
+        private class CircularEnumerator<T> : IEnumerator<T>
         {
             private readonly IEnumerator<T> _wrappedEnumerator;
 
-            public CircularEnumarator(IEnumerator<T> wrappedEnumerator)
+            public CircularEnumerator(IEnumerator<T> wrappedEnumerator)
             {
                 this._wrappedEnumerator = wrappedEnumerator;
             }

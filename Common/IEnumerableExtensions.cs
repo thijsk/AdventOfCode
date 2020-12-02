@@ -23,7 +23,7 @@ namespace Common
 
         public static IEnumerator<T> GetCircularEnumerator<T>(this IEnumerable<T> t)
         {
-            return new CircularEnumarator<T>(t.GetEnumerator());
+            return new CircularEnumerator<T>(t.GetEnumerator());
         }
     }
 }
