@@ -10,17 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Day01.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Day01.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Day03.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Day02.txt">
+    <None Update="*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
