@@ -6,7 +6,7 @@ namespace ConsoleApp2017
 {
     class Day6 : IDay
     {
-        private string input = @"5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
+        private string input = @"11	11	13	7	0	15	5	5	4	4	1	1	7	1	15	11";
 
         
 

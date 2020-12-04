@@ -6,7 +6,7 @@ namespace ConsoleApp2017
 {
     public class Day3 : IDay
     {
-        private int input = 289326;
+        private int input = 265149;
         //private int input = 1024;
 
         internal struct pos

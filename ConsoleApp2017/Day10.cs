@@ -7,7 +7,7 @@ namespace ConsoleApp2017
 {
     class Day10 : IDay
     {
-        private string input = @"189,1,111,246,254,2,0,120,215,93,255,50,84,15,94,62";
+        private string input = @"14,58,0,116,179,16,1,104,2,254,167,86,255,55,122,244";
         public long Part1()
         {
 
