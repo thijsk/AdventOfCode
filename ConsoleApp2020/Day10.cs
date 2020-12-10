@@ -59,6 +59,40 @@ namespace ConsoleApp2020
             return arrangements;
         }
 
+
+        /*
+
+0 [1 2 3] 4
+
+0 1 2 3 4
+0 1 2 4
+0 1 3 4
+0 2 3 4
+0 1 4
+0 2 4
+0 3 4
+
+een groepje van 3 opvolgende heeft 7 mogelijkheden
+
+0 [1 2] 3
+
+0 1 2 3
+0 1 3
+0 2 3
+0 3
+
+een groepje van 2 opvolgende heeft 4 mogelijkheden
+
+0 [1] 2
+
+0 1 2
+0 2
+
+een groepje van 1 opvolgende heeft 2 mogelijkheden
+    
+
+         */
+
         public long Part2()
         {
             var input = ParseInput().OrderBy(i => i).ToList();
