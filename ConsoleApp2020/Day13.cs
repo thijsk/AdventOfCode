@@ -49,6 +49,7 @@ namespace ConsoleApp2020
                 {
                     busses.Add(bus);
                     offsets.Add(i);
+                    a.Add(bus - i);
                 }
             }
 
@@ -64,6 +65,15 @@ namespace ConsoleApp2020
 
             Console.WriteLine();
 
+            var result = ChineseRemainderTheorem.Solve(busses.ToArray(), a.ToArray());
+
+            Console.WriteLine(result);
+
+            return Reddit(busses, offsets);
+        }
+
+        private static long Reddit(List<int> busses, List<int> offsets)
+        {
             long time = 0;
             long advanceBy = busses[0];
             int correctBusIndex = 0;
