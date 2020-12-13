@@ -5,11 +5,11 @@ namespace Common
 {
     public static class ChineseRemainderTheorem
     {
-        public static BigInteger Solve(int[] n, int[] a)
+        public static long Solve(int[] n, int[] a)
         {
-            BigInteger prod = n.Aggregate(new BigInteger(1), (i, j) => i * j);
-            BigInteger p;
-            BigInteger sm = 0;
+            long prod = n.Aggregate((long)1, (i, j) => i * j);
+            long p;
+            long sm = 0;
             for (int i = 0; i < n.Length; i++)
             {
                 p = prod / n[i];
@@ -18,9 +18,9 @@ namespace Common
             return sm % prod;
         }
 
-        private static BigInteger ModularMultiplicativeInverse(BigInteger a, BigInteger mod)
+        private static long ModularMultiplicativeInverse(long a, long mod)
         {
-            BigInteger b = a % mod;
+            long b = a % mod;
             for (int x = 1; x < mod; x++)
             {
                 if ((b * x) % mod == 1)
