@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,8 +32,33 @@ namespace ConsoleApp2020
 
                 time++;
             }
- 
+
             return 0;
+        }
+
+        public long FinalAttempt()
+        {
+            var input = ParseInput();
+            var busses = input.Item2.Select((bus, index) => (bus, index)).Where(b => b.Item1 != -1).OrderByDescending(b => b.Item1).ToList();
+
+
+            //We start at the highest bus number, should be faster
+            long period = busses[0].bus;
+            long time = period - busses[0].index;
+
+            for (var count = 1; count <= busses.Count; count++)
+            {
+                // While not all busses match, add more time
+                while (busses.Take(count).Any(bus => (time + bus.index) % bus.bus != 0))
+                {
+                    time += period;
+                }
+
+                // now the first {count} busses are in sync, so the period is now a multiple of their numbers
+                period = busses.Take(count).Select(b => (long) b.bus).Aggregate((long) 1, (i, j) => i * j);
+            }
+
+            return time;
         }
 
         public long Part2()
@@ -66,10 +92,12 @@ namespace ConsoleApp2020
             Console.WriteLine();
 
             var result = ChineseRemainderTheorem.Solve(busses.ToArray(), a.ToArray());
-
             Console.WriteLine(result);
 
-            return Reddit(busses, offsets);
+            result = Reddit(busses, offsets);
+            Console.WriteLine(result);
+
+            return FinalAttempt();
         }
 
         private static long Reddit(List<int> busses, List<int> offsets)

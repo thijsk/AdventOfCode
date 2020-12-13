@@ -34,10 +34,13 @@ namespace Common
             {
                 return LeastCommonMultiple(args[0], args[1]);
             }
-            else
+
+            if (args.Length > 2)
             {
                 return LeastCommonMultiple(args[0], LeastCommonMultiple(args.Skip(1).ToArray()));
             }
+
+            return args[0];
         }
     }
 }
