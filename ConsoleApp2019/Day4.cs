@@ -13,7 +13,7 @@ namespace ConsoleApp2019
             var ok = 0;
             for (var number = 138307; number <= 654504; number++)
             {
-                var d = ToDigits(number);
+                var d = number.ToDigits().ToArray();
                 if (d[0] <= d[1] &&
                     d[1] <= d[2] &&
                     d[2] <= d[3] &&
@@ -32,17 +32,14 @@ namespace ConsoleApp2019
             return ok;
         }
 
-        private static int[] ToDigits(int number)
-        {
-            return number.ToString().ToCharArray().Select(c => int.Parse(c.ToString())).ToArray();
-        }
+        
 
         public long Part2()
         {
             var ok = 0;
             for (var number = 138307; number <= 654504; number++)
             {
-                var d = ToDigits(number);
+                var d = number.ToDigits().ToArray();
                 if (d[0] <= d[1] &&
                     d[1] <= d[2] &&
                     d[2] <= d[3] &&

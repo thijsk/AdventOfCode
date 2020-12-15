@@ -21,9 +21,14 @@ namespace Common
                 .Select(s => Enumerable.Range(0, list.Count).Where(i => (s & (1 << i)) != 0).Select(i => list[i]));
         }
 
-        public static IEnumerator<T> GetCircularEnumerator<T>(this IEnumerable<T> t)
+        public static IEnumerable<T> AsCircular<T>(this IEnumerable<T> t)
         {
-            return new CircularEnumarator<T>(t.GetEnumerator());
+            return new CircularEnumerable<T>(t);
+        }
+
+        public static IEnumerable<T> Repeat<T>(this IEnumerable<T> t, int times)
+        {
+            return new RepeatEnumerable<T>(t, times);
         }
     }
 }

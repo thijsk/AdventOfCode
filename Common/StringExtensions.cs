@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Common
@@ -25,6 +26,11 @@ namespace Common
             aStringBuilder.Remove(index, length);
             aStringBuilder.Insert(index, value);
             return aStringBuilder.ToString();
+        }
+
+        public static IEnumerable<int> ToInts(this string str)
+        {
+            return str.ToCharArray().Select(c => int.Parse(c.ToString()));
         }
     }
 }

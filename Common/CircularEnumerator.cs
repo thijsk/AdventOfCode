@@ -5,11 +5,32 @@ namespace Common
 {
     public static partial class IEnumerableExtensions
     {
-        private class CircularEnumarator<T> : IEnumerator<T>
+        private class CircularEnumerable<T> : IEnumerable<T>
+        {
+            private readonly IEnumerable<T> _wrappedEnumerable;
+
+            public CircularEnumerable(IEnumerable<T> wrappedEnumerable)
+            {
+                _wrappedEnumerable = wrappedEnumerable;
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return new CircularEnumerator<T>(_wrappedEnumerable.GetEnumerator());
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return new CircularEnumerator<T>(_wrappedEnumerable.GetEnumerator());
+            }
+        }
+
+
+        private class CircularEnumerator<T> : IEnumerator<T>
         {
             private readonly IEnumerator<T> _wrappedEnumerator;
 
-            public CircularEnumarator(IEnumerator<T> wrappedEnumerator)
+            public CircularEnumerator(IEnumerator<T> wrappedEnumerator)
             {
                 this._wrappedEnumerator = wrappedEnumerator;
             }
@@ -40,4 +61,4 @@ namespace Common
         }
     }
 }
-}
+
