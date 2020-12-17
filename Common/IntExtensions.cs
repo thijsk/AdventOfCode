@@ -9,5 +9,10 @@ namespace Common
         {
             return number.ToString().ToInts();
         }
+
+        public static bool Between(this int i, int lowerbound, int upperbound)
+        {
+            return i >= lowerbound && i <= upperbound;
+        }
     }
 }
