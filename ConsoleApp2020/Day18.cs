@@ -14,14 +14,13 @@ namespace ConsoleApp2020
         {
             var input = ParseInput();
 
-            //Edit the precedence in the Operation class
-            var evaluator = new ExpressionEvaluator();
+            var evaluator = new ExpressionEvaluator(new Dictionary<char, int> { { '+', 1 }, { '-', 1 }, { '*', 1 }, { '/', 1} });
 
             long sum = 0;
             foreach (var line in input)
             {
                 var result = evaluator.Evaluate(line);
-                Console.WriteLine($"{line} = {result}");
+              //  Console.WriteLine($"{line} = {result}");
                 sum += Convert.ToInt64(result);
             }
 
@@ -32,7 +31,17 @@ namespace ConsoleApp2020
         {
             var input = ParseInput();
 
-            return 0;
+            var evaluator = new ExpressionEvaluator(new Dictionary<char, int> { { '+', 2 }, { '-', 1 }, { '*', 1 }, { '/', 1 } });
+
+            long sum = 0;
+            foreach (var line in input)
+            {
+                var result = evaluator.Evaluate(line);
+              //  Console.WriteLine($"{line} = {result}");
+                sum += Convert.ToInt64(result);
+            }
+
+            return sum;
         }
 
         public string[] ParseInput()

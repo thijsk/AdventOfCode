@@ -11,6 +11,7 @@ namespace Common
 {
     /// <summary>
     /// Class for compiling and evaluating simple mathematical expressions
+    /// https://github.com/Giorgi/Math-Expression-Evaluator
     /// </summary>
     public class ExpressionEvaluator : DynamicObject
     {
@@ -21,12 +22,19 @@ namespace Common
         private readonly Stack<Expression> expressionStack = new Stack<Expression>();
         private readonly Stack<Symbol> operatorStack = new Stack<Symbol>();
         private readonly List<string> parameters = new List<string>();
+        private readonly Operation.OperationBuilder operationBuilder = new Operation.OperationBuilder();
+
 
         /// <summary>
         /// Initializes new instance of <see cref="ExpressionEvaluator"></see> using <see cref="CultureInfo.InvariantCulture" />
         /// </summary>
         public ExpressionEvaluator() : this(CultureInfo.InvariantCulture)
         {
+        }
+
+        public ExpressionEvaluator(Dictionary<char, int> operatorPrecedence) : this(CultureInfo.InvariantCulture)
+        {
+            operationBuilder = new Operation.OperationBuilder(operatorPrecedence);
         }
 
         /// <summary>
@@ -145,12 +153,12 @@ namespace Common
                         continue;
                     }
 
-                    if (Operation.IsDefined(next))
+                    if (operationBuilder.IsDefined(next))
                     {
                         if (next == '-' && expressionStack.Count == 0)
                         {
                             reader.Read();
-                            operatorStack.Push(Operation.UnaryMinus);
+                            operatorStack.Push(operationBuilder.UnaryMinus);
                             continue;
                         }
 
@@ -171,7 +179,7 @@ namespace Common
                         if (reader.Peek() == '-')
                         {
                             reader.Read();
-                            operatorStack.Push(Operation.UnaryMinus);
+                            operatorStack.Push(operationBuilder.UnaryMinus);
                         }
 
                         continue;
@@ -230,7 +238,7 @@ namespace Common
 
         private decimal Execute(Func<decimal[], decimal> compiled, Dictionary<string, decimal> arguments, List<string> parameters)
         {
-            arguments = arguments ?? new Dictionary<string, decimal>();
+            arguments ??= new Dictionary<string, decimal>();
 
             if (parameters.Count != arguments.Count)
             {
@@ -296,7 +304,7 @@ namespace Common
         private Operation ReadOperation(TextReader reader)
         {
             var operation = (char)reader.Read();
-            return (Operation)operation;
+            return operationBuilder.Build(operation);
         }
 
         private Expression ReadParameter(TextReader reader, Expression arrayParameter)
@@ -355,20 +363,6 @@ namespace Common
         private readonly Func<Expression, Expression, Expression> operation;
         private readonly Func<Expression, Expression> unaryOperation;
 
-        public static readonly Operation Addition = new Operation(1, Expression.Add, "Addition");
-        public static readonly Operation Subtraction = new Operation(1, Expression.Subtract, "Subtraction");
-        public static readonly Operation Multiplication = new Operation(2, Expression.Multiply, "Multiplication");
-        public static readonly Operation Division = new Operation(2, Expression.Divide, "Division");
-        public static readonly Operation UnaryMinus = new Operation(2, Expression.Negate, "Negation");
-
-        private static readonly Dictionary<char, Operation> Operations = new Dictionary<char, Operation>
-        {
-            { '+', Addition },
-            { '-', Subtraction },
-            { '*', Multiplication},
-            { '/', Division }
-        };
-
         private Operation(int precedence, string name)
         {
             Name = name;
@@ -393,20 +387,6 @@ namespace Common
 
         public int Precedence { get; private set; }
 
-        public static explicit operator Operation(char operation)
-        {
-            Operation result;
-
-            if (Operations.TryGetValue(operation, out result))
-            {
-                return result;
-            }
-            else
-            {
-                throw new InvalidCastException();
-            }
-        }
-
         private Expression Apply(Expression expression)
         {
             return unaryOperation(expression);
@@ -415,11 +395,6 @@ namespace Common
         private Expression Apply(Expression left, Expression right)
         {
             return operation(left, right);
-        }
-
-        public static bool IsDefined(char operation)
-        {
-            return Operations.ContainsKey(operation);
         }
 
         public Expression Apply(params Expression[] expressions)
@@ -436,6 +411,60 @@ namespace Common
 
             throw new NotImplementedException();
         }
+
+
+        internal sealed class OperationBuilder
+        {
+            public readonly Operation Addition = new Operation(1, Expression.Add, "Addition");
+            public readonly Operation Subtraction = new Operation(1, Expression.Subtract, "Subtraction");
+            public readonly Operation Multiplication = new Operation(2, Expression.Multiply, "Multiplication");
+            public readonly Operation Division = new Operation(2, Expression.Divide, "Division");
+            public readonly Operation UnaryMinus = new Operation(2, Expression.Negate, "Negation");
+
+            private readonly Dictionary<char, Operation> Operations;
+
+            public OperationBuilder()
+            {
+                Operations = new Dictionary<char, Operation>
+                {
+                    { '+', Addition },
+                    { '-', Subtraction },
+                    { '*', Multiplication},
+                    { '/', Division }
+                };
+            }
+
+            public OperationBuilder(Dictionary<char, int> operatorPrecedence) : this()
+            {
+                foreach (var op in operatorPrecedence)
+                {
+                    if (Operations.ContainsKey(op.Key))
+                    {
+                        Operations[op.Key].Precedence = op.Value;
+                    }
+                }
+            }
+
+            public Operation Build(char operation)
+            {
+                Operation result;
+
+                if (Operations.TryGetValue(operation, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    throw new InvalidCastException();
+                }
+            }
+
+            public bool IsDefined(char operation)
+            {
+                return Operations.ContainsKey(operation);
+            }
+        }
+
     }
 
     internal class Parentheses : Symbol
