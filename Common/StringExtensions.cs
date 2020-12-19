@@ -32,5 +32,12 @@ namespace Common
         {
             return str.ToCharArray().Select(c => int.Parse(c.ToString()));
         }
+
+        public static string Backwards(this string s)
+        {
+            char[] charArray = s.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
+        }
     }
 }
