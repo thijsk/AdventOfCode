@@ -39,5 +39,10 @@ namespace Common
             Array.Reverse(charArray);
             return new string(charArray);
         }
+
+        public static string Repeat(this string value, int times)
+        {
+            return string.Concat(Enumerable.Repeat(value, times));
+        }
     }
 }

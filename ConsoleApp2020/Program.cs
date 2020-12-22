@@ -12,7 +12,7 @@ namespace ConsoleApp2020
             var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name.Substring(3)));
 
-            foreach (var dayClass in dayClasses.TakeLast(1))
+            foreach (var dayClass in dayClasses.TakeLast(3).Take(1))
             {
                 Console.WriteLine(dayClass.Name);
 

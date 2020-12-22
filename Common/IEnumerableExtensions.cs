@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Common
@@ -29,6 +30,24 @@ namespace Common
         public static IEnumerable<T> Repeat<T>(this IEnumerable<T> t, int times)
         {
             return new RepeatEnumerable<T>(t, times);
+        }
+
+        public static IEnumerable<TResult> IntersectMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
+        {
+            using (var enumerator = source.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    return new TResult[0];
+
+                var ret = selector(enumerator.Current);
+
+                while (enumerator.MoveNext())
+                {
+                    ret = ret.Intersect(selector(enumerator.Current));
+                }
+
+                return ret;
+            }
         }
     }
 }

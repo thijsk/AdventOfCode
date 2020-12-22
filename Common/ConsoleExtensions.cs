@@ -5,7 +5,7 @@ namespace Common
 {
     public static class ConsoleX
     {
-        public static void WriteLine(string value)
+        public static void WriteLine(object value)
         {
             if (Debugger.IsAttached)
             {
