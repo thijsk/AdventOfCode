@@ -30,6 +30,11 @@
             return this.x.Equals(otherPoint.x) && this.y.Equals(otherPoint.y);
         }
 
+        public override int GetHashCode()
+        {
+            return (x, y).GetHashCode();
+        }
+
         public readonly T x;
         public readonly T y;
     }
