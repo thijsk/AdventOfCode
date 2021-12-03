@@ -4,9 +4,11 @@ namespace ConsoleApp2021;
 
 public class Day01 : IDay
 {
+    public string[] Input { get; set; }
+
     public long Part1()
     {
-        var input = File.ReadAllLines("Day01.txt").Select(Int32.Parse).ToArray();
+        var input = Input.Select(Int32.Parse).ToArray();
 
         bool first = true;
         var prevValue = 0;
@@ -34,7 +36,7 @@ public class Day01 : IDay
 
     public long Part2()
     {
-        var input = File.ReadAllLines("Day01.txt").Select(Int32.Parse).ToArray();
+        var input = Input.Select(Int32.Parse).ToArray();
         bool first = true;
         var prevValue = 0;
         var increase = 0;

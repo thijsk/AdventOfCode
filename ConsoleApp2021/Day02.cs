@@ -6,7 +6,7 @@ public class Day02 : IDay
 {
     public long Part1()
     {
-        var input = File.ReadAllLines("Day02.txt").Select(Parse).ToArray();
+        var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var horizontal = 0;
         var depth = 0;
@@ -32,7 +32,7 @@ public class Day02 : IDay
 
     public long Part2()
     {
-        var input = File.ReadAllLines("Day02.txt").Select(Parse).ToArray();
+        var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var horizontal = 0;
         var depth = 0;
