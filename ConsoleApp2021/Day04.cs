@@ -20,8 +20,8 @@ public class Day04 : IDay
             }
         }
 
-    return 0;
-}
+        return 0;
+    }
 
     public long Part2()
     {
@@ -46,14 +46,11 @@ public class Day04 : IDay
         return lastWonCard.GetTotal() * lastWonDraw;
     }
 
-    public (IEnumerable<int>, List<BingoCard>) Parse(string[] input)
+    public (IEnumerable<int>, IEnumerable<BingoCard>) Parse(string[] input)
     {
         var draw = input.First().Split(',').Select(int.Parse);
 
-        var cards = new List<BingoCard>();
-
-        cards.AddRange(input.Skip(1).Chunk(6).Select(x => new BingoCard(x.Skip(1))));
-
+        var cards = input.Skip(1).Chunk(6).Select(x => new BingoCard(x.Skip(1))).ToList();
 
         return (draw, cards);
     }
