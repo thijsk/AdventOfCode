@@ -37,5 +37,10 @@
 
         public readonly T x;
         public readonly T y;
+
+        public override string ToString()
+        {
+            return $"{x},{y}";
+        }
     }
 }
