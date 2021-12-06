@@ -17,10 +17,10 @@ foreach (var dayClass in dayClasses.TakeLast(1))
     }
 
     var answer1 = day.Part1().ToString();
-    var answer2 = day.Part2().ToString();
-
     Console.WriteLine("Part1 : " + answer1);
     if (answer1 != "0") ClipboardService.SetText(answer1);
+
+    var answer2 = day.Part2().ToString();
     Console.WriteLine("Part2 : " + answer2);
     if (answer2 != "0") ClipboardService.SetText(answer2);
 }
