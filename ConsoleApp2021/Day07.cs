@@ -38,15 +38,17 @@ public class Day07 : IDay
         var max = input.Max();
 
         var answer = Enumerable.Range(min, max - min)
-            .Select(height => (height, fuel: input.Sum(i => Calc(Math.Abs(i - height))))).Min(t => t.fuel);
+            .Select(height => (height, fuel: input.Sum(i => Triangle(Math.Abs(i - height))))).Min(t => t.fuel);
 
         return answer;
     }
 
-    private int Calc(int abs)
+    private int Triangle(int n)
     {
-        if (abs == 0) return 0;
-        return Enumerable.Range(1, abs).Sum();
+        if (n == 0) return 0;
+        //return Enumerable.Range(1, n).Sum();
+
+        return n * (n + 1) / 2;
     }
 
     public IEnumerable<int> Parse(string line)
