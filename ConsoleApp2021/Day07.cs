@@ -24,6 +24,9 @@ public class Day07 : IDay
         var answer = Enumerable.Range(min, max - min)
             .Select(height => (height, fuel: input.Sum(i => Math.Abs(i - height)))).Min(t => t.fuel);
 
+        var median = (int)input.Median();
+        var answer1 = input.Sum(i => Math.Abs(i - median));
+
         return answer;
     }
 
