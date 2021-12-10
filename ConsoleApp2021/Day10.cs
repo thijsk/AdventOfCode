@@ -46,44 +46,40 @@ public class Day10 : IDay
 
     private int ScoreOf(char chr)
     {
-        switch (chr)
+        return chr switch
         {
-            case ')': return 3;
-            case ']': return 57;
-            case '}': return 1197;
-            case '>': return 25137;
-        }
-
-        return 0;
-
+            ')' => 3,
+            ']' => 57,
+            '}' => 1197,
+            '>' => 25137,
+            _ => 0
+        };
     }
 
     private int ScoreOf2(char chr)
     {
-        switch (chr)
+        return chr switch
         {
-            case ')': return 1;
-            case ']': return 2;
-            case '}': return 3;
-            case '>': return 4;
-        }
-
-        return 0;
-
+            ')' => 1,
+            ']' => 2,
+            '}' => 3,
+            '>' => 4,
+            _ => 0
+        };
     }
 
     private bool Matches(char peek, char chr)
     {
-        return open.ToList().IndexOf(peek) == close.ToList().IndexOf(chr);
+        return open.IndexOf(peek) == close.IndexOf(chr);
     }
 
-    readonly char[] close = new[] { ')', ']', '}', '>' };
+    readonly List<char> close = new() { ')', ']', '}', '>' };
     private bool IsClose(char chr)
     {
         return close.Contains(chr);
     }
 
-    readonly char[] open = new[] { '(', '[', '{', '<' };
+    readonly List<char> open = new() { '(', '[', '{', '<' };
     private bool IsOpen(char chr)
     {
         return open.Contains(chr);
@@ -126,7 +122,7 @@ public class Day10 : IDay
                 linescore += ScoreOf2(MatchOpen(chr));
             }
 
-            Console.WriteLine(linescore);
+            // Console.WriteLine(linescore);
             scores.Add(linescore);
         }
 
