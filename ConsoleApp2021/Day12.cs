@@ -70,7 +70,7 @@ public class Day12 : IDay
         {
             result.Add(localPath);
             var str = string.Join(',', localPath);
-            Console.WriteLine(str);
+            //Console.WriteLine(str);
             return result;
         }
 
