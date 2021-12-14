@@ -13,6 +13,14 @@ namespace Common
             }
         }
 
+        public static void WriteLine(object value, ConsoleColor color)
+        {
+            var original = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine(value);
+            Console.ForegroundColor = original;
+        }
+
         public static void ReadLine()
         {
             if (Debugger.IsAttached)
