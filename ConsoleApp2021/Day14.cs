@@ -69,10 +69,10 @@ public class Day14 : IDay
                 {
                     var insert = input.rules[key];
 
-                    var firstpair = new string(new[] { key[0] }) + insert[0];
+                    var firstpair = new string(new[] { key[0], insert[0] });
                     resultBuckets.AddOrIncrement(firstpair, amount);
 
-                    var secondpair = insert[0] + new string(new[] { key[1] });
+                    var secondpair =new string(new[] { insert[0], key[1] });
                     resultBuckets.AddOrIncrement(secondpair, amount);
                 }
             }
