@@ -7,17 +7,17 @@ public class Day16 : IDay
 {
     public long Part1()
     {
-        var input = PuzzleContext.Example.Select(Parse).ToArray();
+        var input = PuzzleContext.Input.Select(Parse).ToArray();
         foreach (var line in input)
         {
-            var remainder = string.Empty;
+            var remainder = 0;
 
             var packet = Packet.Create(line, out remainder);
-            var sum = packet.Sum();
+            long sum = packet.Sum();
             Console.WriteLine($"Sum: {sum}");
 
-
             Console.WriteLine("----");
+            return sum;
         }
 
         return 0;
@@ -26,6 +26,17 @@ public class Day16 : IDay
     public long Part2()
     {
         var input = PuzzleContext.Input.Select(Parse).ToArray();
+        foreach (var line in input)
+        {
+            var remainder = 0;
+
+            var packet = Packet.Create(line, out remainder);
+            long result = packet.Operate();
+            Console.WriteLine($"Result: {result}");
+
+            Console.WriteLine("----");
+            return result;
+        }
 
         return 0;
     }
@@ -41,32 +52,38 @@ public abstract class Packet
 {
     public int Version { get; set; }
 
-    public static Packet Create(string rawPacket, out string remainingBits)
+    public static Packet Create(string rawPacket, out int usedBits)
     {
-        Console.WriteLine(rawPacket);
+       // Console.WriteLine(rawPacket);
         var version = Convert.ToInt32(rawPacket.Substring(0, 3), 2);
         var type = Convert.ToInt32(rawPacket.Substring(3, 3), 2);
         var rawBody = rawPacket.Substring(6);
+        Packet packet;
         if (type == 4)
         {
-            return LiteralPacket.Create(version, rawBody, out remainingBits);
+            packet = LiteralPacket.Create(version, rawBody, out usedBits);
         }
         else //if (type == 6)
         {
-            return OperatorPacket.Create(version, rawBody, out remainingBits);
+            packet = OperatorPacket.Create(type, version, rawBody, out usedBits);
+
+
         }
+        usedBits += 6;
+        return packet;
         //else
         //{
         //    throw new Exception("Unknown packet type");
         //}
     }
 
-    public abstract int Sum();
+    public abstract long Sum();
+    public abstract long Operate();
 }
 
 public class OperatorPacket : Packet
 {
-    public static OperatorPacket Create(int version, string rawBody, out string remainingBits)
+    public static OperatorPacket Create(int type, int version, string rawBody, out int usedBits)
     {
         Console.WriteLine($"OperatorPacket {version}");
         var lengthTypeId = rawBody[0];
@@ -80,68 +97,88 @@ public class OperatorPacket : Packet
             lengthBits = 11;
         }
 
-        var length = Convert.ToInt32(rawBody.Substring(1, lengthBits), 2);
+        var totalUsedBits = 1 + lengthBits;
+
+        var length = Convert.ToInt64(rawBody.Substring(1, lengthBits), 2);
 
         List<Packet> subPackets = new();
         if (lengthTypeId == '0') // number of bits
         {
-            var rawSubPackets = rawBody.Substring(1 + lengthBits, length);
-
-            while (rawSubPackets.Length > 0)
+            while (length > 0)
             {
-                var subPacket = Packet.Create(rawSubPackets, out rawSubPackets);
+                var rawSubPacket = rawBody.Substring(totalUsedBits);
+                var subPacket = Packet.Create(rawSubPacket, out var packetBits);
                 subPackets.Add(subPacket);
+                totalUsedBits += packetBits;
+                length -= packetBits;
             }
-
-            remainingBits = rawBody.Substring(length + 1);
         }
         else
         {
             var packetCount = 0;
-            var rawSubPackets = rawBody.Substring(1 + lengthBits);
             while (packetCount < length)
             {
-                var subPacket = Packet.Create(rawSubPackets, out rawSubPackets);
+                var rawSubPacket = rawBody.Substring(totalUsedBits);
+                var subPacket = Packet.Create(rawSubPacket, out var packetBits);
                 subPackets.Add(subPacket);
+                totalUsedBits += packetBits;
                 packetCount++;
             }
-            remainingBits = rawSubPackets;
         }
+
+        usedBits = totalUsedBits;
         return new OperatorPacket
         {
+            Type = type,
             Version = version,
             SubPackets = subPackets
         };
     }
 
+    public int Type { get; set; }
+
     public List<Packet> SubPackets { get; set; }
-    public override int Sum()
+    public override long Sum()
     {
         return Version + SubPackets.Sum(p => p.Sum());
+    }
+
+    public override long Operate()
+    {
+        return Type switch
+        {
+            0 => SubPackets.Sum(p => p.Operate()),
+            1 => SubPackets.Aggregate(1L, (acc, packet) => acc * packet.Operate() ),
+            2 => SubPackets.Min(p => p.Operate()),
+            3 => SubPackets.Max(p => p.Operate()),
+            5 => SubPackets.First().Operate() > SubPackets.Last().Operate() ? 1 : 0,
+            6 => SubPackets.First().Operate() < SubPackets.Last().Operate() ? 1 : 0,
+            7 => SubPackets.First().Operate() == SubPackets.Last().Operate() ? 1 : 0,
+            _ => throw new InvalidOperationException()
+        };
     }
 }
 
 public class LiteralPacket : Packet
 {
-    public static LiteralPacket Create(int version, string rawBody, out string remainingBits)
+    public static LiteralPacket Create(int version, string rawBody, out int usedBits)
     {
         Console.WriteLine($"LiteralPacket {version}");
-        var startIndex = 0;
+        usedBits = 0;
         StringBuilder binary = new StringBuilder();
         for (; ; )
         {
-            var group = rawBody.Substring(startIndex, 5);
+            var group = rawBody.Substring(usedBits, 5);
             binary.Append(group.Substring(1));
 
-            startIndex += 5;
+            usedBits += 5;
             if (group[0] == '0')
                 break;
         }
 
-        var value = Convert.ToInt32(binary.ToString(), 2);
+        var value = Convert.ToInt64(binary.ToString(), 2);
         Console.WriteLine($"Value {value}");
 
-        remainingBits = rawBody.Substring(startIndex);
         return new LiteralPacket
         {
             Version = version,
@@ -149,9 +186,14 @@ public class LiteralPacket : Packet
         };
     }
 
-    public int Value { get; set; }
-    public override int Sum()
+    public long Value { get; set; }
+    public override long Sum()
     {
         return Version;
+    }
+
+    public override long Operate()
+    {
+        return Value;
     }
 }
