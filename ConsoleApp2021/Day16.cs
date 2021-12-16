@@ -14,9 +14,9 @@ public class Day16 : IDay
 
             var packet = Packet.Create(line, out remainder);
             long sum = packet.Sum();
-            Console.WriteLine($"Sum: {sum}");
+            ConsoleX.WriteLine($"Sum: {sum}");
 
-            Console.WriteLine("----");
+            ConsoleX.WriteLine("----");
             return sum;
         }
 
@@ -32,9 +32,9 @@ public class Day16 : IDay
 
             var packet = Packet.Create(line, out remainder);
             long result = packet.Operate();
-            Console.WriteLine($"Result: {result}");
+            ConsoleX.WriteLine($"Result: {result}");
 
-            Console.WriteLine("----");
+            ConsoleX.WriteLine("----");
             return result;
         }
 
@@ -85,7 +85,7 @@ public class OperatorPacket : Packet
 {
     public static OperatorPacket Create(int type, int version, string rawBody, out int usedBits)
     {
-        Console.WriteLine($"OperatorPacket {version}");
+        ConsoleX.WriteLine($"OperatorPacket {version}");
         var lengthTypeId = rawBody[0];
         var lengthBits = 0;
         if (lengthTypeId == '0') // number of bits
@@ -163,7 +163,7 @@ public class LiteralPacket : Packet
 {
     public static LiteralPacket Create(int version, string rawBody, out int usedBits)
     {
-        Console.WriteLine($"LiteralPacket {version}");
+        ConsoleX.WriteLine($"LiteralPacket {version}");
         usedBits = 0;
         StringBuilder binary = new StringBuilder();
         for (; ; )
@@ -177,7 +177,7 @@ public class LiteralPacket : Packet
         }
 
         var value = Convert.ToInt64(binary.ToString(), 2);
-        Console.WriteLine($"Value {value}");
+        ConsoleX.WriteLine($"Value {value}");
 
         return new LiteralPacket
         {
