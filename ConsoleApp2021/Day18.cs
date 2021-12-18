@@ -10,8 +10,6 @@ public class Day18 : IDay
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var first = input.First();
-        Reduce(first);
-
         var result = first;
 
         foreach (var line in input.Skip(1))
@@ -28,8 +26,8 @@ public class Day18 : IDay
 
     private JsonArray Add(JsonArray first, JsonArray second)
     {
-        Reduce(first);
-        Reduce(second);
+        //Reduce(first);
+        //Reduce(second);
         var result = new JsonArray(new[] { first, second });
         Reduce(result);
         return result;
@@ -50,9 +48,7 @@ public class Day18 : IDay
 
     public long Part2()
     {
-
         var input = PuzzleContext.Input;
-
         var permutations = input.GetPermutations(2);
 
         long max = 0;
@@ -85,45 +81,46 @@ public static class JsonExtensions
         {
             return 1;
         }
-        else
-        {
-            return jn.Parent.Depth() + 1;
-        }
+
+        return jn.Parent.Depth() + 1;
     }
 
     public static void AddToTheRight(this JsonArray ja, JsonArray child, int value)
     {
         var childIndex = ja.IndexOf(child);
-        if (childIndex == 0)
+        switch (childIndex)
         {
-            var rightArray = ja[1] as JsonArray;
-            if (rightArray != null)
+            case 0:
             {
-                rightArray.AddToTheRight(null, value);
+                if (ja[1] is JsonArray rightArray)
+                {
+                    rightArray.AddToTheRight(null, value);
+                }
+                else
+                {
+                    ja[1] = (int)ja[1] + value;
+                }
+
+                break;
             }
-            else
+            case 1:
             {
-                ja[1] = (int)ja[1] + value;
+                var parent = ((JsonArray)ja.Parent);
+                parent?.AddToTheRight(ja, value);
+                break;
             }
-        }
-        else if (childIndex == 1)
-        {
-            var parent = ((JsonArray)ja.Parent);
-            if (parent != null)
+            default:
             {
-                parent.AddToTheRight(ja, value);
-            }
-        }
-        else
-        {
-            var rightChild = ja[0] as JsonArray;
-            if (rightChild != null)
-            {
-                rightChild.AddToTheRight(null, value);
-            }
-            else
-            {
-                ja[0] = (int)ja[0] + value;
+                if (ja[0] is JsonArray rightChild)
+                {
+                    rightChild.AddToTheRight(null, value);
+                }
+                else
+                {
+                    ja[0] = (int)ja[0] + value;
+                }
+
+                break;
             }
         }
     }
@@ -133,8 +130,7 @@ public static class JsonExtensions
         var childIndex = ja.IndexOf(child);
         if (childIndex == 1)
         {
-            var leftArray = ja[0] as JsonArray;
-            if (leftArray != null)
+            if (ja[0] is JsonArray leftArray)
             {
                 leftArray.AddToTheLeft(null, value);
             }
@@ -146,15 +142,11 @@ public static class JsonExtensions
         else if (childIndex == 0)
         {
             var parent = ((JsonArray)ja.Parent);
-            if (parent != null)
-            {
-                parent.AddToTheLeft(ja, value);
-            }
+            parent?.AddToTheLeft(ja, value);
         }
         else
         {
-            var leftChild = ja[1] as JsonArray;
-            if (leftChild != null)
+            if (ja[1] is JsonArray leftChild)
             {
                 leftChild.AddToTheLeft(null, value);
             }
@@ -184,10 +176,8 @@ public static class JsonExtensions
 
             return true;
         }
-        else
-        {
-            return (ja[0] as JsonArray).Explode() || (ja[1] as JsonArray).Explode();
-        }
+
+        return (ja[0] as JsonArray).Explode() || (ja[1] as JsonArray).Explode();
     }
 
     public static bool Split(this JsonArray ja)
