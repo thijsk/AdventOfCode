@@ -7,18 +7,17 @@ public class Day20 : IDay
 {
     public long Part1()
     {
-        var input = Parse(PuzzleContext.Example);
+        var input = Parse(PuzzleContext.Input);
         var iea = input.iea;
-
         Print(input.ii);
-        var copy1 = Enhance(iea, input.ii);
-        var copy2 = Enhance(iea, copy1);
+        var copy1 = Enhance(iea, input.ii, '.');
+        var copy2 = Enhance(iea, copy1, '#');
         Print(copy1);
         Print(copy2);
         return copy2.Values.Count(v => v == '#');
     }
 
-    private Dictionary<(int x, int y), char> Enhance(char[] iea, Dictionary<(int x, int y), char> image)
+    private Dictionary<(int x, int y), char> Enhance(char[] iea, Dictionary<(int x, int y), char> image, char background)
     {
         var start = image;
         var minx = image.Keys.Min(xy => xy.x);
@@ -32,7 +31,7 @@ public class Day20 : IDay
             for (var y = miny - 1; y <= maxy + 1; y++)
             {
                 var key = (x, y);
-                var neighbors = GetNeighbors(start, key.x, key.y);
+                var neighbors = GetNeighbors(start, key.x, key.y, background);
                 var value = iea[GetIndex(neighbors)];
                 copy.Add(key, value);
             }
@@ -65,7 +64,7 @@ public class Day20 : IDay
         return Convert.ToInt32(neighbors.Replace('.', '0').Replace('#', '1'), 2);
     }
 
-    private string GetNeighbors(Dictionary<(int x, int y), char> start, int x, int y)
+    private string GetNeighbors(Dictionary<(int x, int y), char> start, int x, int y, char background)
     {
         var result = new List<char>();
         var d = new[] { -1, 0, 1 };
@@ -80,7 +79,7 @@ public class Day20 : IDay
                 }
                 else
                 {
-                    result.Add('.');
+                    result.Add(background);
                 }
             }
         }
@@ -91,8 +90,21 @@ public class Day20 : IDay
     public long Part2()
     {
         var input = Parse(PuzzleContext.Input);
+        var iea = input.iea;
+        var image = input.ii;
+        var background = '.';
+        var result = new Dictionary<(int x, int y), char>();
+        for (int round = 1; round <= 50; round++)
+        {
+            Console.WriteLine($"Round {round} {background}");
+            result = Enhance(iea, image, background);
 
-        return 0;
+            background = background == '.' ? '#' : '.';
+            image = result;
+
+            Console.WriteLine($"{result.Values.Count(v => v == '#')}");
+        }
+        return result.Values.Count(v => v == '#');
     }
 
     public (char[] iea, Dictionary<(int x, int y), char> ii) Parse(string[] input)
