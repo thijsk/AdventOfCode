@@ -9,9 +9,8 @@ public class Day20 : IDay
     {
         var input = Parse(PuzzleContext.Input);
         var iea = input.iea;
-        Print(input.ii);
         var copy1 = Enhance(iea, input.ii, '.');
-        var copy2 = Enhance(iea, copy1, '#');
+        var copy2 = Enhance(iea, copy1, iea[0]);
         Print(copy1);
         Print(copy2);
         return copy2.Values.Count(v => v == '#');
@@ -96,13 +95,13 @@ public class Day20 : IDay
         var result = new Dictionary<(int x, int y), char>();
         for (int round = 1; round <= 50; round++)
         {
-            Console.WriteLine($"Round {round} {background}");
+            ConsoleX.WriteLine($"Round {round} {background}");
             result = Enhance(iea, image, background);
 
-            background = background == '.' ? '#' : '.';
+            background = background == '.' ? iea[0] : '.';
             image = result;
 
-            Console.WriteLine($"{result.Values.Count(v => v == '#')}");
+            ConsoleX.WriteLine($"{result.Values.Count(v => v == '#')}");
         }
         return result.Values.Count(v => v == '#');
     }
