@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.Intrinsics;
 using Common;
 
 namespace ConsoleApp2021;
@@ -10,18 +11,30 @@ public class Day19 : IDay
         var input = Parse(PuzzleContext.Example);
 
         var point = new Vector3(2, 2, 2);
+        var m = Matrix4x4.CreateRotationX(MathF.PI / 2);
+
+
+        Console.WriteLine(m);
+
+        //Vector<int> v = new(new[] { 2, 2, 2 });
+
         Console.WriteLine(point);
-        var q = new Quaternion(1, 0, 0, 0);
-        var result = Vector3.Transform(point, q);
+        Console.WriteLine(point.Length());
+        var result = Vector3.Transform(point, m).RoundToInt();
         Console.WriteLine(result);
-        var result1 = Vector3.Transform(result, q);
+        Console.WriteLine(result.Length());
+        var result1 = Vector3.Transform(result, m).RoundToInt();
         Console.WriteLine(result1);
-        var result2 = Vector3.Transform(result1, q);
+        Console.WriteLine(result1.Length());
+        var result2 = Vector3.Transform(result1, m).RoundToInt();
         Console.WriteLine(result2);
-        var result3 = Vector3.Transform(result2, q);
+        Console.WriteLine(result2.Length());
+        var result3 = Vector3.Transform(result2, m).RoundToInt();
         Console.WriteLine(result3);
-        var result4 = Vector3.Transform(result3, q);
+        Console.WriteLine(result3.Length());
+        var result4 = Vector3.Transform(result3, m).RoundToInt();
         Console.WriteLine(result4);
+        Console.WriteLine(result4.Length());
 
         return 0;
     }
@@ -58,5 +71,15 @@ public class Day19 : IDay
         result.Add(scanner);
 
         return result;
+    }
+
+}
+
+public static class Vector3Extensions
+{
+
+    public static Vector3 RoundToInt(this Vector3 vector)
+    {
+        return new Vector3(MathF.Round(vector.X), MathF.Round(vector.Y), MathF.Round(vector.Z));
     }
 }

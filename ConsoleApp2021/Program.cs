@@ -6,7 +6,7 @@ using TextCopy;
 var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
     .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name[3..]));
 
-foreach (var dayClass in dayClasses.TakeLast(2).Take(1))
+foreach (var dayClass in dayClasses/*.Where(d => d.Name == "Day19")*/.TakeLast(1))
 {
     Console.WriteLine(dayClass.Name);
     var day = (IDay)Activator.CreateInstance(dayClass)!;
