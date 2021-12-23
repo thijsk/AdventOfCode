@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Common
 {
     public static partial class IEnumerableExtensions
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<(T PrevItem, T CurrentItem, T NextItem)>  SlidingWindow<T>(this IEnumerable<T> source, T emptyValue = default)
         {
             using (var iter = source.GetEnumerator())

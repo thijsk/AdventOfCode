@@ -8,8 +8,6 @@ public class Day12 : IDay
     {
         var input = Parse(PuzzleContext.Input);
 
-        var start = input["start"];
-
         var visited = new List<string>();
         var localPath = new List<string>();
         var paths = FindPaths1(input, visited, "start", localPath);
