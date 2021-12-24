@@ -33,7 +33,6 @@ namespace ConsoleApp2021
                 alui++;
             }
 
-
             return ans;
         }
 
@@ -44,13 +43,13 @@ namespace ConsoleApp2021
             var alloptions = new List<List<(int w, int z)>>();
             foreach (var alu in alus.Reverse())
             {
-                Console.WriteLine(alu.GetType().Name);
+                //Console.WriteLine(alu.GetType().Name);
 
                 var nextz = new HashSet<int>();
                 var options = new List<(int w, int z)>();
                 for (var w = 1; w < 10; w++)
                 {
-                    foreach (var z in Enumerable.Range(0, 1000000))
+                    foreach (var z in Enumerable.Range(0, 400000))
                     {
                         var result = alu.Calc(0, 0, z, w);
 
@@ -62,9 +61,6 @@ namespace ConsoleApp2021
                         }
                     }
                 }
-
-                Console.WriteLine();
-
                 allowedz = nextz;
                 alloptions.Add(options);
             }
@@ -159,7 +155,7 @@ namespace ConsoleApp2021
             var script = CSharpScript.Create(_source.ToString(), ScriptOptions.Default.WithReferences(Assembly.GetExecutingAssembly()));
             script.Compile();
             var scriptType = (Type)script.RunAsync().Result.ReturnValue;
-            return (IAlu)Activator.CreateInstance(scriptType);
+            return (IAlu)Activator.CreateInstance(scriptType)! ?? throw new InvalidOperationException();
         }
 
         public void Add(string code)
