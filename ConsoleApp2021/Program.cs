@@ -6,7 +6,9 @@ using TextCopy;
 var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
     .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name[3..]));
 
-foreach (var dayClass in dayClasses/*.Where(d => d.Name == "Day19")*/.TakeLast(1))
+foreach (var dayClass in dayClasses
+             //.Where(d => d.Name == "Day23")
+             .TakeLast(1))
 {
     Console.WriteLine(dayClass.Name);
     var day = (IDay)Activator.CreateInstance(dayClass)!;
@@ -32,5 +34,3 @@ foreach (var dayClass in dayClasses/*.Where(d => d.Name == "Day19")*/.TakeLast(1
     Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
     if (answer2 != "0") ClipboardService.SetText(answer2);
 }
-
-//Console.ReadLine();
