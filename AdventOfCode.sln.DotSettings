@@ -1,0 +1,93 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Field/=CLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Field/=CLASS/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Field/=NAMESPACE/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/CustomProperties/=FileName/@EntryIndexedValue">Day</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=15BE4257E80C4E42881998F6A20DF30C/Text/@EntryValue">using Common&#xD;
+&#xD;
+namespace $NAMESPACE$&#xD;
+{&#xD;
+  public class $CLASS$ : IDay&#xD;
+  {&#xD;
+	 public long Part1()&#xD;
+	 {&#xD;
+        var input = File.ReadAllLines("$CLASS$.txt").Select(Parse).ToArray();&#xD;
+&#xD;
+		return result;&#xD;
+	 }&#xD;
+&#xD;
+	  public long Part2()&#xD;
+	 {&#xD;
+        var input = File.ReadAllLines("$CLASS$.txt").Select(Parse).ToArray();&#xD;
+&#xD;
+		return result;&#xD;
+	 }&#xD;
+  }&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/CustomProperties/=FileName/@EntryIndexedValue">Day0</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/CustomProperties/=ValidateFileName/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Description/@EntryValue">Day</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=INPUTTYPE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=INPUTTYPE/Expression/@EntryValue">parameterOfType("System.Int64")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=INPUTTYPE/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAME/Expression/@EntryValue">getFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAME/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAMESPACE/Expression/@EntryValue">getDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAMESPACE/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Field/=NAMESPACE/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Section/=FF8C0A1BEDEC774385F2CF013D718DAF/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Section/=FF8C0A1BEDEC774385F2CF013D718DAF/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.txt" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Section/=FF8C0A1BEDEC774385F2CF013D718DAF/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Section/=FF8C0A1BEDEC774385F2CF013D718DAF/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C10F5F4F80CBA48A8F2BA8B2DBA4AEA/Text/@EntryValue">using Common;&#xD;
+&#xD;
+namespace $NAMESPACE$;&#xD;
+&#xD;
+public class $NAME$ : IDay&#xD;
+{&#xD;
+    public long Part1()&#xD;
+    {&#xD;
+        var input = File.ReadAllLines("$NAME$.txt").Select(Parse).ToArray();&#xD;
+&#xD;
+        return 0;&#xD;
+    }&#xD;
+&#xD;
+    public long Part2()&#xD;
+    {&#xD;
+        var input = File.ReadAllLines("$NAME$.txt").Select(Parse).ToArray();&#xD;
+&#xD;
+        return 0;&#xD;
+    }&#xD;
+&#xD;
+	public $INPUTTYPE$ Parse(string line) {&#xD;
+		return $INPUTTYPE$.Parse(line);&#xD;
+	}&#xD;
+&#xD;
+}</s:String></wpf:ResourceDictionary>

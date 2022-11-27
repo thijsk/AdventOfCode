@@ -1,11 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Common
 {
     public static partial class IEnumerableExtensions
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<(T PrevItem, T CurrentItem, T NextItem)>  SlidingWindow<T>(this IEnumerable<T> source, T emptyValue = default)
+        {
+            using (var iter = source.GetEnumerator())
+            {
+                if (!iter.MoveNext())
+                    yield break;
+                var prevItem = emptyValue;
+                var currentItem = iter.Current;
+                while (iter.MoveNext())
+                {
+                    var nextItem = iter.Current;
+                    yield return (prevItem, currentItem, nextItem);
+                    prevItem = currentItem;
+                    currentItem = nextItem;
+                }
+                yield return (prevItem, currentItem, emptyValue);
+            }
+        }
+
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
         {
             if (length == 1) return list.Select(t => new T[] { t });
@@ -48,6 +69,32 @@ namespace Common
 
                 return ret;
             }
+        }
+
+        public static double? Median<TColl, TValue>(
+            this IEnumerable<TColl> source,
+            Func<TColl, TValue> selector)
+        {
+            return source.Select<TColl, TValue>(selector).Median();
+        }
+
+        public static double? Median<T>(
+            this IEnumerable<T> source)
+        {
+            if (Nullable.GetUnderlyingType(typeof(T)) != null)
+                source = source.Where(x => x != null);
+
+            int count = source.Count();
+            if (count == 0)
+                return null;
+
+            source = source.OrderBy(n => n);
+
+            int midpoint = count / 2;
+            if (count % 2 == 0)
+                return (Convert.ToDouble(source.ElementAt(midpoint - 1)) + Convert.ToDouble(source.ElementAt(midpoint))) / 2.0;
+            else
+                return Convert.ToDouble(source.ElementAt(midpoint));
         }
     }
 }

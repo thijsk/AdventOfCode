@@ -12,7 +12,7 @@
         public readonly double y;
     }
 
-    public struct Point<T>
+    public readonly struct Point<T>
     {
         public Point(T x, T y)
         {
@@ -22,7 +22,7 @@
 
         public override bool Equals(object other)
         {
-            if (!(other is Point<T>) || other == null)
+            if (!(other is Point<T>))
             {
                 return false;
             }
@@ -30,7 +30,17 @@
             return this.x.Equals(otherPoint.x) && this.y.Equals(otherPoint.y);
         }
 
+        public override int GetHashCode()
+        {
+            return System.HashCode.Combine(x, y);
+        }
+
         public readonly T x;
         public readonly T y;
+
+        public override string ToString()
+        {
+            return $"{x},{y}";
+        }
     }
 }

@@ -1,3 +1,3 @@
 # AdventOfCode
 
-C# / .NET 5 / Visual Studio 2019 solution with solutions to the https://adventofcode.com/ puzzles
+C# / .NET 6 / Visual Studio 2022 solution with solutions to the https://adventofcode.com/ puzzles
