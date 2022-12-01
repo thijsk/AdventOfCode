@@ -6,21 +6,41 @@ public class Day01 : IDay
 {
     public long Part1()
     {
-        var input = PuzzleContext.Input.Select(Parse).ToArray();
+        
+        var input = PuzzleContext.Input.ToArray();
 
-        return 0;
+        var sums = Sums(input);
+
+        return sums.Max();
     }
 
     public long Part2()
     {
-        var input = PuzzleContext.Input.Select(Parse).ToArray();
-
-        return 0;
+        var input = PuzzleContext.Input.ToArray();
+        var sums = Sums(input);
+        return sums.OrderByDescending(v => v).Take(3).Sum();
     }
 
-    public long Parse(string line)
+    private static List<long> Sums(string[] input)
     {
-        return long.Parse(line);
+        var sum = 0l;
+        var max = new List<long>();
+        foreach (var line in input)
+        {
+            if (string.IsNullOrEmpty(line))
+            {
+                max.Add(sum);
+                sum = 0;
+                continue;
+            }
+
+            sum += long.Parse(line);
+        }
+
+        return max;
     }
+
+
+
 
 }
