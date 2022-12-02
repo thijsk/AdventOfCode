@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Common
 {
@@ -21,6 +20,34 @@ namespace Common
                 var index = range.Start.Value;
                 do yield return index;
                 while (index-- > range.End.Value);
+            }
+        }
+
+        public static RangeEnumerator GetEnumerator(this Range range)
+        {
+            return new RangeEnumerator(range);
+        }
+
+        public ref struct RangeEnumerator
+        {
+            private int _current;
+            private int _end;
+
+            public int Current => _current;
+
+            public bool MoveNext()
+            {
+                _current++;
+                return _current <= _end;
+            }
+
+            public RangeEnumerator(Range range)
+            {
+                if (range.End.IsFromEnd)
+                    throw new InvalidOperationException("Range must have a concrete End value");
+
+                _current = range.Start.Value - 1;
+                _end = range.End.Value;
             }
         }
     }
