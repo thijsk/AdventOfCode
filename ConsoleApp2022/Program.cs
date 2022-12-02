@@ -10,27 +10,33 @@ foreach (var dayClass in dayClasses
              //.Where(d => d.Name == "Day23")
              .TakeLast(1))
 {
-    Console.WriteLine(dayClass.Name);
+    var name = dayClass.Name;
     var day = (IDay)Activator.CreateInstance(dayClass)!;
+    
+    Console.WriteLine(name);
+    BuildContext(name);
 
-    PuzzleContext.Input = File.ReadAllLines(dayClass.Name + ".txt");
-    if (File.Exists(dayClass.Name + "-example.txt"))
-    {
-        PuzzleContext.Example = File.ReadAllLines(dayClass.Name + "-example.txt");
-    }
+    RunDay(day.Part1);
+    RunDay(day.Part2);
+}
 
+void RunDay(Func<long> part)
+{
+    var title = part.Target?.ToString();
     var stopwatch = new Stopwatch();
     stopwatch.Start();
-    var answer1 = day.Part1().ToString();
+    var answer = part().ToString();
     stopwatch.Stop();
-    ConsoleX.WriteLine("Part1   : " + answer1, ConsoleColor.Red);
+    ConsoleX.WriteLine($"{title}   : {answer}", ConsoleColor.Red);
     Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
-    if (answer1 != "0") ClipboardService.SetText(answer1);
+    if (answer != "0") ClipboardService.SetText(answer);
+}
 
-    stopwatch.Restart();
-    var answer2 = day.Part2().ToString();
-    stopwatch.Stop();
-    ConsoleX.WriteLine("Part2   : " + answer2, ConsoleColor.Red);
-    Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
-    if (answer2 != "0") ClipboardService.SetText(answer2);
+void BuildContext(string name)
+{
+    PuzzleContext.Input = File.ReadAllLines(name + ".txt");
+    if (File.Exists(name + "-example.txt"))
+    {
+        PuzzleContext.Example = File.ReadAllLines(name + "-example.txt");
+    }
 }
