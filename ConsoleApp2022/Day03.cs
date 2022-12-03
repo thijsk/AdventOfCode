@@ -1,4 +1,5 @@
 ﻿using Common;
+using System;
 
 namespace ConsoleApp2022;
 
@@ -34,20 +35,15 @@ public class Day03 : IDay
     {
         var input = PuzzleContext.Input.Select(Parse2);
 
-        var groups = input.Chunk(3);
+        var groups = input.Chunk(3).ToArray();
         var sum = 0L;
-        foreach (var group in groups)
+        foreach ( var (one, two, three) in groups)
         {
-            var one = group[0];
-            var two = group[1];
-            var three = group[2];
-
             var badge = one.Intersect(two).Intersect(three).Single();
 
             if (badge is >= 'a' and <= 'z')
             {
                 sum += (int)badge - 96;
-
             }
 
             if (badge is >= 'A' and <= 'Z')

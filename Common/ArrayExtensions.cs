@@ -19,5 +19,12 @@ namespace Common
                 .Select(col => Enumerable.Range(input.GetLowerBound(0), input.GetUpperBound(0) + 1).Select(row => input[row, col]).ToArray()).ToArray();
         }
 
+        public static void Deconstruct<T>(this T[] array, out T s1, out T s2, out T s3)
+        {
+            s1 = array[0];
+            s2 = array[1];
+            s3 = array[2];
+        }
+
     }
 }
