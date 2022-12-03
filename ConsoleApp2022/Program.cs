@@ -34,9 +34,12 @@ void RunDay(Func<long> part)
 
 void BuildContext(string name)
 {
-    PuzzleContext.Input = File.ReadAllLines(name + ".txt");
-    if (File.Exists(name + "-example.txt"))
+    var directory = Aoc.GetSourceDirectory();
+    var fileName = $"{name}.txt";
+    PuzzleContext.Input = File.ReadAllLines(Path.Combine(directory, fileName));
+    var exampleFileName = $"{name}-example.txt";
+    if (File.Exists(Path.Combine(directory, exampleFileName)))
     {
-        PuzzleContext.Example = File.ReadAllLines(name + "-example.txt");
+        PuzzleContext.Example = File.ReadAllLines(Path.Combine(directory, exampleFileName));
     }
 }

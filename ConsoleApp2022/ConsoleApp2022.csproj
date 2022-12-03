@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="*.txt" CopyToOutputDirectory="Always" />
+		<Content Include="*.txt" CopyToOutputDirectory="Never" />
 	</ItemGroup>
 
   <ItemGroup>

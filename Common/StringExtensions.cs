@@ -51,5 +51,11 @@ namespace Common
         {
             return string.Concat(Enumerable.Repeat(value, times));
         }
+
+        public static string[] SplitOnNewlines(this string value)
+        {
+            var separator = new string[] { "\r\n", "\r", "\n" };
+            return value.Split(separator, StringSplitOptions.None);
+        }
     }
 }
