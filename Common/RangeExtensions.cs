@@ -50,5 +50,15 @@ namespace Common
                 _end = range.End.Value;
             }
         }
+
+        public static bool Contains(this Range first, Range second)
+        {
+            return (second.Start.Value >= first.Start.Value) && (second.End.Value <= first.End.Value);
+        }
+
+        public static bool Overlaps(this Range first, Range second)
+        {
+            return (second.Start.Value <= first.End.Value) && (first.Start.Value <= second.End.Value);
+        }
     }
 }
