@@ -29,7 +29,7 @@ public class Day04 : IDay
 
         foreach (var (first, second) in input)
         {
-            if (first.Overlaps(second) || second.Overlaps(first))
+            if (first.Overlaps(second))
             {
                 count++;
             }
