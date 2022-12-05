@@ -69,7 +69,7 @@ public class Day05 : IDay
             {
                 var letter = line[pos];;
                 if (char.IsAsciiLetter(letter))
-                stacks[stack].Add(letter);
+                    stacks[stack].Add(letter);
                 stack++;
             }
         }
