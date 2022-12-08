@@ -6,7 +6,7 @@ public class Day08 : IDay
 {
     public long Part1()
     {
-        var input = ParseInput(PuzzleContext.Input);
+        var input = PuzzleContext.Input.GetGrid(c => int.Parse(c.ToString()));
 
         long count = 0;
 
@@ -41,13 +41,12 @@ public class Day08 : IDay
         var top = x == 0 || col[..x].All(t => t < height);
         var bottom = x == col.Length-1 || col[(x+1)..].All(t => t < height);
 
-        bool visibile = left || right || top || bottom;
-        return visibile;
+        return left || right || top || bottom;
     }
 
     public long Part2()
     {
-        var input = ParseInput(PuzzleContext.Input);
+        var input = PuzzleContext.Input.GetGrid(c => int.Parse(c.ToString()));
 
         long score = 0;
 
@@ -77,8 +76,7 @@ public class Day08 : IDay
         var top = x == 0 ? 0 : GetDirectionScore(height, col[..x].Reverse());
         var bottom = x == col.Length - 1 ? 0 : GetDirectionScore(height, col[(x + 1)..]);
 
-        var score = left * right * top * bottom;
-        return score;
+        return left * right * top * bottom;
     }
 
     private int GetDirectionScore(int height, IEnumerable<int> trees)
@@ -95,23 +93,4 @@ public class Day08 : IDay
 
         return count;
     }
-
-    private int[,] ParseInput(string[] lines)
-    {
-        var width = lines.First().Length;
-        var height = lines.Count();
-
-        var grid = new int[height, width];
-
-        for (int h = 0; h < height; h++)
-        {
-            for (int w = 0; w < width; w++)
-            {
-                var chr = lines[h][w];
-                grid[h, w] = int.Parse(chr.ToString());
-            }
-        }
-        return grid;
-    }
-
 }

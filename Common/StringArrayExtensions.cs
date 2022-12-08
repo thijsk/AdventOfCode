@@ -27,5 +27,22 @@ namespace Common
             result.Add(group.ToArray());
             return result.ToArray();
         }
+
+        public static T[,] GetGrid<T>(this string[] lines, Func<char, T> parse)
+        {
+            var width = lines.First().Length;
+            var height = lines.Length;
+
+            var grid = new T[height, width];
+
+            for (int h = 0; h < height; h++)
+            {
+                for (int w = 0; w < width; w++)
+                {
+                    grid[h, w] = parse(lines[h][w]);
+                }
+            }
+            return grid;
+        }
     }
 }
