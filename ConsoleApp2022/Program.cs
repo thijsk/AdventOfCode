@@ -7,7 +7,7 @@ var dayClasses = Assembly.GetExecutingAssembly().GetTypes()
     .Where(mytype => mytype.GetInterfaces().Contains(typeof(IDay))).OrderBy(t => int.Parse(t.Name[3..]));
 
 foreach (var dayClass in dayClasses
-             //.Where(d => d.Name == "Day01")
+             .Where(d => d.Name == "Day00")
              .TakeLast(1))
 {
     var name = dayClass.Name;
