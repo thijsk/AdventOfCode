@@ -141,16 +141,12 @@ public class Day09 : IDay
                 Console.WriteLine($"H {head}");
 
                 var myhead = head;
-
                 foreach (var taili in 0..8)
                 {
                     var tail = rope[taili];
-
                     MoveTail(myhead, ref tail);
-
                     rope[taili] = tail;
-                    Console.WriteLine($"T {tail}");
-                    
+                    Console.WriteLine($"T{taili} {tail}");
                     myhead = tail;
                 }
 
