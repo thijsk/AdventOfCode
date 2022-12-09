@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Common;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace ConsoleApp2022;
 
@@ -15,13 +14,12 @@ public class Day09 : IDay
         var head = new Vector2(0, 0);
         visited.Add(tail);
 
-
         foreach (var (direction, steps) in input)
         {
-           // Console.WriteLine($"Steps: {steps}");
+            ConsoleX.WriteLine($"Direction {direction} Steps: {steps}");
             foreach (var step in 1..steps)
             {
-              //  Console.WriteLine($"S {step}");
+                ConsoleX.WriteLine($"S {step}");
 
                 switch (direction)
                 {
@@ -38,63 +36,12 @@ public class Day09 : IDay
                         head.X -= 1;
                         break;
                 }
-               // Console.WriteLine($"H {head}");
+               ConsoleX.WriteLine($"H {head}");
+               MoveTail(head, ref tail);
+               ConsoleX.WriteLine($"T {tail}");
 
-
-                var xdistance = head.X - tail.X;
-                var ydistance = head.Y - tail.Y;
-
-                var xmove = false;
-                var ymove = false;
-
-                if (xdistance > 1)
-                {
-                    tail.X += 1;
-                    xmove = true;
-                }
-
-                if (xdistance < -1)
-                {
-                    tail.X -= 1;
-                    xmove = true;
-                }
-
-                if (ydistance > 1)
-                {
-                    tail.Y += 1;
-                    ymove = true;
-                }
-
-                if (ydistance < -1)
-                {
-                    tail.Y -= 1;
-                    ymove = true;
-                }
-
-                if (xmove && ydistance > 0)
-                {
-                    tail.Y += 1;
-                }
-                if (xmove && ydistance < 0)
-                {
-                    tail.Y -= 1;
-                }
-                if (ymove && xdistance > 0)
-                {
-                    tail.X += 1;
-                }
-                if (ymove && xdistance < 0)
-                {
-                    tail.X -= 1;
-                }
-
-
-
-              //  Console.WriteLine($"T {tail}");
-
-                visited.Add(tail);
+               visited.Add(tail);
             }
-
         }
 
         return visited.Distinct().Count();
@@ -102,6 +49,7 @@ public class Day09 : IDay
 
     public long Part2()
     {
+        
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var visited = new List<Vector2>();
@@ -117,10 +65,10 @@ public class Day09 : IDay
 
         foreach (var (direction, steps) in input)
         {
-            Console.WriteLine($"Steps: {steps}");
+            ConsoleX.WriteLine($"Steps: {steps}");
             foreach (var step in 1..steps)
             {
-                Console.WriteLine($"S {step}");
+                ConsoleX.WriteLine($"S {step}");
 
                 switch (direction)
                 {
@@ -138,7 +86,7 @@ public class Day09 : IDay
                         break;
                 }
                 
-                Console.WriteLine($"H {head}");
+                ConsoleX.WriteLine($"H {head}");
 
                 var myhead = head;
                 foreach (var taili in 0..8)
@@ -146,7 +94,7 @@ public class Day09 : IDay
                     var tail = rope[taili];
                     MoveTail(myhead, ref tail);
                     rope[taili] = tail;
-                    Console.WriteLine($"T{taili} {tail}");
+                    ConsoleX.WriteLine($"T{taili} {tail}");
                     myhead = tail;
                 }
 
@@ -160,54 +108,31 @@ public class Day09 : IDay
 
     private static void MoveTail(Vector2 head, ref Vector2 tail)
     {
-        var xdistance = head.X - tail.X;
-        var ydistance = head.Y - tail.Y;
+        var distance = head - tail;
 
-        var xmove = false;
-        var ymove = false;
+        var move = new Vector2(Math.Sign(distance.X), Math.Sign(distance.Y));
 
-        if (xdistance > 1)
+        var moveX = Math.Abs(distance.X) > 1;
+        var moveY = Math.Abs(distance.Y) > 1;
+
+        if (moveX)
         {
-            tail.X += 1;
-            xmove = true;
+            tail.X += move.X;
         }
 
-        if (xdistance < -1)
+        if (moveY)
         {
-            tail.X -= 1;
-            xmove = true;
+            tail.Y += move.Y;
+        }
+        
+        if (moveX && !moveY && distance.Y != 0)
+        {
+            tail.Y += move.Y;
         }
 
-        if (ydistance > 1)
+        if (moveY && !moveX && distance.X != 0)
         {
-            tail.Y += 1;
-            ymove = true;
-        }
-
-        if (ydistance < -1)
-        {
-            tail.Y -= 1;
-            ymove = true;
-        }
-
-        if (xmove && !ymove && ydistance > 0)
-        {
-            tail.Y += 1;
-        }
-
-        if (xmove && !ymove && ydistance < 0)
-        {
-            tail.Y -= 1;
-        }
-
-        if (ymove && !xmove && xdistance > 0)
-        {
-            tail.X += 1;
-        }
-
-        if (ymove && !xmove && xdistance < 0)
-        {
-            tail.X -= 1;
+            tail.X += move.X;
         }
     }
 
