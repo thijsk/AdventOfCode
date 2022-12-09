@@ -26,11 +26,5 @@ namespace Common
 
             return input;
         }
-
-        public static string GetSourceDirectory([CallerFilePath] string callerFilePath = "")
-        {
-            return Path.GetDirectoryName(callerFilePath);
-        }
-
     }
 }

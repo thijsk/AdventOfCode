@@ -87,7 +87,7 @@ namespace ConsoleApp2017
             public bool IsInBottomPosition() => _position == Range;
         }
 
-        public int Part1()
+        public long Part1()
         {
             var layers = ParseInput();
             return GetScore(layers);
@@ -144,7 +144,7 @@ namespace ConsoleApp2017
             return result;
         }
 
-        public int Part2()
+        public long Part2()
         {
            
 

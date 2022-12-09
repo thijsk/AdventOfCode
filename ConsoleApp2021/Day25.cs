@@ -72,7 +72,7 @@ namespace ConsoleApp2021
 
         public long Part2()
         {
-            var input = Parse(PuzzleContext.Example);
+            var input = Parse(PuzzleContext.Input);
 
             return 0;
         }

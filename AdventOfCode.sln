@@ -13,9 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2019", "ConsoleAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2020", "ConsoleApp2020\ConsoleApp2020.csproj", "{0D457D62-2A8F-4AFD-956E-F436A9070766}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2021", "ConsoleApp2021\ConsoleApp2021.csproj", "{9C401DA2-4679-4D94-BD63-E7771B3B0A39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2021", "ConsoleApp2021\ConsoleApp2021.csproj", "{9C401DA2-4679-4D94-BD63-E7771B3B0A39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2022", "ConsoleApp2022\ConsoleApp2022.csproj", "{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2022", "ConsoleApp2022\ConsoleApp2022.csproj", "{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTests", "CommonTests\CommonTests.csproj", "{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppTests", "ConsoleAppTests\ConsoleAppTests.csproj", "{7D981570-9693-4576-B987-13E536D2A164}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D981570-9693-4576-B987-13E536D2A164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D981570-9693-4576-B987-13E536D2A164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D981570-9693-4576-B987-13E536D2A164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D981570-9693-4576-B987-13E536D2A164}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

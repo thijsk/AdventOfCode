@@ -7,6 +7,8 @@ public class Day09 : IDay
 {
     public long Part1()
     {
+        PuzzleContext.Answer1 = 6498;
+        PuzzleContext.UseExample = false;
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var visited = new List<Vector2>();
@@ -49,7 +51,7 @@ public class Day09 : IDay
 
     public long Part2()
     {
-        
+        PuzzleContext.Answer2 = 2531;
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         var visited = new List<Vector2>();

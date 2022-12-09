@@ -8,7 +8,7 @@ public class Day19 : IDay
 {
     public long Part1()
     {
-        var input = Parse(PuzzleContext.Example);
+        var input = Parse(PuzzleContext.Input);
 
         var point = new Vector3(2, 2, 2);
         var m = Matrix4x4.CreateRotationX(MathF.PI / 2);
@@ -41,7 +41,7 @@ public class Day19 : IDay
 
     public long Part2()
     {
-        var input = Parse(PuzzleContext.Example);
+        var input = Parse(PuzzleContext.Input);
 
         return 0;
     }
