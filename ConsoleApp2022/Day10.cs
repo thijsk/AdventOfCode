@@ -14,33 +14,7 @@ public class Day10 : IDay
     public long Part1()
     {
         PuzzleContext.Answer1 = 14860;
-        PuzzleContext.UseExample = false;
-
-        var input = PuzzleContext.Input.Select(Parse).ToArray();
-
-        register = 1;
-        clock = 0;
-        signal = 0;
-        checknext = 20;
-
-        foreach ((string instruction, int? value) in input)
-        {
-            switch (instruction)
-            {
-                case "noop":
-                    Tick();
-                    break;
-                case "addx":
-                    Tick(); 
-                    Tick();
-                    register += value.Value;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        return signal;
+        return Part2();
     }
 
     private void Tick()
