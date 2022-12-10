@@ -43,7 +43,6 @@ public class DayRunner
         stopwatch.Stop();
         ConsoleX.WriteLine($"{title} : {answer}", ConsoleColor.Red);
         Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
-        if (answer != 0) ClipboardService.SetText(answer.ToString());
         return answer;
     }
 

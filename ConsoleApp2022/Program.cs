@@ -1,4 +1,5 @@
 ﻿using Common;
+using TextCopy;
 
 var dayClasses = DayRunner.GetAllIDays();
 var dayClass = dayClasses
@@ -6,5 +7,7 @@ var dayClass = dayClasses
     .Last();
 
 var runner = new DayRunner(dayClass);
-runner.RunPart1();
-runner.RunPart2();
+var answer = runner.RunPart1();
+if (answer != 0) ClipboardService.SetText(answer.ToString());
+answer = runner.RunPart2();
+if (answer != 0) ClipboardService.SetText(answer.ToString());
