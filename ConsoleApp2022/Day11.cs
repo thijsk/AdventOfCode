@@ -90,7 +90,7 @@ public class Day11 : IDay
     {
         private readonly ExpressionEvaluator _evaluator;
         private readonly string _operation;
-        private Func<object, decimal> _expression;
+        private readonly Func<object, decimal> _expression;
 
         public Monkey()
         {

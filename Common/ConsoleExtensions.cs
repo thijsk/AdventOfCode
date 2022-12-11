@@ -5,6 +5,7 @@ namespace Common
 {
     public static class ConsoleX
     {
+        [Conditional("DEBUG")]
         public static void WriteLine(object value)
         {
             if (Debugger.IsAttached)
@@ -13,6 +14,7 @@ namespace Common
             }
         }
 
+        [Conditional("DEBUG")]
         public static void Write(object value)
         {
             if (Debugger.IsAttached)
@@ -37,6 +39,8 @@ namespace Common
             Console.ForegroundColor = original;
         }
 
+
+        [Conditional("DEBUG")]
         public static void ReadLine()
         {
             if (Debugger.IsAttached)
