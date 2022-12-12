@@ -61,6 +61,49 @@ namespace Common
             }
         }
 
+        public static (int x, int y)[] GetNeighbors<T>(this T[,] grid, int ix, int iy)
+        {
+            var minx = Math.Max(ix - 1, 0);
+            var maxx = Math.Min(ix + 1, grid.GetUpperBound(0));
+            var miny = Math.Max(iy - 1, 0);
+            var maxy = Math.Min(iy + 1, grid.GetUpperBound(1));
+
+            int count = 0;
+
+            var result = new List<(int, int)>();
+
+            for (int x = minx; x <= maxx; x++)
+            {
+                for (int y = miny; y <= maxy; y++)
+                {
+                    if (!(x == ix && y == iy) && !(x != ix && y != iy))
+                    {
+                        result.Add((x, y));
+                    }
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public static IEnumerable<(int x, int y)> Find<T>(this T[,] grid, T search) where T : IEquatable<T>
+        {
+            var result = new List<(int,int)>();
+
+            for (int x = 0; x <= grid.GetUpperBound(0); x++)
+            {
+                for (int y = 0; y <= grid.GetUpperBound(1); y++)
+                {
+                    if (grid[x, y].Equals(search))
+                    {
+                        result.Add((x, y));
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public static void Deconstruct<T>(this T[] array, out T s1, out T s2)
         {
             s1 = array.ElementAtOrDefault(0);
