@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Xml;
 
@@ -60,6 +61,76 @@ namespace Common
 
                 ConsoleX.WriteLine();
             }
+        }
+        
+        public static T[,] RotateLeft<T>(this T[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+            T[,] result = new T[cols, rows];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    result[cols - col - 1, row] = grid[row, col];
+                }
+            }
+
+            return result;
+        }
+
+        public static T[,] RotateRight<T>(this T[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+            T[,] result = new T[cols, rows];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    result[col, rows - row - 1] = grid[row, col];
+                }
+            }
+
+            return result;
+        }
+
+        public static T[,] FlipHorizontal<T>(this T[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+
+            T[,] result = new T[rows, cols];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    result[row, col] = grid[rows - row - 1, col];
+                }
+            }
+
+            return result;
+        }
+
+        public static T[,] FlipVertical<T>(this T[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+
+            T[,] result = new T[rows, cols];
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    result[row, col] = grid[row, cols - col - 1];
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
