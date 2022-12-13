@@ -62,10 +62,10 @@ public class Day13 : IDay, IComparer<Day13.DataList>
     {
         ConsoleX.WriteLine($"{" ".Repeat(depth)}- Compare {left} vs {right}");
 
-        if (left is DataInteger && right is DataInteger)
+        if (left is DataInteger leftInteger && right is DataInteger rightInteger)
         {
-            var leftValue = ((DataInteger)left).Value;
-            var rightValue = ((DataInteger)right).Value;
+            var leftValue = leftInteger.Value;
+            var rightValue = rightInteger.Value;
             if (leftValue < rightValue)
             {
                 ConsoleX.WriteLine($"{" ".Repeat(depth)}  - Left side is smaller, so inputs are in the right order");
@@ -98,7 +98,7 @@ public class Day13 : IDay, IComparer<Day13.DataList>
         var leftList = (DataList) left;
         var rightList = (DataList) right;
 
-        for (int i = 0; i < Math.Max(leftList.Count, rightList.Count); i++)
+        for (var i = 0; i < Math.Max(leftList.Count, rightList.Count); i++)
         {
             if (i >= leftList.Count)
             {
@@ -119,12 +119,9 @@ public class Day13 : IDay, IComparer<Day13.DataList>
 
         return null;
     }
-
- 
-
+    
     public interface IDataPacket
     {
-        public string ToString();
     }
 
     public class DataList : List<IDataPacket>, IDataPacket
@@ -135,18 +132,12 @@ public class Day13 : IDay, IComparer<Day13.DataList>
         }
     }
 
-    public class DataInteger : IDataPacket
+    public record DataInteger(int Value) : IDataPacket
     {
         public override string ToString()
         {
             return Value.ToString();
         }
-
-        public DataInteger(int value)
-        {
-            Value = value;
-        }
-        public int Value { get; init; }
     }
 
     public DataList Parse(string line)
