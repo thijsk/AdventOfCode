@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Nodes;
 using Common;
 
 namespace CommonTests
@@ -42,6 +38,31 @@ namespace CommonTests
             var expected = new [] {"a", "b", "c", "d\te"};
             var actual = input.SplitOnNewlines();
             CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AsJson_ShouldHandleArray()
+        {
+            var actual = "[1,2]".AsJson();
+
+            Assert.IsInstanceOfType(actual, typeof(JsonArray));
+            CollectionAssert.AreEqual(new[]{1,2}, actual.AsArray().Select(j => j.GetValue<int>()).ToList());
+        }
+
+        [TestMethod]
+        public void AsJson_ShouldHandleInt()
+        {
+            var actual = "1".AsJson();
+
+            Assert.IsInstanceOfType(actual, typeof(JsonValue));
+            Assert.AreEqual(1, actual.GetValue<int>());
+        }
+
+        [TestMethod]
+        public void AsJson_ShouldHandleNestedArray()
+        {
+            var actual = "[[1],[2]]".AsJson();
+            Assert.IsInstanceOfType(actual, typeof(JsonArray));
         }
 
     }

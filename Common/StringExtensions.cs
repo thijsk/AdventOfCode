@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace Common
 {
@@ -56,6 +57,11 @@ namespace Common
         {
             var separator = new string[] { "\r\n", "\r", "\n" };
             return value.Split(separator, StringSplitOptions.None);
+        }
+
+        public static JsonNode AsJson(this string value)
+        {
+            return JsonNode.Parse(value);
         }
     }
 }
