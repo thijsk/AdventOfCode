@@ -1,4 +1,6 @@
-﻿namespace Common
+﻿using System.Collections.Generic;
+
+namespace Common
 {
     public readonly struct Line<T>
     {
@@ -10,7 +12,7 @@
             this.start = start;
             this.end = end;
         }
-
+       
         public override string ToString()
         {
             return $"{start}  -> {end}";

@@ -14,13 +14,16 @@ public class Day14 : IDay
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-        foreach (var line in input)
+        foreach (var inputLine in input)
         {
-            var start = line.First();
-            foreach (var next in line.Skip(1))
+            var start = inputLine.First();
+            foreach (var next in inputLine.Skip(1))
             {
-                DrawLine(map, start, next);
-
+                var line = new Line<int>(start, next);
+                foreach (var point in line.ToPoints())
+                {
+                    map.AddOrSet(point, '#');
+                }
                 start = next;
             }
         }
@@ -134,13 +137,16 @@ public class Day14 : IDay
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-        foreach (var line in input)
+        foreach (var inputLine in input)
         {
-            var start = line.First();
-            foreach (var next in line.Skip(1))
+            var start = inputLine.First();
+            foreach (var next in inputLine.Skip(1))
             {
-                DrawLine(map, start, next);
-
+                var line = new Line<int>(start, next);
+                foreach (var point in line.ToPoints())
+                {
+                    map.AddOrSet(point, '#');
+                }
                 start = next;
             }
         }
