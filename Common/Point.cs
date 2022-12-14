@@ -22,11 +22,11 @@
 
         public override bool Equals(object other)
         {
-            if (!(other is Point<T>))
+            if (!(other is Point<T> otherPoint))
             {
                 return false;
             }
-            var otherPoint = (Point<T>)other;
+
             return this.x.Equals(otherPoint.x) && this.y.Equals(otherPoint.y);
         }
 
