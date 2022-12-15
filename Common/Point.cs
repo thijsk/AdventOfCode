@@ -1,4 +1,8 @@
-﻿namespace Common
+﻿using System;
+using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Common
 {
     public struct Point
     {
@@ -42,5 +46,10 @@
         {
             return $"{x},{y}";
         }
+
+        public static implicit operator Point<T>((T x, T y) p) => new Point<T>(p.x, p.y);
+
+        public static bool operator ==(Point<T> me, Point<T> other) => me.Equals(other);
+        public static bool operator !=(Point<T> me, Point<T> other) => !(me == other);
     }
 }
