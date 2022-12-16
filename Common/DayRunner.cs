@@ -34,9 +34,14 @@ public class DayRunner
             assembly.GetTypes().Where(thetype => thetype.GetInterfaces().Contains(typeof(IDay)))).OrderBy(t => t.Name);
     }
 
+    public override string ToString()
+    {
+        return _day.GetType().FullName;
+    }
+
     private long RunPart(Func<long> part)
     {
-        var title = part.Target?.ToString();
+        var title = $"{part.Target} - {part.Method.Name}";
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var answer = part();

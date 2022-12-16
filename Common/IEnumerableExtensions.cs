@@ -96,5 +96,35 @@ namespace Common
             else
                 return Convert.ToDouble(source.ElementAt(midpoint));
         }
+
+        public static IEnumerable<(IList<T> first, IList<T> second)> GetAllBinaryPartitions<T>(this IEnumerable<T> items)
+        {
+            int n = items.Count();
+
+            // Generate all possible combinations of indices
+            for (int i = 0; i < (1 << n); i++)
+            {
+                List<T> subset1 = new List<T>();
+                List<T> subset2 = new List<T>();
+
+                // Split the items into the two subsets based on the combination of indices
+                int j = 0;
+                foreach (T item in items)
+                {
+                    if ((i & (1 << j)) > 0)
+                    {
+                        subset1.Add(item);
+                    }
+                    else
+                    {
+                        subset2.Add(item);
+                    }
+                    j++;
+                }
+
+                // Yield the partition
+                yield return (subset1, subset2);
+            }
+        }
     }
 }
