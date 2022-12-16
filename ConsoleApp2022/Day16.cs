@@ -43,7 +43,7 @@ public class Day16 : IDay
 
         ConsoleX.WriteLine($"Valves: {allValves.Count} Partitions: {partitions.Count}");
 
-        Parallel.ForEach(Partitioner.Create(partitions), (partition) => 
+        Parallel.ForEach(Partitioner.Create(partitions), (partition) =>
         {
             var valueMe = TotalValue(input, partition.first, timeLeft, start);
             var valueElephant = TotalValue(input, partition.second, timeLeft, start);
@@ -59,7 +59,7 @@ public class Day16 : IDay
             }
         });
 
-                return totalValue;
+        return totalValue;
     }
 
     private long TotalValue(Dictionary<string, Valve> input, IList<Valve> toOpen, long timeLeft, Valve start)
@@ -162,7 +162,7 @@ public class Day16 : IDay
 
         path.Reverse();
 
-               return path;
+        return path;
     }
 
     public Valve Parse(string line)
