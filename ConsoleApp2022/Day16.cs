@@ -34,9 +34,7 @@ public class Day16 : IDay
 
         var allValves = input.Values.Where(v => v.FlowRate > 0).ToList();
         var partitions = allValves.GetAllBinaryPartitions()
-            .Where(p => p.first.Count > 5).ToList();
-
-       // var set = allValves.PowerSet();
+            .Where(p => p.first.Count > 0).ToList();
 
         var totalLock = new object();
         var totalValue = 0L;

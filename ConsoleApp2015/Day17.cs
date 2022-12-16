@@ -37,7 +37,7 @@ namespace ConsoleApp2015
         {
             List<Container> containers = ParseInput();
 
-            var powerset = containers.PowerSet();
+            var powerset = containers.GetPowerSet();
             var solutions = powerset.Where(s => s.Sum(c => c.Size) == 150);
 
             return solutions.Count();
@@ -64,7 +64,7 @@ namespace ConsoleApp2015
         {
             List<Container> containers = ParseInput();
 
-            var powerset = containers.PowerSet().ToList();
+            var powerset = containers.GetPowerSet().ToList();
             var solutions = powerset.Where(s => s.Sum(c => c.Size) == 150).ToList();
             var solution = solutions.Min(s => s.Count() );
 

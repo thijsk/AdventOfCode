@@ -25,7 +25,6 @@ namespace Common
             }
         }
 
-
         private class CircularEnumerator<T> : IEnumerator<T>
         {
             private readonly IEnumerator<T> _wrappedEnumerator;
