@@ -33,33 +33,36 @@ public class Day16 : IDay
         var timeLeft = 26;
 
         var allValves = input.Values.Where(v => v.FlowRate > 0).ToList();
-        var partitions = allValves.GetAllBinaryPartitions().Where(p => p.first.Count > 2 && p.second.Count > 2).ToList();
+        var partitions = allValves.GetAllBinaryPartitions()
+            .Where(p => p.first.Count > 5).ToList();
+
+        var set = allValves.PowerSet();
 
         var totalValue = 0L;
 
-        ConsoleX.WriteLine($"Valves: {allValves.Count()} Partitions: {partitions.Count()}");
+        ConsoleX.WriteLine($"Valves: {allValves.Count} Partitions: {partitions.Count}");
 
         var counter = 0;
 
-        foreach ( var partition in partitions )
+        foreach (var partition in partitions)
         {
             if (++counter % 1000 == 0)
             {
                 ConsoleX.WriteLine($"Counter {counter}: {totalValue}");
             }
 
-            var valueMe = TotalValue(input, partition.first.ToList(), timeLeft, start);
-            var valueElephant = TotalValue(input, partition.second.ToList(), timeLeft, start);
+            var valueMe = TotalValue(input, partition.first, timeLeft, start);
+            var valueElephant = TotalValue(input, partition.second, timeLeft, start);
             var value = valueElephant + valueMe;
-            
+
             if (value > totalValue)
             {
                 totalValue = value;
                 ConsoleX.WriteLine($"New best value: {value}", ConsoleColor.DarkYellow);
             }
-            
+
         };
-        
+
 
         return totalValue;
     }
@@ -72,7 +75,7 @@ public class Day16 : IDay
         }
 
         var toOpen = input.Values.Where(v => v.FlowRate > 0 && !opened.Contains(v)).ToList();
-        
+
         if (!toOpen.Any())
         {
             return 0;
@@ -81,29 +84,32 @@ public class Day16 : IDay
         var bestvalue = 0L;
         foreach (var candidate in toOpen)
         {
-            var path = Dijkstra(input, start, candidate);
-            var openedCopy = new List<Valve>(opened) {candidate};
-            var newTimeLeft = timeLeft - (path.Count + 1);
-            var value = candidate.FlowRate * newTimeLeft + TotalValue(input, openedCopy, newTimeLeft , candidate);
+            var edge = (start, candidate);
+            if (!_pathCache.TryGetValue(edge, out long distance))
+            {
+                var path = Dijkstra(input, start, candidate);
+                distance = path.Count;
+                _pathCache.Add(edge, distance);
+            }
+            
+            var openedCopy = new List<Valve>(opened) { candidate };
+            var newTimeLeft = timeLeft - (distance + 1);
+            var value = candidate.FlowRate * newTimeLeft + TotalValue(input, openedCopy, newTimeLeft, candidate);
 
             if (value > bestvalue)
             {
                 bestvalue = value;
             }
         }
+
         return bestvalue;
     }
 
-    
-    private readonly Dictionary<(Valve, Valve), List<Valve>> _dijkstraCache = new ();
 
-    public List<Valve> Dijkstra(Dictionary<string,Valve> input, Valve start, Valve goal)
+    private readonly Dictionary<(Valve, Valve), long> _pathCache = new();
+
+    public List<Valve> Dijkstra(Dictionary<string, Valve> input, Valve start, Valve goal)
     {
-        if (_dijkstraCache.ContainsKey((start, goal)))
-        {
-            return _dijkstraCache[(start, goal)];
-        }
-
         PriorityQueue<Valve, long> frontier = new();
 
         var pathWeight = new Dictionary<Valve, long>();
@@ -136,7 +142,7 @@ public class Day16 : IDay
                     frontier.Enqueue(neighbor, neighborPathWeight);
 
                     pathWeight.AddOrSet(neighbor, neighborPathWeight);
-                    
+
                     if (movemap.ContainsKey(neighbor))
                     {
                         movemap[neighbor] = current;
@@ -163,9 +169,7 @@ public class Day16 : IDay
 
         path.Reverse();
 
-        _dijkstraCache.Add((start,goal), path);
-
-        return path;
+               return path;
     }
 
     public Valve Parse(string line)
@@ -173,11 +177,11 @@ public class Day16 : IDay
         var spaces = line.Split(' ');
         var name = spaces[1].Trim();
         var rate = int.Parse(spaces[4].Split('=')[1].Replace(";", ""));
-        var valves = line.Replace("valve ","valves ").Split("valves")[1].Trim().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(v => v.Trim());
+        var valves = line.Replace("valve ", "valves ").Split("valves")[1].Trim().Split(',', StringSplitOptions.RemoveEmptyEntries).Select(v => v.Trim());
         return new Valve(name, rate, valves);
     }
-    
-    public readonly struct Valve: IEquatable<Valve>
+
+    public readonly struct Valve : IEquatable<Valve>
     {
         public Valve(string name, int flowRate, IEnumerable<string> leadsTo)
         {
@@ -189,7 +193,7 @@ public class Day16 : IDay
         public readonly string Name;
         public readonly int FlowRate;
         public readonly List<string> LeadsTo;
-        
+
         public override bool Equals(object? obj)
         {
             return obj is Valve other && Equals(other);
