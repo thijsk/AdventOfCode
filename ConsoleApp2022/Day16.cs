@@ -9,8 +9,8 @@ public class Day16 : IDay
 {
     public Day16()
     {
-        PuzzleContext.Answer1 = 1651;
-        PuzzleContext.Answer2 = 1707;
+        PuzzleContext.Answer1 = 2359;
+        PuzzleContext.Answer2 = 2999;
         PuzzleContext.UseExample = false;
     }
 
@@ -82,7 +82,7 @@ public class Day16 : IDay
             {
                 var path = Dijkstra(input, start, candidate);
                 distance = path.Count;
-                _pathCache.Add(edge, distance);
+                _pathCache.TryAdd(edge, distance);
             }
 
             var openedCopy = new List<Valve>(toOpen);
@@ -99,7 +99,7 @@ public class Day16 : IDay
         return bestvalue;
     }
 
-    private readonly Dictionary<(Valve, Valve), long> _pathCache = new();
+    private readonly ConcurrentDictionary<(Valve, Valve), long> _pathCache = new();
 
     public List<Valve> Dijkstra(Dictionary<string, Valve> input, Valve start, Valve goal)
     {
@@ -186,12 +186,7 @@ public class Day16 : IDay
         public readonly string Name;
         public readonly int FlowRate;
         public readonly List<string> LeadsTo;
-
-        //public override bool Equals(object? obj)
-        //{
-        //    return obj is Valve other && Equals(other);
-        //}
-
+        
         public override int GetHashCode()
         {
             return Name.GetHashCode();
