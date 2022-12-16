@@ -18,10 +18,10 @@ public class Day16 : IDay
     {
         var input = PuzzleContext.Input.Select(Parse).ToDictionary(v => v.Name);
         var start = input["AA"];
-        var opened = new List<Valve>();
+        var allValves = input.Values.Where(v => v.FlowRate > 0).ToList();
         var timeLeft = 30L;
 
-        var totalValue = TotalValue(input, opened, timeLeft, start);
+        var totalValue = TotalValue(input, allValves, timeLeft, start);
 
         return totalValue;
     }
@@ -38,43 +38,36 @@ public class Day16 : IDay
 
         var set = allValves.PowerSet();
 
+        var totalLock = new object();
         var totalValue = 0L;
 
         ConsoleX.WriteLine($"Valves: {allValves.Count} Partitions: {partitions.Count}");
 
-        var counter = 0;
-
-        foreach (var partition in partitions)
+        Parallel.ForEach(Partitioner.Create(partitions), (partition) => 
         {
-            if (++counter % 1000 == 0)
-            {
-                ConsoleX.WriteLine($"Counter {counter}: {totalValue}");
-            }
-
             var valueMe = TotalValue(input, partition.first, timeLeft, start);
             var valueElephant = TotalValue(input, partition.second, timeLeft, start);
             var value = valueElephant + valueMe;
 
-            if (value > totalValue)
+            lock (totalLock)
             {
-                totalValue = value;
-                ConsoleX.WriteLine($"New best value: {value}", ConsoleColor.DarkYellow);
+                if (value > totalValue)
+                {
+                    totalValue = value;
+                    ConsoleX.WriteLine($"New best value: {value}", ConsoleColor.DarkYellow);
+                }
             }
+        });
 
-        };
-
-
-        return totalValue;
+                return totalValue;
     }
 
-    private long TotalValue(Dictionary<string, Valve> input, IList<Valve> opened, long timeLeft, Valve start)
+    private long TotalValue(Dictionary<string, Valve> input, IList<Valve> toOpen, long timeLeft, Valve start)
     {
         if (timeLeft <= 0)
         {
             return 0;
         }
-
-        var toOpen = input.Values.Where(v => v.FlowRate > 0 && !opened.Contains(v)).ToList();
 
         if (!toOpen.Any())
         {
@@ -91,8 +84,9 @@ public class Day16 : IDay
                 distance = path.Count;
                 _pathCache.Add(edge, distance);
             }
-            
-            var openedCopy = new List<Valve>(opened) { candidate };
+
+            var openedCopy = new List<Valve>(toOpen);
+            openedCopy.Remove(candidate);
             var newTimeLeft = timeLeft - (distance + 1);
             var value = candidate.FlowRate * newTimeLeft + TotalValue(input, openedCopy, newTimeLeft, candidate);
 
@@ -104,7 +98,6 @@ public class Day16 : IDay
 
         return bestvalue;
     }
-
 
     private readonly Dictionary<(Valve, Valve), long> _pathCache = new();
 
@@ -181,7 +174,7 @@ public class Day16 : IDay
         return new Valve(name, rate, valves);
     }
 
-    public readonly struct Valve : IEquatable<Valve>
+    public class Valve : IEquatable<Valve>
     {
         public Valve(string name, int flowRate, IEnumerable<string> leadsTo)
         {
@@ -194,14 +187,14 @@ public class Day16 : IDay
         public readonly int FlowRate;
         public readonly List<string> LeadsTo;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Valve other && Equals(other);
-        }
+        //public override bool Equals(object? obj)
+        //{
+        //    return obj is Valve other && Equals(other);
+        //}
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, FlowRate, LeadsTo);
+            return Name.GetHashCode();
         }
 
         public override string ToString()
