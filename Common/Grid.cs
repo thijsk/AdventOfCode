@@ -9,6 +9,13 @@ namespace Common
 {
     public class Grid<T> : Dictionary<Point<int>, T>
     {
+        public T this[Point<int> p]
+        {
+            get => this[p.x, p.y];
+            set => this[p.x, p.y] = value;
+        }
+
+
         public T this[int x, int y]
         {
             get

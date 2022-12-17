@@ -5,12 +5,12 @@ namespace Common
 {
     public static class LineExtensions
     {
-        public static bool IsHorizontal<T>(this Line<T> line)
+        public static bool IsHorizontal<T>(this Line<T> line) where T : INumber<T>
         {
             return line.start.x.Equals(line.end.x);
         }
 
-        public static bool IsVertical<T>(this Line<T> line)
+        public static bool IsVertical<T>(this Line<T> line) where T : INumber<T>
         {
             return line.start.y.Equals(line.end.y);
         }
