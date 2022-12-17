@@ -33,8 +33,7 @@ public class Day16 : IDay
         var timeLeft = 26;
 
         var allValves = input.Values.Where(v => v.FlowRate > 0).ToList();
-        var partitions = allValves.GetAllBinaryPartitions()
-            .Where(p => p.first.Count > 0).ToList();
+        var partitions = allValves.GetAllBinaryPartitions().FilterReverseEqualPartitions().ToList();
 
         var totalLock = new object();
         var totalValue = 0L;

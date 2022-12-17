@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -121,5 +122,31 @@ namespace Common
                 yield return (subset1, subset2);
             }
         }
+
+        public static IEnumerable<(IList<T> first, IList<T> second)> FilterReverseEqualPartitions<T>(this
+            IEnumerable<(IList<T> first, IList<T> second)> source)
+        {
+            HashSet<int> seen = new();
+            foreach (var tuple in source)
+            {
+                if (!seen.Contains(tuple.second.GetHashCodeOfEnumerable()))
+                {
+                    seen.Add(tuple.first.GetHashCodeOfEnumerable());
+                    yield return tuple;
+                }
+            }
+        }
+
+        public static int GetHashCodeOfEnumerable<T>(this IList<T> source)
+        { 
+            HashCode hash = new();
+            foreach (var value in source)
+            {
+                hash.Add(value);
+            }
+
+            return hash.ToHashCode();
+        }
+        
     }
 }

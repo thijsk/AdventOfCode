@@ -199,5 +199,38 @@ namespace CommonTests
                 Assert.IsTrue(sut.Any(ac => ac.first.SequenceEqual(ex.first) && ac.second.SequenceEqual(ex.second)));
             }
         }
+
+
+        [TestMethod]
+        public void FilterReverseEqualPartitions()
+        {
+            var input = (new[] {1, 2}).GetAllBinaryPartitions();
+
+            var sut = input.FilterReverseEqualPartitions().Select(p => (first: p.first.ToArray(), second: p.second.ToArray())).ToArray();
+
+            var expected = new[]
+            {
+                (first: new int[] { }, second: new[] { 1, 2 }),
+                (first: new [] { 1 }, second: new[] { 2 }),
+            };
+
+            Assert.AreEqual(2, sut.Length);
+            foreach (var ex in expected)
+            {
+                Assert.IsTrue(sut.Any(ac => ac.first.SequenceEqual(ex.first) && ac.second.SequenceEqual(ex.second)));
+            }
+        }
+
+        [TestMethod]
+        public void GetHashCodeOfEnumerable()
+        {
+            var input1 = new[] { 1, 2 };
+            var input2 = new[] { 1, 2 };
+
+            var actual1 = input1.GetHashCodeOfEnumerable();
+            var actual2 = input2.GetHashCodeOfEnumerable();
+
+            Assert.AreEqual(actual1, actual2);
+        }
     }
 }
