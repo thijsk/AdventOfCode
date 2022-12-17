@@ -9,24 +9,17 @@ namespace Common
 {
     public class Grid<T> : Dictionary<Point<int>, T>
     {
-        public T this[Point<int> p]
-        {
-            get => this[p.x, p.y];
-            set => this[p.x, p.y] = value;
-        }
+        //public T this[Point<int> p]
+        //{
+        //    get => this[p.x, p.y];
+        //    set => this[p.x, p.y] = value;
+        //}
 
 
         public T this[int x, int y]
         {
-            get
-            {
-                this.TryGetValue((x, y), out T value);
-                return value;
-            }
-            set
-            {
-                this.AddOrSet((x, y), value);
-            }
+            get => this[(x, y)];
+            set => this[(x,y)] = value;
         }
     }
 }

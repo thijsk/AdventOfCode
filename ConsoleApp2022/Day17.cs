@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
-using Common;
+﻿using Common;
 
 namespace ConsoleApp2022;
 
@@ -25,50 +22,72 @@ public class Day17 : IDay
 
 ##
 ##";
-    
+
+
     public long Part1()
     {
         PuzzleContext.Answer1 = 3100;
-        PuzzleContext.UseExample = true;
+        PuzzleContext.UseExample = false;
 
-        var input = PuzzleContext.Input.First().AsCircular().GetEnumerator();
-        var pieces = Parse(InputPieces).ToList().AsCircular().GetEnumerator();
+        var input = PuzzleContext.Input.First().ToList();
+        var pieces = Parse(InputPieces).ToList();
 
-        var height = DoPart1(pieces, input, 2022);
+        var height = Solve(pieces, input, 2022);
 
         return height;
     }
 
-    private long DoPart1(IEnumerator<Piece> pieces, IEnumerator<char> input, long target)
+    private long Solve(IEnumerable<Piece> pieces, IEnumerable<char> input, long target)
     {
-        var pieceCounter = 1L;
+        Dictionary<int, (long totalHeight, long pieceCounter)> cache = new();
 
-        var height = 0;
+        var pieceCounter = 0L;
+        var pieceArray = pieces.ToArray();
+        var pieceCount = pieceArray.Length;
+        var moveArray = input.ToArray();
+        var moveIndex = 0;
+        var moveCount = moveArray.Length;
+
+        var totalHeight = 0L;
+        var totalReduction = 0L;
         Grid<bool> world = new Grid<bool>();
 
         const int leftBorder = 0;
         const int rightBorder = 6;
 
-        while (pieceCounter <= target)
+        while (pieceCounter < target)
         {
-            Point<int> spawn = (2, height + 3);
-            pieces.MoveNext();
-            var piece = pieces.Current;
+            var pieceIndex = (pieceCounter % pieceCount);
+
+            var worldHash = GetWorldHash(world);
+
+            var cachekey = (pieceIndex, moveIndex, worldHash).GetHashCode();
+
+            if (cache.TryGetValue(cachekey, out var cacheresult))
+            {
+                var heightIncrement = totalHeight - cacheresult.totalHeight;
+                var pieceCounterIncrement = pieceCounter - cacheresult.pieceCounter;
+
+                var togo = target - pieceCounter;
+                var loops = togo / pieceCounterIncrement;
+                pieceCounter += pieceCounterIncrement * loops;
+                totalHeight += heightIncrement * loops;
+            }
+
+            var worldHeight = GetHeight(world);
+            Point<int> spawn = (2, worldHeight + 3);
+            var piece = pieceArray[pieceIndex];
             piece.Location = (0, 0);
             piece.Location += spawn;
 
-            //ConsoleX.WriteLine($"The {pieceCounter} rock begins falling");
 
-            if (pieceCounter == target)
-            {
-                DrawGame(world, piece, leftBorder, rightBorder);
-            }
+            //ConsoleX.WriteLine($"The {pieceCounter} rock begins falling");
 
             while (true)
             {
-                input.MoveNext();
-                var move = input.Current;
-                if (pieceCounter == target) ConsoleX.Write(move);
+                var move = moveArray[moveIndex];
+                moveIndex++;
+                moveIndex %= moveCount;
                 if (move == '<')
                 {
                     //ConsoleX.WriteLine("Moves left");
@@ -105,45 +124,57 @@ public class Day17 : IDay
                 }
             }
 
-            height = GetHeight(world);
 
-            if (pieceCounter == target)
+            if (pieceCounter + 1 == target)
             {
-                ConsoleX.WriteLine(height, ConsoleColor.DarkMagenta);
-                DrawGame(world, piece, leftBorder, rightBorder);
+                Console.WriteLine($"After move {moveIndex} {worldHash}");
+                DrawGame(world, piece, 0, 6);
             }
+
+            var newHeight = GetHeight(world);
+            var increment = newHeight - worldHeight;
+            totalHeight += increment;
+
+            var reduction = Reduce(world, increment);
+            
+            cache.TryAdd(cachekey, (totalHeight, pieceCounter));
 
             pieceCounter++;
         }
 
-        return height;
+        return totalHeight;
     }
 
     public long Part2()
     {
-        PuzzleContext.Answer2 = 0;
+        PuzzleContext.Answer2 = 1540634005751;
         PuzzleContext.UseExample = false;
 
         var inputList = PuzzleContext.Input.First().ToList();
         var pieceList = Parse(InputPieces).ToList();
 
         var target = 1000000000000;
-
-        return DoPart2(pieceList, inputList, target);
+        
+        return Solve(pieceList, inputList, target);
     }
 
-    private readonly Dictionary<int, int[]> _worldCache = new();
-    readonly Dictionary<int, (int inc, int worldHash, int moveIndex, long totalHeight, long pieceCounter)> _cache = new();
 
+    /// <summary>
+    /// This could work... but does not account for "caves" that pieces can move into sideways
+    /// </summary>
     private long DoPart2(IEnumerable<Piece> pieces, IEnumerable<char> input, long target)
     {
+        Dictionary<int, int[]> worldCache = new();
+        Dictionary<int, (long inc, int worldHash, int moveIndex, long totalHeight, long pieceCounter)> cache = new();
+
+
         var pieceCounter = 0L;
 
         var totalHeight = 0L;
         var world = new int[] { -1, -1, -1, -1, -1, -1, -1 };
 
         var worldHash = GetWorldProfileHash(world);
-        _worldCache.Add(worldHash, world);
+        worldCache.Add(worldHash, world);
 
         const int leftBorder = 0;
         const int rightBorder = 6;
@@ -155,58 +186,41 @@ public class Day17 : IDay
         var moveIndex = 0;
         var moveCount = moveArray.Length;
 
-        var sw = new Stopwatch();
-        sw.Start();
-
-        //bool periodDetect = false;
-
-        //int periodStartKey = 0;
-
         while (pieceCounter < target)
         {
             var pieceIndex = (pieceCounter % pieceCount);
             var cachekey = (pieceIndex, moveIndex, worldHash).GetHashCode();
 
-            if (_cache.TryGetValue(cachekey, out var cacheresult))
+            if (cache.TryGetValue(cachekey, out var cacheresult))
             {
-                //if (!periodDetect)
-                //{
-                //    periodDetect = true;
-                //    periodStartKey = cachekey;
-                //}
+                var heightIncrement = totalHeight - cacheresult.totalHeight;
+                var pieceCounterIncrement = pieceCounter - cacheresult.pieceCounter;
 
-                //if (cachekey == periodStartKey)
-                //{
-                    var heightIncrement = totalHeight - cacheresult.totalHeight;
-                    var pieceCounterIncrement = pieceCounter - cacheresult.pieceCounter;
-
-                    var togo = target - pieceCounter;
-                    var loops = togo / pieceCounterIncrement;
-                    pieceCounter += pieceCounterIncrement * loops;
-                    totalHeight += heightIncrement * loops;
-                //}
-
-                totalHeight += cacheresult.inc;
-
-                worldHash = cacheresult.worldHash;
-                moveIndex = cacheresult.moveIndex;
-                pieceCounter++;
-                continue;
+                var togo = target - pieceCounter;
+                var loops = togo / pieceCounterIncrement;
+                pieceCounter += pieceCounterIncrement * loops;
+                totalHeight += heightIncrement * loops;
             }
 
             var piece = pieceArray[pieceIndex];
-            world = _worldCache[worldHash];
 
             var worldHeight = GetHeight(world);
             Point<int> spawn = (2, worldHeight + 3);
             piece.Location = (0, 0);
             piece.Location += spawn;
 
+            if (pieceCounter + 1 == target)
+            {
+                Console.WriteLine($"Part2 {moveIndex} {worldHash}");
+                DrawGame(world, piece, 0, 6);
+                Console.WriteLine("=======");
+            }
+
             while (true)
             {
                 var move = moveArray[moveIndex];
                 moveIndex++;
-                moveIndex %= moveArray.Length;
+                moveIndex %= moveCount;
 
                 if (pieceCounter == target) ConsoleX.Write(move);
                 if (move == '<')
@@ -247,22 +261,30 @@ public class Day17 : IDay
                 }
             }
 
+            if (pieceCounter + 1 == target)
+            {
+                Console.WriteLine($"After move {moveIndex} {worldHash}");
+                DrawGame(world, piece, 0, 6);
+            }
+
+
             var newHeight = GetHeight(world);
             var increment = newHeight - worldHeight;
             totalHeight += increment;
+
             var reduction = Reduce(world);
             worldHash = GetWorldProfileHash(world);
 
-            _cache.Add(cachekey, (increment, worldHash, moveIndex, totalHeight - increment, pieceCounter));
-            _worldCache.TryAdd(worldHash, world.ToArray());
-
+            cache.TryAdd(cachekey, (increment, worldHash, moveIndex, totalHeight - increment, pieceCounter));
+            worldCache.TryAdd(worldHash, world.ToArray());
+            
             pieceCounter++;
         }
 
         return totalHeight;
     }
 
-    private int Reduce(int[] world)
+    private long Reduce(int[] world)
     {
         var min = world.Min();
         if (min > 0)
@@ -278,14 +300,53 @@ public class Day17 : IDay
         return 0;
     }
 
+    private long Reduce(Grid<bool> world, int increment)
+    {
+        var worldPoints = world.Keys.ToList();
+
+        if (!worldPoints.Any())
+            return 0;
+
+        var height = GetHeight(world);
+
+        if (height > 50)
+        {
+            world.Clear();
+            foreach (var p in worldPoints)
+            {
+                var newPoint = new Point<int>(p.x, p.y - increment);
+                world.Add(newPoint, true);
+            }
+        }
+        
+        return increment;
+    }
+
+    private int GetWorldHash(Grid<bool> world)
+    {
+        var hashCode = new HashCode();
+
+        var worldPoints = world.Keys.ToList();
+
+        var maxy = worldPoints.Any() ? worldPoints.Max(p => p.y) : 0;
+
+        for (var y = maxy; y > 0; y--)
+        {
+            for (int x = 0; x <= 6; x++)
+            {
+                if (world.ContainsKey((x, y)))
+                {
+                    hashCode.Add((x, y));
+                }
+            }
+        }
+
+        return hashCode.ToHashCode();
+    }
+
     private int GetWorldProfileHash(int[] world)
     {
-        HashCode hashCode = new HashCode();
-        foreach (var x in world)
-        {
-            hashCode.Add(x);
-        }
-        return hashCode.ToHashCode();
+        return string.Join(',', world).GetHashCode();
     }
 
     private void DrawGame(Grid<bool> world, Piece piece, int leftBorder, int rightBorder)
@@ -306,7 +367,7 @@ public class Day17 : IDay
                     Console.Write('@');
                     continue;
                 }
-                if (world[(x, y)])
+                if (world.ContainsKey((x, y)))
                 {
                     Console.Write('#');
                     continue;
@@ -367,7 +428,7 @@ public class Day17 : IDay
         var points = piece.Points.ToList();
         var touchesFloor = points.Any(p => p.y < 0);
         var touchesSides = points.Any(p => p.x < xleft || p.x > xright);
-        var touchesWorld = points.Any(p => world[p]);
+        var touchesWorld = points.Any(p => world.ContainsKey(p));
         return !(touchesFloor || touchesSides || touchesWorld);
     }
 
