@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Numerics;
 
 namespace Common
 {
@@ -38,6 +39,15 @@ namespace Common
             }
 
             return args[0];
+        }
+
+        public static T Abs<T>(T value) where T : INumber<T>
+        {
+            if (value < T.Zero)
+            {
+                value = -value;
+            }
+            return value;
         }
     }
 }
