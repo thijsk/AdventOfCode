@@ -137,6 +137,7 @@ namespace Common
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetHashCodeOfEnumerable<T>(this IList<T> source)
         { 
             HashCode hash = new();
