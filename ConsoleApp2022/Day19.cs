@@ -151,20 +151,23 @@ public class Day19 : IDay
                 if (!visited.Contains(buyStateObsidian.GetHashCode()))
                 {
                     queue.Push(buyStateObsidian);
+                    continue;
                 }
 
+            }
+
+            if (Buy(blueprint, oldState, newState, out var buyStateClay, Resource.clay))
+            {
+                if (!visited.Contains(buyStateClay.GetHashCode()))
+                {
+                    queue.Push(buyStateClay);
+                }
             }
 
             if (Buy(blueprint, oldState, newState, out var buyStateOre, Resource.ore))
             {
                 if (!visited.Contains(buyStateOre.GetHashCode()))
                     queue.Push(buyStateOre);
-            }
-
-            if (Buy(blueprint, oldState, newState, out var buyStateClay, Resource.clay))
-            {
-                if (!visited.Contains(buyStateClay.GetHashCode()))
-                    queue.Push(buyStateClay);
             }
 
             if (!visited.Contains(newState.GetHashCode()))
