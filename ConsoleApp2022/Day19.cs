@@ -101,15 +101,15 @@ public class Day19 : IDay
 
     private int GetBestResult(BluePrint blueprint, State initstate)
     {
-        var queue = new PriorityQueue<State, int>();
+        var queue = new Stack<State>();
         var visited = new HashSet<int>();
         int best = 0;
 
-        queue.Enqueue(initstate, initstate.MinutesLeft);
+        queue.Push(initstate);
 
         while (queue.Count > 0)
         {
-            var oldState = queue.Dequeue();
+            var oldState = queue.Pop();
             visited.Add(oldState.GetHashCode());
 
             if (oldState.MinutesLeft == 0)
@@ -137,36 +137,39 @@ public class Day19 : IDay
                 newState.Stock[(int)Resource.obsidian] = (newState.MinutesLeft * blueprint.MaxNeeded[(int)Resource.obsidian]);
             }
 
-            if (Buy(blueprint, oldState, newState, out var buyStateOre, Resource.ore))
+            if (Buy(blueprint, oldState, newState, out var buyStateGeode, Resource.geode))
             {
-                if (!visited.Contains(buyStateOre.GetHashCode()))
-                    queue.Enqueue(buyStateOre, buyStateOre.MinutesLeft);
-            }
-
-            if (Buy(blueprint, oldState, newState, out var buyStateClay, Resource.clay))
-            {
-                if (!visited.Contains(buyStateClay.GetHashCode()))
-                    queue.Enqueue(buyStateClay, buyStateClay.MinutesLeft);
+                if (!visited.Contains(buyStateGeode.GetHashCode()))
+                {
+                    queue.Push(buyStateGeode);
+                    continue;
+                }
             }
 
             if (Buy(blueprint, oldState, newState, out var buyStateObsidian, Resource.obsidian))
             {
                 if (!visited.Contains(buyStateObsidian.GetHashCode()))
-                    queue.Enqueue(buyStateObsidian, buyStateObsidian.MinutesLeft);
+                {
+                    queue.Push(buyStateObsidian);
+                }
+
             }
 
-            if (Buy(blueprint, oldState, newState, out var buyStateGeode, Resource.geode))
+            if (Buy(blueprint, oldState, newState, out var buyStateOre, Resource.ore))
             {
-                if (!visited.Contains(buyStateGeode.GetHashCode()))
-                {
-                    queue.Enqueue(buyStateGeode, buyStateGeode.MinutesLeft);
-                    continue;
-                }
+                if (!visited.Contains(buyStateOre.GetHashCode()))
+                    queue.Push(buyStateOre);
+            }
+
+            if (Buy(blueprint, oldState, newState, out var buyStateClay, Resource.clay))
+            {
+                if (!visited.Contains(buyStateClay.GetHashCode()))
+                    queue.Push(buyStateClay);
             }
 
             if (!visited.Contains(newState.GetHashCode()))
             {
-                queue.Enqueue(newState, newState.MinutesLeft);
+                queue.Push(newState);
             }
         }
 
