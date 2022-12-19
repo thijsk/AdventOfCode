@@ -129,23 +129,22 @@ namespace Common
             HashSet<int> seen = new();
             foreach (var tuple in source)
             {
-                if (!seen.Contains(tuple.second.GetHashCodeOfEnumerable()))
+                if (!seen.Contains(tuple.second.GetHashCodeOfList()))
                 {
-                    seen.Add(tuple.first.GetHashCodeOfEnumerable());
+                    seen.Add(tuple.first.GetHashCodeOfList());
                     yield return tuple;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetHashCodeOfEnumerable<T>(this IList<T> source)
+        public static int GetHashCodeOfList<T>(this IList<T> source)
         { 
             HashCode hash = new();
-            foreach (var value in source)
+            for (int i = 0; i < source.Count; i++)
             {
-                hash.Add(value);
+                hash.Add(source[i]);
             }
-
             return hash.ToHashCode();
         }
         

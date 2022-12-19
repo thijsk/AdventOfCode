@@ -222,13 +222,13 @@ namespace CommonTests
         }
 
         [TestMethod]
-        public void GetHashCodeOfEnumerable()
+        public void GetHashCodeOfList()
         {
             var input1 = new[] { 1, 2 };
             var input2 = new[] { 1, 2 };
 
-            var actual1 = input1.GetHashCodeOfEnumerable();
-            var actual2 = input2.GetHashCodeOfEnumerable();
+            var actual1 = input1.GetHashCodeOfList();
+            var actual2 = input2.GetHashCodeOfList();
 
             Assert.AreEqual(actual1, actual2);
         }

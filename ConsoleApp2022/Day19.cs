@@ -28,11 +28,13 @@ public class Day19 : IDay
         {
             HashCode hashCode =new HashCode();
             hashCode.Add(MinutesLeft);
-            foreach (var i in 0..3)
-            {
-                hashCode.Add(Stock[i]);
-                hashCode.Add(Robots[i]);
-            }
+            //foreach (var i in 0..3)
+            //{
+            //    hashCode.Add(Stock[i]);
+            //    hashCode.Add(Robots[i]);
+            //}
+            hashCode.Add(Stock.GetHashCodeOfList());
+            hashCode.Add(Robots.GetHashCodeOfList());
             return hashCode.ToHashCode();
         }
 
