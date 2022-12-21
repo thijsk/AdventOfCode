@@ -146,33 +146,32 @@ public class Day21 : IDay
         return Monkey.Parse(line);
     }
 
-}
-
-public record Monkey(string Name)
-{
-    public long? Number { get; set; }
-
-    public string First { get; set; }
-    public string Op { get; set; }
-    public string Second { get; set; }
-
-    public static Monkey Parse(string line)
+    public record Monkey(string Name)
     {
-        var (name, operation) = line.Split(": ");
+        public long? Number { get; set; }
 
-        var monkey = new Monkey(name);
-        if (long.TryParse(operation, out long number))
+        public string First { get; set; }
+        public string Op { get; set; }
+        public string Second { get; set; }
+
+        public static Monkey Parse(string line)
         {
-            monkey.Number = number;
+            var (name, operation) = line.Split(": ");
+
+            var monkey = new Monkey(name);
+            if (long.TryParse(operation, out long number))
+            {
+                monkey.Number = number;
+            }
+            else
+            {
+                var (first, op, second) = operation.Split(" ");
+                monkey.First = first;
+                monkey.Op = op;
+                monkey.Second = second;
+            }
+
+            return monkey;
         }
-        else
-        {
-            var (first, op, second) = operation.Split(" ");
-            monkey.First = first;
-            monkey.Op = op;
-            monkey.Second = second;
-        }
-        
-        return monkey;
     }
 }
