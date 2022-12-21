@@ -64,29 +64,31 @@ public class Day21 : IDay
         var input = PuzzleContext.Input.Select(Parse).ToDictionary(m => m.Name);
 
         var root = input["root"];
-        root.Op = "=";
+        root.Op = "-";
         var human = input["humn"];
-        
 
         bool equal = false;
         human.Number = 0;
 
-        var increment = 10000000000L;
+        var increment = 1000000000000L;
 
         while (!equal)
         {
             human.Number += increment;
             foreach (var m in input.Values)
             {
-                if (!String.IsNullOrEmpty(m.Op)) m.Number = null;
+                if (!string.IsNullOrEmpty(m.Op)) m.Number = null;
             }
             
-            equal = CheckForEquality(root, input);
+            CheckForEquality(root, input);
+            equal = root.Number == 0;
+            if (equal)
+            {
+                break;
+            }
 
-            var first = input[root.First].Number;
-            var second = input[root.Second].Number;
-            ConsoleX.WriteLine($"{human.Number} {increment} {first} {second} {first > second} ");
-            if (first < second)
+            ConsoleX.WriteLine($"{human.Number} {increment} {root.Number}");
+            if (root.Number < 0)
             {
                 human.Number -= increment;
                 increment = increment / 10;
@@ -96,7 +98,7 @@ public class Day21 : IDay
         return human.Number.Value;
     }
 
-    private static bool CheckForEquality(Monkey human, Dictionary<string, Monkey> input)
+    private static void CheckForEquality(Monkey human, Dictionary<string, Monkey> input)
     {
         var queue = new Queue<Monkey>();
         queue.Enqueue(human);
@@ -126,12 +128,6 @@ public class Day21 : IDay
 
                 if (first.Number.HasValue && second.Number.HasValue)
                 {
-                    if (monkey.Name == "root")
-                    {
-                        
-                        return first.Number.Value == second.Number.Value;
-                    }
-
                     var number = monkey.Op switch
                     {
                         "+" => first.Number + second.Number,
@@ -143,8 +139,6 @@ public class Day21 : IDay
                 }
             }
         }
-
-        return false;
     }
 
     public Monkey Parse(string line)
