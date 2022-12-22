@@ -50,13 +50,13 @@ namespace Common
 
         public static void ToConsole<T>(this T[,] grid, Action<T> write)
         {
-            for (var x = 0; x <= grid.GetUpperBound(0); x++)
+            for (var row = 0; row <= grid.GetUpperBound(0); row++)
             {
-                for (var y = 0; y <= grid.GetUpperBound(1); y++)
+                for (var col = 0; col <= grid.GetUpperBound(1); col++)
                 {
                     var olderColor = Console.ForegroundColor;
 
-                    write(grid[x, y]);
+                    write(grid[row, col]);
                 }
 
                 ConsoleX.WriteLine();
