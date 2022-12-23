@@ -12,9 +12,6 @@ public class Day22 : IDay
         PuzzleContext.Answer1 = 27436;
         PuzzleContext.UseExample = false;
 
-
-        return PuzzleContext.Answer1;
-        
         var (grid, instructions) = Parse(PuzzleContext.Input);
 
         var location = (row: 0, col: Array.IndexOf(grid.GetRow(0), '.'));
@@ -76,12 +73,12 @@ public class Day22 : IDay
         return ((location.row + 1) * 1000L) + ((location.col + 1) * 4) + orientation;
     }
 
+   
+
     public long Part2()
     {
-        PuzzleContext.Answer2 = 0;
-        PuzzleContext.UseExample = true;
-
-        var orientations = new[] { 'R', 'D', 'L', 'U' };
+        PuzzleContext.Answer2 = 15426;
+        PuzzleContext.UseExample = false;
 
         var size = 50;
         if (PuzzleContext.UseExample)
@@ -91,14 +88,15 @@ public class Day22 : IDay
 
         var location = (row: 0, col: Array.IndexOf(grid.GetRow(0), '.'));
 
-        var orientation = 0;
+        var orientation = 'R';
         foreach (var instruction in instructions)
         {
-            ConsoleX.WriteLine($"Location {location}, Orientation: {orientations[orientation]}, Instruction: {instruction}");
+            ConsoleX.WriteLine($"Location {location}, Orientation: {orientation}, Instruction: {instruction}");
 
             if (instruction is RotateInstruction rotate)
             {
                 orientation = DoRotate(rotate.direction, orientation);
+               
                 continue;
             }
 
@@ -107,7 +105,7 @@ public class Day22 : IDay
             var amount = move.amount;
             while (amount > 0)
             {
-                var nextlocation = Step(grid, location, orientation, size);
+                var (nextlocation, nextorientation) = Step(grid, location, orientation, size);
                 if (IsWall(grid, nextlocation))
                 {
                     amount = 0;
@@ -115,79 +113,165 @@ public class Day22 : IDay
                 }
 
                 location = nextlocation;
+                orientation = nextorientation;
                 amount--;
+
+                //PrintGrid(grid, location, orientation, amount);
             }
         }
 
-        return ((location.row + 1) * 1000L) + ((location.col + 1) * 4) + orientation;
+        ConsoleX.WriteLine($"{location}");
+
+        return ((location.row + 1) * 1000L) + ((location.col + 1) * 4) + Array.IndexOf(Orientations, orientation);
     }
 
-    private (int row, int col) Step(char[,] grid, (int row, int col) location, int orientation, int size)
+    private static void PrintGrid(char[,] grid, (int row, int col) location, char orientation, int amount)
+    {
+        Console.Clear();
+        var clone = (char[,]) grid.Clone();
+        grid[location.row, location.col] = orientation;
+        clone.ToConsole();
+        ConsoleX.WriteLine($"L: {location} {orientation} {amount}");
+        Thread.Sleep(100);
+    }
+
+    private ((int row, int col), char orientation) Step(char[,] grid, (int row, int col) location, char orientation, int size)
     {
         (int row, int col) nextlocation = orientation switch
         {
-            0 => (location.row, location.col + 1), //R
-            1 => (location.row + 1, location.col), //D
-            2 => (location.row, location.col - 1), //L
-            3 => (location.row - 1, location.col), //U
+            'R' => (location.row, location.col + 1),
+            'D' => (location.row + 1, location.col),
+            'L' => (location.row, location.col - 1),
+            'U' => (location.row - 1, location.col),
         };
 
-        if (orientation is 0 or 2)
+        if (IsValidLocation(grid, nextlocation))
         {
-            var row = grid.GetRow(location.row);
-            if (nextlocation.row > row.Length || nextlocation.row < 0 || grid[nextlocation.row, nextlocation.col] == ' ')
-            {
-                var index = GetIndex(location, size);
-                // find next 
-            }
-            else
-                return nextlocation;
+            return (nextlocation, orientation);
         }
 
-        if (orientation is 1 or 3)
+        var face = GetFace(location, size);
+        var (nextFace, nextOrientation) = Lookup(face, orientation);
+
+        var i = 0;
+        if (orientation is 'U' or 'D')
+           i = location.col % size;
+        else 
+           i = location.row % size;
+
+        nextlocation.row = nextFace.row * size;
+        nextlocation.col = nextFace.col * size;
+
+        switch (nextOrientation)
         {
-            var col = grid.GetColumn(location.col);
-            if (nextlocation.col > col.Length || nextlocation.col < 0 || grid[nextlocation.row, nextlocation.col] == ' ')
+            case ('L'):
             {
-                nextlocation = StepToNextFace(grid, location, orientation, size);
-                // find next 
+                nextlocation.col += size - 1;
+                break;
             }
-            else
-                return nextlocation;
-        }
-
-        throw new NotImplementedException();
-    }
-
-    private (int row, int col) StepToNextFace(char[,] grid, (int row, int col) location, int orientation, int size)
-    {
-        var currentface = GetIndex(location, size);
-
-        var (nextface, nextorientation) = Lookup(currentface, orientation);
-
-        switch (orientation, nextorientation)
-        {
-            case (0, 1):
+            case ('U'):
             {
-                
+                nextlocation.row += size - 1;
                 break;
             }
         }
 
-        throw new NotImplementedException();
+        switch (orientation, nextOrientation)
+        {
+            case ('L', 'R'):
+            case ('R', 'L'):
+            case ('D', 'R'):
+            case ('U', 'L'):
+            {
+                nextlocation.row += size - 1 - i;
+                break;
+            }
+            case ('U', 'D'):
+            case ('D', 'U'):
+            case ('R', 'D'):
+            case ('L', 'U'):
+                {
+                nextlocation.col += size - 1 - i;
+                break;
+            }
+            case ('R', 'U'):
+            case ('L', 'D'):
+            case ('U', 'U'):
+            case ('D', 'D'):
+            {
+                nextlocation.col += i ;
+                break;
+            }
+            case ('U', 'R'):
+            case ('D', 'L'):
+            case ('L', 'L'):
+            case ('R', 'R'):
+            {
+                nextlocation.row += i;
+                break;
+            }
+            default:
+                throw new NotImplementedException();
+        }
+
+        return (nextlocation, nextOrientation);
+
     }
 
-    private Dictionary<((int col, int row), int orientation), ((int col, int row), int orientation)> _map = new()
+    private bool IsValidLocation(char[,] grid, (int row, int col) location)
     {
-        {((1, 2), 0), ((2, 3), 1)}
+        if (location.row < 0 || location.row >= grid.GetLength(0))
+            return false;
+        if (location.col < 0 || location.col >= grid.GetLength(1))
+            return false;
+        return grid[location.row, location.col] != ' ';
+    }
+
+    private static readonly char[] Orientations = { 'R', 'D', 'L', 'U' };
+
+    private Dictionary<((int col, int row), char orientation), ((int col, int row), char orientation)> _examplemap = new()
+    {
+        {((1, 2), 'R'), ((2, 3), 'D')},
+        {((2,2), 'D'), ((1,0), 'U')},
+        {((1,1), 'U'), ((0,2), 'R')}
     };
 
-    private ((int row, int col) nextface, int orientation) Lookup((int row, int col) currentface, int orientation)
+    private Dictionary<((int col, int row), char orientation), ((int col, int row), char orientation)> _inputmap = new()
     {
-        return _map[(currentface, orientation)];
+        {((0,1), 'U'), ((3,0), 'R')},
+        {((3,0), 'L'), ((0,1), 'D')},
+
+        {((0,2), 'U'), ((3,0), 'U')},
+        {((3,0), 'D'), ((0,2), 'D')},
+
+        {((0,2), 'R'), ((2,1), 'L')},
+        {((2,1), 'R'), ((0,2), 'L')},
+
+        {((2,0), 'L'), ((0,1), 'R')},
+        {((0,1), 'L'), ((2,0), 'R')},
+
+        {((1,1), 'L'), ((2,0), 'D')},
+        {((2,0), 'U'), ((1,1), 'R')},
+
+        {((1,1), 'R'), ((0,2), 'U')},
+        {((0,2), 'D'), ((1,1), 'L')},
+       
+        {((2,1), 'D'), ((3,0), 'L')},
+        {((3,0), 'R'), ((2,1), 'U')},
+    };
+
+    private ((int row, int col) nextface, char orientation) Lookup((int row, int col) currentface, char orientation)
+    {
+        var map = PuzzleContext.UseExample ? _examplemap : _inputmap;
+
+        if (!map.ContainsKey((currentface, orientation)))
+        {
+            throw new NotImplementedException($"Missing map entry for {currentface} {orientation}");
+        }
+        return map[(currentface, orientation)];
     }
 
-    private (int row, int col) GetIndex((int row, int col) location, int size)
+    private (int row, int col) GetFace((int row, int col) location, int size)
     {
         return (location.row / size, col: location.col/size);
     }
@@ -196,17 +280,7 @@ public class Day22 : IDay
     {
         return grid[location.row, location.col] == '#';
     }
-
-
-    private bool IsGrid(char[,][,] map, (int row, int col) grid)
-    {
-        if (grid.row < 0 || grid.row > map.GetLength(0))
-            return false;
-        if (grid.col < 0 || grid.col > map.GetLength(0))
-            return false;
-        return true;
-    }
-    
+   
     private static int DoRotate(char direction, int orientation)
     {
         if (direction == 'R')
@@ -221,7 +295,24 @@ public class Day22 : IDay
         if (orientation < 0) orientation += 4;
         return orientation;
     }
-    
+
+    private static char DoRotate(char direction, char orientation)
+    {
+        var index = Array.IndexOf(Orientations, orientation);;
+
+        if (direction == 'R')
+        {
+            index = (index + 1) % 4;
+        }
+        else
+        {
+            index = (index - 1) % 4;
+        }
+
+        if (index < 0) index += 4;
+        return Orientations[index];
+    }
+
     private int Move(string line, int index, int amount)
     {
         var first = GetFirst(line);
