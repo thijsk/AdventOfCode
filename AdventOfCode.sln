@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2021", "ConsoleAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2022", "ConsoleApp2022\ConsoleApp2022.csproj", "{E3BE7CE7-92C2-4E0A-AD95-E2722AAF65F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTests", "CommonTests\CommonTests.csproj", "{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonTests", "CommonTests\CommonTests.csproj", "{A92D90D4-EF4E-4DBE-986D-3726C56DB9BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppTests", "ConsoleAppTests\ConsoleAppTests.csproj", "{7D981570-9693-4576-B987-13E536D2A164}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppTests", "ConsoleAppTests\ConsoleAppTests.csproj", "{7D981570-9693-4576-B987-13E536D2A164}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2016", "ConsoleApp2016\ConsoleApp2016.csproj", "{41E55D09-EF83-41CB-A497-878EA6B551CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{7D981570-9693-4576-B987-13E536D2A164}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D981570-9693-4576-B987-13E536D2A164}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D981570-9693-4576-B987-13E536D2A164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41E55D09-EF83-41CB-A497-878EA6B551CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41E55D09-EF83-41CB-A497-878EA6B551CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41E55D09-EF83-41CB-A497-878EA6B551CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41E55D09-EF83-41CB-A497-878EA6B551CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
