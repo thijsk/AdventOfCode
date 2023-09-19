@@ -1,5 +1,4 @@
-﻿using Common;
-using TextCopy;
+﻿using TextCopy;
 
 var dayClasses = DayRunner.GetAllIDays();
 var dayClass = dayClasses

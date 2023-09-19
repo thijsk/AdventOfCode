@@ -48,7 +48,12 @@ namespace Common
             grid.ToConsole(o => ConsoleX.Write(o));
         }
 
-        public static void ToConsole<T>(this T[,] grid, Action<T> write)
+        public static void ToConsole<T>(this T[,] grid, Func<T, char> convert)
+        {
+	        grid.ToConsole(o => ConsoleX.Write(convert(o)));
+        }
+
+		public static void ToConsole<T>(this T[,] grid, Action<T> write)
         {
             for (var row = 0; row <= grid.GetUpperBound(0); row++)
             {
@@ -62,7 +67,7 @@ namespace Common
                 ConsoleX.WriteLine();
             }
         }
-        
+
         public static T[,] RotateLeft<T>(this T[,] grid)
         {
             int rows = grid.GetLength(0);

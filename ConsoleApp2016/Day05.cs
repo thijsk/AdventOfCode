@@ -1,5 +1,4 @@
-﻿using Common;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace ConsoleApp2016;

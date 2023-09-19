@@ -1,6 +1,4 @@
-﻿using Common;
-
-namespace ConsoleApp2016;
+﻿namespace ConsoleApp2016;
 
 /*
 --- Day 2: Bathroom Security ---

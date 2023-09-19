@@ -1,5 +1,4 @@
-﻿using Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 
 namespace ConsoleApp2016;
