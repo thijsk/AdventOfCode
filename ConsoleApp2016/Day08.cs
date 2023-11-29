@@ -18,7 +18,6 @@ public class Day08 : IDay
 			ConsoleX.WriteLine();
 		}
 
-		// count all the "true" values in the grid;
 		var count = 0;
 		for (var x = 0; x < grid.GetLength(0); x++)
 		{
