@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp2022\ConsoleApp2022.csproj" />
+    <ProjectReference Include="..\ConsoleApp2023\ConsoleApp2023.csproj" />
   </ItemGroup>
 
 </Project>
