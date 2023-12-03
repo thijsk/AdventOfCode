@@ -69,7 +69,7 @@ public class Day03 : IDay
 
 		long sum = 0;
 
-		var gears = new Dictionary<(int x, int y), (long, bool)>();
+		var gears = new Dictionary<(int x, int y), (long value, bool complete)>();
 
 		for (int x = 0; x < input.GetLength(0); x++)
 
@@ -87,24 +87,21 @@ public class Day03 : IDay
 
 				if (number.Length > 0)
 				{
-					var neighbors = Enumerable.Range(y, nexty - y).SelectMany(iy => input.GetAllNeighbors(x, iy)).Distinct().Select(c => (c.x, c.y, input[c.x, c.y]));
+					var neighbors = Enumerable.Range(y, nexty - y).SelectMany(iy => input.GetAllNeighbors(x, iy)).Distinct().Select(c => (x: c.x, y: c.y, c: input[c.x, c.y]));
 
-					// if any of the neighbors is not a digit and not a dot
-					var ngears = neighbors.Where(n => n.Item3 == '*');
+					// if any of the neighbors is a gear
+					var gear = neighbors.FirstOrDefault(n => n.c == '*');
 
-					foreach (var gear in ngears)
+					if (gear != default)
 					{
 						if (gears.ContainsKey((gear.x, gear.y)))
 						{
-							var firstvalue = gears[(gear.x, gear.y)].Item1;
+							var firstvalue = gears[(gear.x, gear.y)].value;
 							gears[(gear.x, gear.y)] = (firstvalue * long.Parse(number), true);
 						}
 						else 
 							gears.Add((gear.x, gear.y), (long.Parse(number), false));
-					}	
 
-					if (ngears.Any())
-					{
 						ConsoleX.ForegroundColor = ConsoleColor.Green;
 					}
 					else
@@ -126,7 +123,7 @@ public class Day03 : IDay
 			ConsoleX.WriteLine();
 		}
 
-		return gears.Values.Where(v => v.Item2).Sum(v => v.Item1);
+		return gears.Values.Where(v => v.complete).Sum(v => v.value);
 	}
 
 	public long Parse(string line)
