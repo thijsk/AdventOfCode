@@ -23,7 +23,8 @@ namespace Common
             }
         }
 
-        public static void WriteLine(object value, ConsoleColor color)
+        [Conditional("DEBUG")]
+		public static void WriteLine(object value, ConsoleColor color)
         {
             var original = Console.ForegroundColor;
             Console.ForegroundColor = color;
@@ -31,7 +32,8 @@ namespace Common
             Console.ForegroundColor = original;
         }
 
-        public static void Write(object value, ConsoleColor color)
+		[Conditional("DEBUG")]
+		public static void Write(object value, ConsoleColor color)
         {
             var original = Console.ForegroundColor;
             Console.ForegroundColor = color;
@@ -49,9 +51,22 @@ namespace Common
             }
         }
 
-        public static void WriteLine()
+        [Conditional("DEBUG")]
+		public static void WriteLine()
         {
             WriteLine("");
         }
+
+		public static ConsoleColor ForegroundColor
+		{
+            get => Console.ForegroundColor;
+            set => Console.ForegroundColor = value;
+		}
+
+		[Conditional("DEBUG")]
+		public static void ResetColor()
+		{
+			Console.ResetColor();
+		}
     }
 }
