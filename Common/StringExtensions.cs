@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -63,5 +65,10 @@ namespace Common
         {
             return JsonNode.Parse(value);
         }
+
+        public static T[] Split<T>(this string value, char separator) where T: INumber<T>
+        {
+			return value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(s => T.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+		}
     }
 }

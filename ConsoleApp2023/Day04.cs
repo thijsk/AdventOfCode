@@ -69,7 +69,7 @@ public class Day04 : IDay
 		var (card, numbers) = line.Split(':', StringSplitOptions.RemoveEmptyEntries);
 		var (winningnumbers, mynumbers) = numbers.Split('|', StringSplitOptions.RemoveEmptyEntries);
 		var winning = winningnumbers.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(n => int.Parse(n)).ToArray();
-		var my = mynumbers.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(n => int.Parse(n)).ToArray();
+		var my = mynumbers.Split<int>(' ');
 		return (long.Parse(card.Split(' ').Last()), winning, my);
 	}
 
