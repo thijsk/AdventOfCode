@@ -116,8 +116,7 @@ public class Day05 : IDay
 					newranges.Enqueue(range);
 				}
 			}
-			queue = newranges;
-			// probably should trim the queue here, combine ranges where possible
+			queue = new(newranges.Distinct());
 		}
 
 		return queue.Select(r => r.start).Min();
