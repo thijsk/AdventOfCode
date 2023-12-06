@@ -68,7 +68,7 @@ namespace Common
 
         public static T[] Split<T>(this string value, char separator) where T: INumber<T>
         {
-			return value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(s => T.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+			return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(s => T.Parse(s, CultureInfo.InvariantCulture)).ToArray();
 		}
     }
 }
