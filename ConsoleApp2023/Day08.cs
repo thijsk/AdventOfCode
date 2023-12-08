@@ -51,7 +51,7 @@ public class Day08 : IDay
 		return Math2.LeastCommonMultiple(steps);
 	}
 
-	public (char[] instructions, Dictionary<string, (string left,string right)> map) Parse(string[] lines)
+	private (char[] instructions, Dictionary<string, (string left,string right)> map) Parse(string[] lines)
 	{
 		var (instructions, map) = lines.SplitByEmptyLines();
 
@@ -59,12 +59,12 @@ public class Day08 : IDay
 		return (instructions.First().ToArray(), map.ToDictionary(line => SplitKey(line), line => SplitLeftRight(line)));
 	}
 
-	public string SplitKey(string line)
+	private string SplitKey(string line)
 	{
 		return line.Split('=', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
 	}
 
-	public (string left, string right) SplitLeftRight(string line)
+	private (string left, string right) SplitLeftRight(string line)
 	{
 		var (left, right) = line.Split('=')[1].Replace("(", "").Replace(")", "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 		return (left, right);
