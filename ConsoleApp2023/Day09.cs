@@ -11,12 +11,11 @@ public class Day09 : IDay
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-        var result = new List<List<List<long>>>();
+        var sum = 0L;
 
         foreach (var inp in input)
         {
-            var history = new List<List<long>>();
-            history.Add(inp);
+            List<List<long>> history = new() { inp };
 
             while (history.Last().Any(i => i != 0))
             {
@@ -24,17 +23,13 @@ public class Day09 : IDay
                 history.Add(next);
             }
 
-            long last = 0;
-            foreach (var sequence in history.Reverse<List<long>>())
-            {
-                sequence.Add(sequence.Last() + last);
-                last = sequence.Last();
-            }
+            long last = history.Reverse<List<long>>()
+                .Aggregate<List<long>, long>(0, (current, sequence) => sequence.Last() + current);
 
-            result.Add(history);
+            sum += last;
         }
 
-        return result.Sum(r => r.First().Last());
+        return sum;
     }
 
     public long Part2()
@@ -45,12 +40,11 @@ public class Day09 : IDay
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-        var result = new List<List<List<long>>>();
+        var sum = 0L;
 
         foreach (var inp in input)
         {
-            var history = new List<List<long>>();
-            history.Add(inp);
+            List<List<long>> history = new() { inp };
 
             while (history.Last().Any(i => i != 0))
             {
@@ -58,17 +52,14 @@ public class Day09 : IDay
                 history.Add(next);
             }
 
-            long first = 0;
-            foreach (var sequence in history.Reverse<List<long>>())
-            {
-                sequence.Insert(0, sequence.First() - first);
-                first = sequence.First();
-            }
+            var first = history.Reverse<List<long>>()
+                .Aggregate<List<long>, long>(0, (current, sequence) => sequence.First() - current);
 
-            result.Add(history);
+            sum += first;
+
         }
 
-        return result.Sum(r => r.First().First());
+        return sum;
     }
 
     private List<long> Parse(string line)
