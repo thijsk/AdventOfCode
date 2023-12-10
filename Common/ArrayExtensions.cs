@@ -20,6 +20,11 @@ namespace Common
                 .ToArray();
         }
 
+        public static (int x, int y)[] GetRowIndexes<T>(this T[,] input, int row)
+        {
+            return Enumerable.Range(input.GetLowerBound(1), input.GetUpperBound(1) + 1).Select(col => (row, col))
+                .ToArray();
+        }
 
         public static T[][] GetColumns<T>(this T[,] input)
         {
@@ -31,6 +36,28 @@ namespace Common
         {
             return Enumerable.Range(input.GetLowerBound(0), input.GetUpperBound(0) + 1)
                 .Select(row => input[row, col]).ToArray();
+        }
+
+        public static (int x, int y)[] GetColumnIndexes<T>(this T[,] input, int col)
+        {
+            return Enumerable.Range(input.GetLowerBound(0), input.GetUpperBound(0) + 1)
+                .Select(row => (row, col)).ToArray();
+        }
+
+        public static (int x, int y)[] GetIndexes<T>(this T[,] input)
+        {
+            return Enumerable.Range(input.GetLowerBound(0), input.GetUpperBound(0) + 1)
+                .SelectMany(row => Enumerable.Range(input.GetLowerBound(1), input.GetUpperBound(1) + 1).Select(col => (row, col))).ToArray();
+        }
+
+        public static int GetNumberOfRows<T>(this T[,] input)
+        {
+            return input.GetUpperBound(0) + 1;
+        }
+
+        public static int GetNumberOfColumns<T>(this T[,] input)
+        {
+            return input.GetUpperBound(1) + 1;
         }
 
         public static IEnumerable<T> SubRange<T>(this T[] input, int start, int end)
@@ -59,9 +86,20 @@ namespace Common
             {
                 for (var col = 0; col <= grid.GetUpperBound(1); col++)
                 {
-                    var olderColor = Console.ForegroundColor;
+                   write(grid[row, col]);
+                }
 
-                    write(grid[row, col]);
+                ConsoleX.WriteLine();
+            }
+        }
+
+        public static void ToConsole<T>(this T[,] grid, Action<(int x, int y), T> write)
+        {
+            for (var row = 0; row <= grid.GetUpperBound(0); row++)
+            {
+                for (var col = 0; col <= grid.GetUpperBound(1); col++)
+                {
+                    write((row, col), grid[row, col]);
                 }
 
                 ConsoleX.WriteLine();
@@ -389,6 +427,5 @@ namespace Common
             s2 = array.ElementAtOrDefault(1);
             s3 = array.ElementAtOrDefault(2);
         }
-
     }
 }

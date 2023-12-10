@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using TextCopy;
 
 namespace Common;
 
@@ -20,12 +19,12 @@ public class DayRunner
 
     public long RunPart1()
     {
-        return RunPart(_day.Part1);
+        return RunPart(_day.Part1, () => PuzzleContext.Answer1);
     }
 
     public long RunPart2()
     {
-        return RunPart(_day.Part2);
+        return RunPart(_day.Part2, () => PuzzleContext.Answer2);
     }
 
     public static IOrderedEnumerable<Type> GetAllIDays()
@@ -39,14 +38,14 @@ public class DayRunner
         return _day.GetType().FullName;
     }
 
-    private long RunPart(Func<long> part)
+    private long RunPart(Func<long> part, Func<long> expected)
     {
         var title = $"{part.Target} - {part.Method.Name}";
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var answer = part();
         stopwatch.Stop();
-        ConsoleX.WriteLine($"{title} : {answer}", ConsoleColor.Red);
+        ConsoleX.WriteLine($"{title} : {answer}", answer == expected() ? ConsoleColor.Green : ConsoleColor.Red);
         Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
         return answer;
     }
