@@ -75,7 +75,7 @@ public class Day10 : IDay
 
         var position = start;
         var lastPosition = start;
-        List<(int x, int y)> pipe = new();
+        HashSet<(int x, int y)> pipe = new();
         while (true)
         {
             if (pipe.Contains(position))
@@ -102,13 +102,12 @@ public class Day10 : IDay
             }
         }
 
-        var q = new Queue<(int x, int y)>();
-        EnqueueOutside(input, pipe, q);
+        var q = EnqueueOutside(input, pipe);
         var outside = FloodFill(q, input, pipe);
 
         var lastStep = pipe.First();
-        List<(int, int)> lefts = new();
-        List<(int,int)> rights = new();
+        HashSet<(int, int)> lefts = new();
+        HashSet<(int,int)> rights = new();
 
         foreach (var step in pipe.Skip(1))
         {
@@ -116,7 +115,7 @@ public class Day10 : IDay
             foreach (var neighbor in input.GetNeighbors(step).Except(pipe))
             {
                 var nd = ((neighbor.x - step.x), (neighbor.y - step.y));
-                var isLeft = IsLeft(input[step.x, step.y], travel,nd);
+                var isLeft = IsLeft(input[step.x, step.y], travel, nd);
 
                 if (isLeft)
                 {
@@ -132,7 +131,7 @@ public class Day10 : IDay
             lastStep = step;
         }
         
-        List<(int, int)> nest;
+        HashSet<(int, int)> nest;
         if (lefts.Intersect(outside).Any())
         {
             nest = FloodFill(new Queue<(int x, int y)>(rights), input, pipe);
@@ -142,7 +141,7 @@ public class Day10 : IDay
             nest = FloodFill(new Queue<(int x, int y)>(lefts), input, pipe);
         }
         
-        PrintGrid(input, outside, pipe, nest);
+        PrintGrid(input, outside.ToList(), pipe.ToList(), nest.ToList());
 
         return nest.Count;
     }
@@ -191,17 +190,14 @@ public class Day10 : IDay
         };
     }
 
-    private static void EnqueueOutside(char[,] input, List<(int, int)> pipe, Queue<(int x, int y)> q)
+    private static Queue<(int,int)> EnqueueOutside(char[,] input, HashSet<(int, int)> pipe)
     {
         var topRow = input.GetColumnIndexes(0);
         var bottomRow = input.GetColumnIndexes(input.GetNumberOfColumns() - 1);
         var leftColumn = input.GetRowIndexes(0);
         var rightColumn = input.GetRowIndexes(input.GetNumberOfRows() - 1);
 
-        foreach (var i in topRow.Union(bottomRow).Union(leftColumn).Union(rightColumn).Except(pipe))
-        {
-            q.Enqueue(i);
-        }
+        return new Queue<(int,int)>(topRow.Union(bottomRow).Union(leftColumn).Union(rightColumn).Except(pipe));
     }
 
     private static void PrintGrid(char[,] input, List<(int, int)> outside, List<(int, int)> pipe, List<(int,int)> nest)
@@ -231,19 +227,19 @@ public class Day10 : IDay
         });
     }
 
-    private static List<(int, int)> FloodFill(Queue<(int x, int y)> q, char[,] input, List<(int, int)> pipe)
+    private static HashSet<(int, int)> FloodFill(Queue<(int x, int y)> q, char[,] input, HashSet<(int, int)> pipe)
     {
-        List<(int, int)> outside = new();
+        HashSet<(int, int)> fill = new();
         while (q.TryDequeue(out var p))
         {
-            outside.Add(p);
-            var candidate = input.GetNeighbors(p).Except(outside).Except(q).Except(pipe);
+            fill.Add(p);
+            var candidate = input.GetNeighbors(p).Except(q).Except(fill).Except(pipe);
             foreach (var c in candidate)
             {
                 q.Enqueue(c);
             }
         }
 
-        return outside;
+        return fill;
     }
 }
