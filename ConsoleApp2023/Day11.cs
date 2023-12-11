@@ -33,8 +33,6 @@ public class Day11 : IDay
 
         var galaxies = input.Find('#');
 
-        var distances = new List<int>();
-
         var pairs = galaxies.SelectMany((g, i) => galaxies.Skip(i + 1), (g1, g2) => (first: g1, second: g2)).ToList();
 
         long sum = 0;
@@ -85,8 +83,6 @@ public class Day11 : IDay
 
         var galaxies = input.Find('#');
 
-        var distances = new List<int>();
-
         var pairs = galaxies.SelectMany((g, i) => galaxies.Skip(i + 1), (g1, g2) => (first: g1, second: g2)).ToList();
 
         const long factor = 1000000L;
@@ -104,6 +100,7 @@ public class Day11 : IDay
             var emptyCols = (long)emptyColIndexes.Where(y => y > minY && y < maxY).Count();
             var emptyRows = (long)emptyRowIndexes.Where(x => x > minX && x < maxX).Count();
 
+            // empty spaces are counted already, so subtract them before adding the factorized values
             sum += ((distance - emptyCols - emptyRows) + (emptyCols * factor) + (emptyRows * factor));
         }
 
