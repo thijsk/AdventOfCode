@@ -24,15 +24,16 @@ public class Day12 : IDay
     public long Part2()
     {
         PuzzleContext.Answer2 = 7025;
-        PuzzleContext.UseExample = true;
+        PuzzleContext.UseExample = false;
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
         long sum = 0L;
         foreach (var line in input)
         {
-            var amount = CalculateOptions(line.springs + '.', line.groupinput);
-            //Console.WriteLine($"{line.springs} -> {line.groupinput} = {amount}");
+            var multiplesprings = $"{line.springs}?{line.springs}?{line.springs}?{line.springs}?{line.springs}";
+            var multiplegroups = $"{line.groupinput},{line.groupinput},{line.groupinput},{line.groupinput},{line.groupinput}";
+            var amount = CalculateOptions(multiplesprings + '.', multiplegroups);
 
             sum += amount;
         }
@@ -90,14 +91,7 @@ public class Day12 : IDay
             cache[cacheKey] = result;
             return result;
         }
-
-        //if (string.IsNullOrEmpty(groups))
-        //{
-        //    var result = springs.All(c => c is '.' or '?') ? 1 : 0;
-        //    cache[cacheKey] = result;
-        //    return result;
-        //}
-
+        
         var options = 0l;
         char first = springs[0];
 
@@ -121,9 +115,7 @@ public class Day12 : IDay
                     {
                         options = CalculateOptions(springs[1..], string.Join(',', intGroups[1..]), 0);
                         break;
-                    }
-
-                    if (brokenCount > firstGroup)
+                    } else
                     {
                         options = 0;
                         break;
@@ -145,19 +137,17 @@ public class Day12 : IDay
                 throw new ArgumentOutOfRangeException(nameof(first));
         }
 
-        //cache.Add(cacheKey, options);
-        if (options > 0)
-            Console.WriteLine($"{cacheKey} = {options}");
+        cache.Add(cacheKey, options);
+        //if (options > 0)
+        //    Console.WriteLine($"{cacheKey} = {options}");
 
-        if (brokenCount == 0)
-        {
-            var validation = CountOptions(springs, groups);
-            if (options != validation)
-            {
-                Debugger.Break();
-            }
-        }
-
+        //string validationSprings = new string('#', brokenCount) + springs;
+        //var validation = CountOptions(validationSprings, groups);
+        //if (options != validation)
+        //{
+        //    Debugger.Break();
+        //}
+        
         return options;
     }
 
