@@ -16,14 +16,14 @@ public class Day12 : IDay
         var sum = 0L;
         foreach(var line in input)
         {
-            sum += CountOptions(line.springs, line.groupinput);
+            sum += CalculateOptions(line.springs + '.', line.groupinput.Split<int>(','));
         }
 
         return sum;
     }
     public long Part2()
     {
-        PuzzleContext.Answer2 = 7025;
+        PuzzleContext.Answer2 = 11461095383315;
         PuzzleContext.UseExample = false;
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
@@ -33,7 +33,7 @@ public class Day12 : IDay
         {
             var multiplesprings = $"{line.springs}?{line.springs}?{line.springs}?{line.springs}?{line.springs}";
             var multiplegroups = $"{line.groupinput},{line.groupinput},{line.groupinput},{line.groupinput},{line.groupinput}";
-            var amount = CalculateOptions(multiplesprings + '.', multiplegroups);
+            var amount = CalculateOptions(multiplesprings + '.', multiplegroups.Split<int>(','));
 
             sum += amount;
         }
@@ -77,17 +77,18 @@ public class Day12 : IDay
 
     private readonly Dictionary<string, long> cache = new();
 
-    public long CalculateOptions(string springs, string groups, int brokenCount = 0)
+    public long CalculateOptions(string springs, int[] groups, int brokenCount = 0)
     {
-        var cacheKey = $"{springs}|{groups}|{brokenCount}";
-        if (cache.ContainsKey(cacheKey))
+        //var cacheKey = HashCode.Combine(springs, groups.GetHashCodeOfList(), brokenCount);
+        var cacheKey = $"{springs}|{string.Join(',',groups)}|{brokenCount}";
+        if (cache.TryGetValue(cacheKey, out var cachedValue))
         {
-            return cache[cacheKey];
+            return cachedValue;
         }
 
         if (string.IsNullOrEmpty(springs))
         {
-            var result = string.IsNullOrEmpty(groups) ? 1 : 0;
+            var result = groups.Length == 0 ? 1 : 0;
             cache[cacheKey] = result;
             return result;
         }
@@ -103,51 +104,33 @@ public class Day12 : IDay
             case '.':
                 if (brokenCount > 0)
                 {
-                    if (string.IsNullOrEmpty(groups))
+                    if (groups.Length == 0)
                     {
                         options = 0;
                         break;
                     }
 
-                    var intGroups = groups.Split<int>(',');
-                    var firstGroup = intGroups[0];
+                    var firstGroup = groups[0];
                     if (brokenCount == firstGroup)
                     {
-                        options = CalculateOptions(springs[1..], string.Join(',', intGroups[1..]), 0);
-                        break;
-                    } else
-                    {
-                        options = 0;
+                        options = CalculateOptions(springs[1..], groups[1..], 0);
                         break;
                     }
 
-                    if (springs[1..].Count(c => c is '#' or '?') < (firstGroup - brokenCount))
-                    {
-                        options = 0;
-                        break;
-                    }
+                    options = 0;
+                    break;
                 }
                 options = CalculateOptions(springs[1..], groups);
                 break;
             case '?':
                 options = CalculateOptions('.' + springs[1..], groups, brokenCount) +
-                          CalculateOptions(springs[1..], groups, brokenCount + 1);
+                          CalculateOptions('#' + springs[1..], groups, brokenCount);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(first));
         }
 
         cache.Add(cacheKey, options);
-        //if (options > 0)
-        //    Console.WriteLine($"{cacheKey} = {options}");
-
-        //string validationSprings = new string('#', brokenCount) + springs;
-        //var validation = CountOptions(validationSprings, groups);
-        //if (options != validation)
-        //{
-        //    Debugger.Break();
-        //}
-        
         return options;
     }
 
