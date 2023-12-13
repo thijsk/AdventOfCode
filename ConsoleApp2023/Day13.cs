@@ -33,9 +33,8 @@ public class Day13 : IDay
             var left = columns.Take(colindex).Reverse().ToArray();
             var right = columns.Skip(colindex).ToArray();
 
-            if (left.Zip(right).All(p => p.First.SequenceEqual(p.Second)) || right.Zip(left).All(p => p.First.SequenceEqual(p.Second)))
+            if (left.Zip(right).All(p => p.First.SequenceEqual(p.Second)))
             {
-                
                 if (colindex == skipValue)
                     continue;
                 ConsoleX.WriteLine($"Found column mirror at {colindex}");
@@ -49,9 +48,8 @@ public class Day13 : IDay
             var top = rows.Take(rowindex).Reverse().ToArray();
             var bottom = rows.Skip(rowindex).ToArray();
 
-            if (top.Zip(bottom).All(p => p.First.SequenceEqual(p.Second))|| bottom.Zip(top).All(p => p.First.SequenceEqual(p.Second)))
+            if (top.Zip(bottom).All(p => p.First.SequenceEqual(p.Second)))
             {
-                
                 if (100 * rowindex == skipValue)
                     continue;
                 ConsoleX.WriteLine($"Found row mirror at {rowindex}");
