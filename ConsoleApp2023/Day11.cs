@@ -12,7 +12,7 @@ public class Day11 : IDay
         var input = PuzzleContext.Input.GetGrid(c => c);
 
         HashSet<int> emptyColIndexes = new();
-        for (var ci =0 ; ci <input.GetNumberOfColumns(); ci++)
+        for (var ci =0 ; ci <input.GetColumnCount(); ci++)
         {
             var c = input.GetColumn(ci);
             if (c.All(x => x == '.'))
@@ -22,7 +22,7 @@ public class Day11 : IDay
         }
 
         HashSet<int> emptyRowIndexes = new();
-        for (var ri = 0; ri < input.GetNumberOfRows(); ri++)
+        for (var ri = 0; ri < input.GetRowCount(); ri++)
         {
             var r = input.GetRow(ri);
             if (r.All(x => x == '.'))
@@ -62,7 +62,7 @@ public class Day11 : IDay
         var input = PuzzleContext.Input.GetGrid(c => c);
 
         HashSet<int> emptyColIndexes = new();
-        for (var ci = 0; ci < input.GetNumberOfColumns(); ci++)
+        for (var ci = 0; ci < input.GetColumnCount(); ci++)
         {
             var c = input.GetColumn(ci);
             if (c.All(x => x == '.'))
@@ -72,7 +72,7 @@ public class Day11 : IDay
         }
 
         HashSet<int> emptyRowIndexes = new();
-        for (var ri = 0; ri < input.GetNumberOfRows(); ri++)
+        for (var ri = 0; ri < input.GetRowCount(); ri++)
         {
             var r = input.GetRow(ri);
             if (r.All(x => x == '.'))

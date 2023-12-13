@@ -50,12 +50,12 @@ namespace Common
                 .SelectMany(row => Enumerable.Range(input.GetLowerBound(1), input.GetUpperBound(1) + 1).Select(col => (row, col))).ToArray();
         }
 
-        public static int GetNumberOfRows<T>(this T[,] input)
+        public static int GetRowCount<T>(this T[,] input)
         {
             return input.GetUpperBound(0) + 1;
         }
 
-        public static int GetNumberOfColumns<T>(this T[,] input)
+        public static int GetColumnCount<T>(this T[,] input)
         {
             return input.GetUpperBound(1) + 1;
         }

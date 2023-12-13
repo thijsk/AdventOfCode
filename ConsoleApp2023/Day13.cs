@@ -28,7 +28,7 @@ public class Day13 : IDay
     private (long value, bool found) FindMirror(char[,] map, long skipValue = 0)
     {
         var columns = map.GetColumns();
-        foreach (var colindex in Enumerable.Range(1, map.GetLength(1) - 1))
+        foreach (var colindex in Enumerable.Range(1, map.GetColumnCount() - 1))
         {
             var left = columns.Take(colindex).Reverse().ToArray();
             var right = columns.Skip(colindex).ToArray();
@@ -43,7 +43,7 @@ public class Day13 : IDay
         }
 
         var rows = map.GetRows();
-        foreach (var rowindex in Enumerable.Range(1, map.GetLength(0) - 1))
+        foreach (var rowindex in Enumerable.Range(1, map.GetRowCount() - 1))
         {
             var top = rows.Take(rowindex).Reverse().ToArray();
             var bottom = rows.Skip(rowindex).ToArray();

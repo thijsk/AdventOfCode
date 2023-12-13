@@ -193,9 +193,9 @@ public class Day10 : IDay
     private static Queue<(int,int)> EnqueueOutside(char[,] input, HashSet<(int, int)> pipe)
     {
         var topRow = input.GetColumnIndexes(0);
-        var bottomRow = input.GetColumnIndexes(input.GetNumberOfColumns() - 1);
+        var bottomRow = input.GetColumnIndexes(input.GetColumnCount() - 1);
         var leftColumn = input.GetRowIndexes(0);
-        var rightColumn = input.GetRowIndexes(input.GetNumberOfRows() - 1);
+        var rightColumn = input.GetRowIndexes(input.GetRowCount() - 1);
 
         return new Queue<(int,int)>(topRow.Union(bottomRow).Union(leftColumn).Union(rightColumn).Except(pipe));
     }
