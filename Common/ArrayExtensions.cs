@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace Common
@@ -413,6 +414,27 @@ namespace Common
             }
 
             return result;
+        }
+
+        public static int GetHashCode<T>(this T[,] grid)
+        {
+            HashCode hashCode = new HashCode();
+            foreach (var item in grid)
+            {
+                hashCode.Add(item);
+            }
+            return hashCode.ToHashCode();
+        }
+
+
+        public static string ToSingleString<T>(this T[,] array)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var item in array)
+            {
+                stringBuilder.Append(item);
+            }
+            return stringBuilder.ToString();
         }
 
         public static void Deconstruct<T>(this T[] array, out T s1, out T s2)
