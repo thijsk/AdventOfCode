@@ -58,6 +58,8 @@ public class Day14 : IDay
         } while (hasmoved);
     }
 
+    private static readonly Dictionary<int, (long cycle, long weight, int hash)> CycleCache = new();
+
     public long Part2()
     {
         PuzzleContext.Answer2 = 94255;
@@ -66,28 +68,34 @@ public class Day14 : IDay
         char[,] input = PuzzleContext.Input.GetGrid();
         var hash = input.GetHashCode<char>();
 
-        for (var cycle = 1L; cycle<=1000000000; cycle++)
+        long weight = 0;
+
+        const int iterations = 1000000000;
+
+        for (var cycle = 1L; cycle<= iterations; cycle++)
         {
             if (CycleCache.TryGetValue(hash, out var cached))
             {
-                (input, hash) = cached;
+                long lastcycle;
+                (lastcycle, weight, hash) = cached;
+                var jump = cycle - lastcycle;
+                var remainder = (iterations - cycle) % jump;
+                cycle = iterations - remainder;
                 continue;
             }
 
-            input = DoCycle(input);
+            input = DoCycle(input); 
+            weight = GetSupportNorthBeamWeight(input);
             var newHash = input.GetHashCode<char>();
-            CycleCache.Add(hash, ((char[,])input.Clone(), newHash));
+            CycleCache.Add(hash, (cycle, weight, newHash));
             hash = newHash;
         }
 
-        var sum = GetSupportNorthBeamWeight(input);
+        //var sum = GetSupportNorthBeamWeight(input);
         
-        return sum;
+        return weight;
     }
-
-
-    private static readonly Dictionary<int, (char[,], int)> CycleCache = new();
-
+    
     private static char[,] DoCycle(char[,] input)
     {
         RollNorth(input); // North
