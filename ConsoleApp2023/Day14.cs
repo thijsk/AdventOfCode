@@ -1,5 +1,4 @@
 ﻿using Common;
-using System.Runtime.CompilerServices;
 
 namespace ConsoleApp2023;
 
@@ -15,8 +14,7 @@ public class Day14 : IDay
         RollNorth(input);
 
         var sum = GetSupportNorthBeamWeight(input);
-
-
+        
         return sum;
     }
 
