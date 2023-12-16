@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 namespace Common
 {
@@ -429,7 +427,7 @@ namespace Common
 
         public static string ToSingleString<T>(this T[,] array)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach (var item in array)
             {
                 stringBuilder.Append(item);
