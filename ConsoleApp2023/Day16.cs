@@ -1,4 +1,5 @@
 ﻿using Common;
+using System.Linq;
 
 namespace ConsoleApp2023;
 
@@ -155,7 +156,7 @@ public class Day16 : IDay
         var startleft = input.GetColumnIndexes(0).Select(l => (location: l, direction: right));
         var startright = input.GetColumnIndexes(input.GetLength(1) - 1).Select(l => (location: l, direction: left));
 
-        return starttop.Union(startbottom).Union(startleft).Union(startright).Max(ld => CountEnergized(input, ld.location, ld.direction));
+        return starttop.Concat(startbottom).Concat(startleft).Concat(startright).Max(ld => CountEnergized(input, ld.location, ld.direction));
     }
 
 }
