@@ -45,7 +45,9 @@ public class DayRunner
         stopwatch.Start();
         var answer = part();
         stopwatch.Stop();
-        ConsoleX.WriteLine($"{title} : {answer}", answer == expected() ? ConsoleColor.Green : ConsoleColor.Red);
+        Console.ForegroundColor = answer == expected() ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.WriteLine($"{title} : {answer}");
+        Console.ResetColor();
         Console.WriteLine($"Elapsed : {stopwatch.Elapsed}");
         return answer;
     }
