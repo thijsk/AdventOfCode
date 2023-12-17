@@ -25,5 +25,10 @@
         public static readonly (int x, int y) NorthWest = LeftUp;
         public static readonly (int x, int y) SouthEast = RightDown;
         public static readonly (int x, int y) SouthWest = LeftDown;
+
+        public static (int x, int y) Reverse((int x, int y) direction)
+        {
+            return (-direction.x, -direction.y);
+        }
     }
 }

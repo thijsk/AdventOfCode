@@ -390,6 +390,78 @@ namespace Common
         }
 
         /// <summary>
+        /// Shortest path finding based on the Dijkstra algorithm
+        /// </summary>
+        /// <typeparam name="TCell">Type of a single cell</typeparam>
+        /// <typeparam name="TStep">State of a step</typeparam>
+        /// <param name="grid"></param>
+        /// <param name="start"></param>
+        /// <param name="getNeighbors">delegate to determine the set of valid neighbors and their associated weights</param>
+        /// <param name="isGoal">delegate to determine if the goal is reached</param>
+        /// <returns>path taken and total weight on that path</returns>
+        public static (TStep[] path, long weight) Dijkstra<TCell, TStep>(this TCell[,] grid, TStep start,
+            Func<TCell[,], TStep, IEnumerable<(TStep point, long weight)>> getNeighbors, Func<TStep, bool> isGoal)
+        {
+            PriorityQueue<TStep, long> frontier = new();
+            Dictionary<TStep, long> pathWeight = new();
+            HashSet<TStep> visited = new();
+            Dictionary<TStep, TStep> moveMap = new();
+            List<TStep> path = new();
+            TStep goal = default;
+
+            frontier.Enqueue(start, 0);
+
+            while (frontier.Count > 0)
+            {
+                //move
+                var current = frontier.Dequeue();
+                visited.Add(current);
+
+                if (isGoal(current))
+                {
+                    goal = current;
+                    break;
+                }
+
+                // explore
+                var neighbors = getNeighbors(grid, current);
+                foreach (var neighbor in neighbors.Where(n => !visited.Contains(n.point)))
+                {
+                    var currentWeigth = pathWeight.TryGetValue(current, out var weight) ? weight : 0;
+                    var neighborPathWeight = currentWeigth + neighbor.weight;
+
+                    var oldNeighborWeight = pathWeight.TryGetValue(neighbor.point, out var oldWeight)
+                        ? oldWeight
+                        : long.MaxValue;
+
+                    if (oldNeighborWeight > neighborPathWeight)
+                    {
+                        frontier.Enqueue(neighbor.point, neighborPathWeight);
+
+                        pathWeight.AddOrSet(neighbor.point, neighborPathWeight);
+                        moveMap.AddOrSet(neighbor.point, current);
+                    }
+                }
+            }
+
+            if (!isGoal(goal)) 
+                throw new Exception("No path found");
+
+            // Backtrack
+            var prev = goal;
+            if (moveMap.ContainsKey(prev))
+            {
+                while (!prev.Equals(start))
+                {
+                    path.Add(prev);
+                    prev = moveMap[prev];
+                }
+            }
+
+            return (path.ToArray(), pathWeight[goal]);
+        }
+
+        /// <summary>
         /// Finds the coordinates of a given value in a grid
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -412,6 +484,12 @@ namespace Common
             }
 
             return result;
+        }
+
+        public static bool IsInGrid<T>(this T[,] grid, (int x, int y) point)
+        {
+            return point.x >= 0 && point.x <= grid.GetUpperBound(0) 
+                && point.y >= 0 && point.y <= grid.GetUpperBound(1);
         }
 
         public static int GetHashCode<T>(this T[,] grid)
