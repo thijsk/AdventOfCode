@@ -10,7 +10,7 @@ public class Day18 : IDay
     public long Part1()
     {
         PuzzleContext.Answer1 = 52231;
-        PuzzleContext.UseExample = true;
+        PuzzleContext.UseExample = false;
 
         var input = PuzzleContext.Input.Select(Parse).ToArray();
 
@@ -51,7 +51,7 @@ public class Day18 : IDay
 
     public long Part2()
     {
-        PuzzleContext.Answer2 = 952408144115;
+        PuzzleContext.Answer2 = 57196493937398;
         PuzzleContext.UseExample = false;
 
         var input = PuzzleContext.Input.Select(Parse).Select(i => i.color).Select(ColorToInstruction).ToArray();
@@ -69,28 +69,7 @@ public class Day18 : IDay
             start = end;
         }
 
-        Debug.Assert(lines.First().start == lines.Last().end);
-
-        var sumOfLeftPairs = 0L;
-        var sumOfRightPairs = 0L;
-        foreach (var line in lines)
-        {
-            sumOfLeftPairs += (line.start.x * (long)line.end.y);
-            sumOfRightPairs += (line.start.y * (long)line.end.x);
-        }
-        var shoelace = Math.Abs(sumOfLeftPairs - sumOfRightPairs) / 2L;
-
-        var sumOfLength = 0L;
-        foreach (var line in lines)
-        {
-            var xlength = Math.Abs(line.start.x - line.end.x);
-            var ylength = Math.Abs(line.start.y - line.end.y);
-            Debug.Assert(xlength == 0 || ylength == 0);
-            Debug.Assert(xlength + ylength > 0);
-            sumOfLength += xlength + ylength;
-        }
-
-        return (shoelace) + (sumOfLength / 2) + 1L;
+        return lines.AreaOfGridWithPicksTheorem();
     }
 
     private ((int x, int y) d, int meters) ColorToInstruction(string color)

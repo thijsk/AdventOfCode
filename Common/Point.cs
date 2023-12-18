@@ -38,12 +38,6 @@ namespace Common
             return HashCode.Combine(x, y);
         }
 
-        public long Magnitude()
-        {
-            var d = Convert.ToDouble(x * x + y * y);
-            return Convert.ToInt64(Math.Sqrt(d));
-        }
-
         public T x;
         public T y;
 
