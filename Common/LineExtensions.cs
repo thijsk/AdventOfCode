@@ -26,5 +26,10 @@ namespace Common
                 yield return new Point<T>(x, y);
             }
         }
+
+        public static long Length<T>(this Line<T> line) where T : INumber<T>
+        {
+            return (line.end - line.start).Magnitude();
+        }
     }
 }
