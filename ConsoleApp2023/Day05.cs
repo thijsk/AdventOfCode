@@ -6,7 +6,7 @@ public class Day05 : IDay
 {
 	public long Part1()
 	{
-		PuzzleContext.Answer1 = 0;
+		PuzzleContext.Answer1 = 107430936;
 		PuzzleContext.UseExample = false;
 
 		var input = Parse(PuzzleContext.Input);
@@ -41,7 +41,7 @@ public class Day05 : IDay
 
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 23738616;
 		PuzzleContext.UseExample = false;
 
 		var input = Parse(PuzzleContext.Input);
