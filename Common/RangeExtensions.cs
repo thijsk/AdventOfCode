@@ -60,5 +60,10 @@ namespace Common
         {
             return (second.Start.Value <= first.End.Value) && (first.Start.Value <= second.End.Value);
         }
+
+        public static int Size(this Range r)
+        {
+            return r.End.Value - r.Start.Value + 1;
+        }
     }
 }
