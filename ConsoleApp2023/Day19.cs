@@ -1,6 +1,8 @@
 ﻿using Common;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Intrinsics.Arm;
 
 namespace ConsoleApp2023;
 
@@ -26,93 +28,90 @@ public class Day19 : IDay
 
     public long Part2()
     {
-        PuzzleContext.Answer2 = 167409079868000;
+        PuzzleContext.Answer2 = 141882534122898;
         PuzzleContext.UseExample = false;
 
         var input = Parse(PuzzleContext.Input);
 
         var workflows = input.flows;
 
-        long sum = 0L;
+        var sum = ProcessRecursive(workflows, "in", 1..4000, 1..4000, 1..4000, 1..4000);
 
-        Queue<(string wf, Range x, Range m, Range a, Range s)> queue = new();
-        queue.Enqueue(("in", 1..4000, 1..4000, 1..4000, 1..4000));
+        return sum;
+    }
 
-        while (queue.TryDequeue(out var q))
+    private long ProcessRecursive(Dictionary<string, Workflow> workflows, string wf,
+        Range x, Range m, Range a, Range s)
+    {
+        if (x.Size() < 1 || m.Size() < 1 || a.Size() < 1 || s.Size() < 1)
         {
-            var (wf, x, m, a, s) = q;
+            return 0;
+        }
 
-            if (x.Size() < 1 || m.Size() < 1 || a.Size() < 1 || s.Size() < 1)
+        if (wf == "A")
+        {
+            long xcount = x.Size();
+            long mcount = m.Size();
+            long acount = a.Size();
+            long scount = s.Size();
+
+            var product = xcount * mcount * acount * scount;
+
+            Debug.Assert(product > 0);
+
+            return product;
+        }
+
+        if (wf == "R")
+        {
+            return 0;
+        }
+        
+        long sum = 0;
+        var workflow = workflows[wf];
+
+        ConsoleX.WriteLine($"WF {wf} : {x} {m} {a} {s}");
+
+        foreach (var rule in workflow.Rules)
+        {
+            ConsoleX.WriteLine($"Rule {rule.Expression} : {rule.Destination}");
+
+            if (rule.Expression == null)
             {
-                continue;
+                sum += ProcessRecursive(workflows, rule.Destination, x, m, a, s);
+                return sum;
             }
 
-            if (wf == "A")
+            (char variable, char op, int value) = (rule.Expression.Variable, rule.Expression.Operator, (int)rule.Expression.Value);
+
+            if (variable == 'x')
             {
-                long xcount = x.Size();
-                long mcount = m.Size();
-                long acount = a.Size();
-                long scount = s.Size();
-
-                var product = xcount * mcount * acount * scount;
-
-                sum += product;
-
-                Debug.Assert(sum > 0);
-                Debug.Assert(product > 0);
-
-                continue;
+                var x1 = ReduceRange(op, value, x);
+                sum += ProcessRecursive(workflows, rule.Destination, x1, m, a, s);
+                x = ReduceRangeInverse(op, value, x);
             }
-
-            if (wf == "R")
+            else if (variable == 'm')
             {
-                continue;
+                var m1 = ReduceRange(op, value, m);
+                sum += ProcessRecursive(workflows, rule.Destination, x, m1, a, s);
+                m = ReduceRangeInverse(op, value, m);
             }
-
-            var workflow = workflows[wf];
-
-            ConsoleX.WriteLine($"WF {wf} : {x} {m} {a} {s}");
-
-            foreach (var rule in workflow.Rules)
+            else if (variable == 'a')
             {
-                ConsoleX.WriteLine($"Rule {rule.Expression} : {rule.Destination}");
-
-                if (rule.Expression == null)
-                {
-                    queue.Enqueue((rule.Destination, x, m, a, s));
-                    break;
-                }
-
-                (char variable, char op, int value) = (rule.Expression.Variable, rule.Expression.Operator, (int) rule.Expression.Value);
-
-                if (variable == 'x')
-                {
-                    var x1 = ReduceRange(op, value, x);
-                    queue.Enqueue((rule.Destination, x1, m, a, s));
-                    x = ReduceRangeInverse(op, value, x);
-                }
-                else if (variable == 'm')
-                {
-                    var m1 = ReduceRange(op, value, m);
-                    queue.Enqueue((rule.Destination, x, m1, a, s));
-                    m = ReduceRangeInverse(op, value, m);
-                }
-                else if (variable == 'a')
-                {
-                    var a1 = ReduceRange(op, value, a);
-                    queue.Enqueue((rule.Destination, x, a1, a, s));
-                    a = ReduceRangeInverse(op, value, a);
-                }
-                else if (variable == 's')
-                {
-                    var s1 = ReduceRange(op, value, m);
-                    queue.Enqueue((rule.Destination, x, m, a, s1));
-                    s = ReduceRangeInverse(op, value, s);
-                }
+                var a1 = ReduceRange(op, value, a);
+                sum += ProcessRecursive(workflows, rule.Destination, x, m, a1, s);
+                a = ReduceRangeInverse(op, value, a);
+            }
+            else if (variable == 's')
+            {
+                var s1 = ReduceRange(op, value, s);
+                sum += ProcessRecursive(workflows, rule.Destination, x, m, a, s1);
+                s = ReduceRangeInverse(op, value, s);
             }
         }
 
         return sum;
+
     }
 
     private Range ReduceRangeInverse(char op, int value, Range r)
