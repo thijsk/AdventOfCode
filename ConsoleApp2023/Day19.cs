@@ -50,15 +50,12 @@ public class Day19 : IDay
 
         if (wf == "A")
         {
-            long xcount = x.Size();
-            long mcount = m.Size();
-            long acount = a.Size();
-            long scount = s.Size();
-
-            var product = xcount * mcount * acount * scount;
-
+            long xSize = x.Size();
+            long mSize = m.Size();
+            long aSize = a.Size();
+            long sSize = s.Size();
+            var product = xSize * mSize * aSize * sSize;
             Debug.Assert(product > 0);
-
             return product;
         }
 
@@ -82,7 +79,7 @@ public class Day19 : IDay
                 return sum;
             }
 
-            (char variable, char op, int value) = (rule.Expression.Variable, rule.Expression.Operator, (int)rule.Expression.Value);
+            var (variable, op, value) = (rule.Expression.Variable, rule.Expression.Operator, (int)rule.Expression.Value);
 
             if (variable == 'x')
             {
