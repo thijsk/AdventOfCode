@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Common
@@ -49,11 +51,25 @@ namespace Common
                 .SelectMany(row => Enumerable.Range(input.GetLowerBound(1), input.GetUpperBound(1) + 1).Select(col => (row, col))).ToArray();
         }
 
+        /// <summary>
+        /// Get the number of rows (x) in the grid
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetRowCount<T>(this T[,] input)
         {
             return input.GetUpperBound(0) + 1;
         }
 
+        /// <summary>
+        /// Get the number of rows (y) in the grid
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetColumnCount<T>(this T[,] input)
         {
             return input.GetUpperBound(1) + 1;
@@ -174,6 +190,25 @@ namespace Common
 
             return result;
         }
+        
+        /// <summary>
+        /// Bring the given index in the grid bounds
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="grid"></param>
+        /// <param name="index"></param>
+        /// <returns>0 <= index.x < grid.LenghtX() && 0 <= index.y < grid.LengthX()</returns>
+        public static (int x, int y) TransfromInBounds<T>(this T[,] grid, (int x, int y) index)
+        {
+            var maxx = grid.GetRowCount();
+            var maxy = grid.GetColumnCount();
+            return ((index.x % maxx + maxx) % maxx, (index.y % maxy + maxy) % maxy);
+        }
+
+        public static (int x, int y)[] GetNeighborsInDirection<T>(this T[,] grid, (int ix, int iy) index, params (int x, int y)[] directions)
+        {
+            return directions.Select(d => index.Add(d)).Where(i => IsInGrid(grid, i)).ToArray();
+        }
 
         /// <summary>
         /// Returns the horizontal and vertical neighbors of the given index in the grid
@@ -181,10 +216,11 @@ namespace Common
         /// <typeparam name="T"></typeparam>
         /// <param name="grid"></param>
         /// <param name="index"></param>
-        /// <returns></returns>
+        /// <returns>a list of at most 4 (x,y) points on the cardinal axis</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (int x, int y)[] GetNeighbors<T>(this T[,] grid, (int ix, int iy) index)
         {
-            return grid.GetNeighbors(index.ix, index.iy);
+            return GetNeighborsInDirection(grid, index, Directions.AllCardinal);
         }
 
         /// <summary>
@@ -194,30 +230,12 @@ namespace Common
         /// <param name="grid"></param>
         /// <param name="ix"></param>
         /// <param name="iy"></param>
-        /// <returns>a list of at most 4 (x,y) points</returns>
+        /// <returns>a list of at most 4 (x,y) points on the cardinal axis</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (int x, int y)[] GetNeighbors<T>(this T[,] grid, int ix, int iy)
         {
-            var minx = Math.Max(ix - 1, 0);
-            var maxx = Math.Min(ix + 1, grid.GetUpperBound(0));
-            var miny = Math.Max(iy - 1, 0);
-            var maxy = Math.Min(iy + 1, grid.GetUpperBound(1));
-
-            var result = new List<(int, int)>();
-
-            for (var x = minx; x <= maxx; x++)
-            {
-                for (var y = miny; y <= maxy; y++)
-                {
-                    if (!(x == ix && y == iy) && !(x != ix && y != iy))
-                    {
-                        result.Add((x, y));
-                    }
-                }
-            }
-
-            return result.ToArray();
+            return GetNeighborsInDirection(grid, (ix, iy), Directions.AllCardinal);
         }
-
 
         /// <summary>
         /// Returns the diagonal neighbors of the given x and y indexes in the grid
@@ -226,9 +244,10 @@ namespace Common
         /// <param name="grid"></param>
         /// <param name="index"></param>
         /// <returns>a list of at most 4 (x,y) points</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (int x, int y)[] GetNeighborsDiagonal<T>(this T[,] grid, (int ix, int iy) index)
         {
-            return grid.GetNeighborsDiagonal(index.ix, index.ix);
+            return GetNeighborsInDirection(grid, index, Directions.AllOrdinal);
         }
 
         /// <summary>
@@ -239,27 +258,10 @@ namespace Common
         /// <param name="ix"></param>
         /// <param name="iy"></param>
         /// <returns>a list of at most 4 (x,y) points</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (int x, int y)[] GetNeighborsDiagonal<T>(this T[,] grid, int ix, int iy)
         {
-            var minx = Math.Max(ix - 1, 0);
-            var maxx = Math.Min(ix + 1, grid.GetUpperBound(0));
-            var miny = Math.Max(iy - 1, 0);
-            var maxy = Math.Min(iy + 1, grid.GetUpperBound(1));
-
-            var result = new List<(int, int)>();
-
-            for (var x = minx; x <= maxx; x++)
-            {
-                for (var y = miny; y <= maxy; y++)
-                {
-                    if (ix != x && iy != y)
-                    {
-                        result.Add((x, y));
-                    }
-                }
-            }
-
-            return result.ToArray();
+            return GetNeighborsInDirection(grid, (ix, iy), Directions.AllOrdinal);
         }
 
 
@@ -270,9 +272,10 @@ namespace Common
         /// <param name="grid"></param>
         /// <param name="index"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (int x, int y)[] GetAllNeighbors<T>(this T[,] grid, (int ix, int iy) index)
         {
-            return grid.GetAllNeighbors(index.ix, index.iy);
+            return GetNeighborsInDirection(grid, index, Directions.All);
         }
 
         /// <summary>
@@ -285,25 +288,7 @@ namespace Common
         /// <returns>a list of at most 4 (x,y) points</returns>
         public static (int x, int y)[] GetAllNeighbors<T>(this T[,] grid, int ix, int iy)
         {
-            var minx = Math.Max(ix - 1, 0);
-            var maxx = Math.Min(ix + 1, grid.GetUpperBound(0));
-            var miny = Math.Max(iy - 1, 0);
-            var maxy = Math.Min(iy + 1, grid.GetUpperBound(1));
-
-            var result = new List<(int, int)>();
-
-            for (var x = minx; x <= maxx; x++)
-            {
-                for (var y = miny; y <= maxy; y++)
-                {
-                    if (!(x == ix && y == iy))
-                    {
-                        result.Add((x, y));
-                    }
-                }
-            }
-
-            return result.ToArray();
+            return GetNeighborsInDirection(grid, (ix, iy), Directions.All);
         }
 
         /// <summary>
@@ -524,6 +509,14 @@ namespace Common
             s1 = array.ElementAtOrDefault(0);
             s2 = array.ElementAtOrDefault(1);
             s3 = array.ElementAtOrDefault(2);
+        }
+
+        public static void Deconstruct<T>(this T[] array, out T s1, out T s2, out T s3, out T s4)
+        {
+            s1 = array.ElementAtOrDefault(0);
+            s2 = array.ElementAtOrDefault(1);
+            s3 = array.ElementAtOrDefault(2);
+            s4 = array.ElementAtOrDefault(3);
         }
     }
 }

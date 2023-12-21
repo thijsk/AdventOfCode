@@ -20,6 +20,32 @@ namespace CommonTests
         }
 
         [TestMethod]
+        public void GetRowCount_ShouldReturnXLength()
+        {
+            var _sut = new[,]
+            {
+                { 1, 2, 3},
+                { 4, 5, 6}
+            };
+            var actual = _sut.GetRowCount();
+
+            Assert.AreEqual(2, actual);
+        }
+
+        [TestMethod]
+        public void GetColumnCount_ShouldReturnYLength()
+        {
+            var _sut = new[,]
+            {
+                { 1, 2, 3},
+                { 4, 5, 6}
+            };
+            var actual = _sut.GetColumnCount();
+
+            Assert.AreEqual(3, actual);
+        }
+
+        [TestMethod]
         public void GetNeighbors_ShouldReturnHorizontalAndVertical()
         {
             var _sut = new[,] {
@@ -28,7 +54,9 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighbors(1, 1);
-
+            var actual2 = _sut.GetNeighbors((1,1));
+            CollectionAssert.AreEqual(actual, actual2);
+            
             var expected = new[] {(0,1), (1,0), (1,2), (2,1)};
 
             CollectionAssert.AreEqual(expected.Order().ToList(), actual.Order().ToList());
@@ -43,6 +71,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighbors(0, 0);
+            var actual2 = _sut.GetNeighbors((0, 0));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 1), (1, 0)};
 
@@ -58,6 +88,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighbors(1, 2);
+            var actual2 = _sut.GetNeighbors((1, 2));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 2), (1, 1), (2,2) };
 
@@ -74,6 +106,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighborsDiagonal(1, 1);
+            var actual2 = _sut.GetNeighborsDiagonal((1, 1));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 0), (0, 2), (2, 0), (2, 2) };
 
@@ -89,6 +123,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighborsDiagonal(0, 1);
+            var actual2 = _sut.GetNeighborsDiagonal((0, 1));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (1, 0), (1, 2) };
 
@@ -104,6 +140,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetNeighborsDiagonal(2, 2);
+            var actual2 = _sut.GetNeighborsDiagonal((2, 2));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (1, 1) };
 
@@ -119,6 +157,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetAllNeighbors(1, 1);
+            var actual2 = _sut.GetAllNeighbors((1, 1));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 0), (0,1), (0, 2), (1, 0), (1, 2), (2, 0), (2,1), (2, 2) };
 
@@ -134,6 +174,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetAllNeighbors(1, 2);
+            var actual2 = _sut.GetAllNeighbors((1, 2));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 1), (0, 2), (1, 1), (2, 1), (2, 2) };
 
@@ -149,6 +191,8 @@ namespace CommonTests
                 { 7, 8, 9}
             };
             var actual = _sut.GetAllNeighbors(0, 0);
+            var actual2 = _sut.GetAllNeighbors((0, 0));
+            CollectionAssert.AreEqual(actual, actual2);
 
             var expected = new[] { (0, 1), (1, 0), (1, 1) };
 
