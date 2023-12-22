@@ -1,4 +1,5 @@
 ﻿using Common;
+using System.Diagnostics;
 
 namespace ConsoleApp2023;
 
@@ -13,11 +14,9 @@ public class Day22 : IDay
 
         FreeFall(input);
 
-        return input.Count(b => CanBeSafelyDisIntegrated(input, b));
+        return input.Count(b => CanBeSafelyDisIntegrated(input.ToHashSet(), b));
     }
-
-
-
+    
     public long Part2()
     {
         PuzzleContext.Answer2 = 59266;
@@ -25,33 +24,44 @@ public class Day22 : IDay
 
         var input = PuzzleContext.Input.Select(Brick.Parse).OrderBy(b => b.MinZ).ToArray();
 
-        ConsoleX.WriteLine(input.Max(b => b.MaxZ));
-
         FreeFall(input);
+        
+        return input.Sum(brick => CountFallen(input.ToHashSet(), brick));
+    }
 
-        ConsoleX.WriteLine(input.Max(b => b.MaxZ));
+    private long CountFallen(HashSet<Brick> input, Brick firstBrick)
+    {
+        Queue<Brick> fronteer = new();
+        fronteer.Enqueue(firstBrick);
 
-        long sum = 0L;
+        HashSet<Brick> fallen = new();
 
-        foreach (var brick in input)
+        while (fronteer.TryDequeue(out var brick))
         {
-            var falling = CountFallingIfDisintegrated(input, brick);
-            sum += falling;
+            if (fallen.Contains(brick))
+            {
+                continue;
+            }
+
+            fallen.Add(brick);
+            ConsoleX.WriteLine($"{brick} has fallen");
+
+            foreach (var other in input.Except(fallen))
+            {
+                var supports = GetAllBricksBelow(input, other).ToList();
+                if (supports.Any() && supports.All(b => fallen.Contains(b)))
+                {
+                    fronteer.Enqueue(other);
+                }
+            }
         }
 
-        return sum;
+        return fallen.Count - 1;
     }
 
-    private long CountFallingIfDisintegrated(Brick[] input, Brick brick)
-    {
-        var copy = input.Where(b => b!= brick).Select(Brick.Copy).ToArray();
-        return FreeFall(copy);
-    }
-
-    private static long FreeFall(Brick[] input)
+    private static void FreeFall(Brick[] input)
     {
         bool hasMoved;
-        List<string> fallen = new();
 
         do
         {
@@ -59,30 +69,26 @@ public class Day22 : IDay
 
             foreach (var brick in input)
             {
-                if (brick.MinZ > 1 && !input.Any(b => b.Name != brick.Name && b.IsDirectlyBelow(brick)))
+                while (brick.MinZ > 1 && !input.Any(b => b != brick && b.IsDirectlyBelow(brick)))
                 { 
-                    fallen.Add(brick.Name);
                     brick.MoveOneDown();
                     hasMoved = true;
                 }
             }
         } while (hasMoved);
-
-        return fallen.Distinct().Count();
     }
 
-    private bool CanBeSafelyDisIntegrated(Brick[] input, Brick brick)
+    private bool CanBeSafelyDisIntegrated(HashSet<Brick> input, Brick brick)
     {
-        // if the brick does not support any other, it can be disintegrated
-        if (!input.Any(b => b != brick && b.IsDirectlyAbove(brick)))
+        var supportedBricks = GetAllBricksAbove(input, brick).ToList();
+
+        // if the brick is not supporting any other brick, it can be disintegrated
+        if (!supportedBricks.Any())
         {
-           // ConsoleX.WriteLine($"Brick {brick} can be disintegrated because it does not support any other brick");
             return true;
         }
 
-        // if the brick is supporting another brick, but that brick is supported by another brick, it can be disintegrated
-        var supportedBricks = GetAllBricksAbove(input, brick);
-
+        // if the brick is supporting another brick, but that brick is also supported by another brick, it can be disintegrated
         if (supportedBricks.All(b => GetAllBricksBelow(input, b).Any(b => b != brick)))
         {
             return true;
@@ -91,25 +97,33 @@ public class Day22 : IDay
         return false;
     }
 
-    //private IEnumerable<Brick> GetFallingBricksRecursive(Brick[] input, Brick[] supports)
-    //{
-    //    var bricks = input.Where(b => GetAllBricksAbove(input, b).All(b => b.GetAllBricksBelow(input, b))).ToList();
-    //    bricks.AddRange(GetFallingBricksRecursive(input, bricks.ToArray()));
-    //    return bricks;
-    //}
 
-    private IEnumerable<Brick> GetAllBricksAbove(Brick[] input, Brick brick)
+    private Dictionary<Brick, IEnumerable<Brick>> _aboveCache = new();
+    private IEnumerable<Brick> GetAllBricksAbove(HashSet<Brick> input, Brick brick)
     {
-        return input.Where(b => b != brick && b.IsDirectlyAbove(brick));
+        if (_aboveCache.TryGetValue(brick, out var cached))
+        {
+            return cached;
+        }
+
+        var result = input.Where(b => b != brick && b.IsDirectlyAbove(brick)).ToList();
+        _aboveCache.Add(brick, result);
+        return result;
     }
 
-    private IEnumerable<Brick> GetAllBricksBelow(Brick[] input, Brick brick)
+    private Dictionary<Brick, IEnumerable<Brick>> _belowCache = new();
+    private IEnumerable<Brick> GetAllBricksBelow(HashSet<Brick> input, Brick brick)
     {
-        return input.Where(b => b != brick && b.IsDirectlyBelow(brick));
+        if (_belowCache.TryGetValue(brick, out var cached))
+        {
+            return cached;
+        }
+
+        var result = input.Where(b => b != brick && b.IsDirectlyBelow(brick)).ToList();
+        _belowCache.Add(brick, result);
+        return result;
     }
-
-  
-
+    
     private class Brick
     {
         private Point3<int> _begin;
