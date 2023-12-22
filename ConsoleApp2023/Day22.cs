@@ -10,11 +10,11 @@ public class Day22 : IDay
         PuzzleContext.Answer1 = 407;
         PuzzleContext.UseExample = false;
 
-        var input = PuzzleContext.Input.Select(Brick.Parse).OrderBy(b => b.MinZ).ToArray();
+        var input = PuzzleContext.Input.Select(Brick.Parse).OrderBy(b => b.MinZ).ToList();
 
         FreeFall(input);
 
-        return input.Count(b => CanBeSafelyDisIntegrated(input.ToHashSet(), b));
+        return input.Count(b => CanBeSafelyDisIntegrated(input, b));
     }
     
     public long Part2()
@@ -22,14 +22,14 @@ public class Day22 : IDay
         PuzzleContext.Answer2 = 59266;
         PuzzleContext.UseExample = false;
 
-        var input = PuzzleContext.Input.Select(Brick.Parse).OrderBy(b => b.MinZ).ToArray();
+        var input = PuzzleContext.Input.Select(Brick.Parse).OrderBy(b => b.MinZ).ToList();
 
         FreeFall(input);
         
-        return input.Sum(brick => CountFallen(input.ToHashSet(), brick));
+        return input.Sum(brick => CountFallen(input, brick));
     }
 
-    private long CountFallen(HashSet<Brick> input, Brick firstBrick)
+    private long CountFallen(IList<Brick> input, Brick firstBrick)
     {
         Queue<Brick> fronteer = new();
         fronteer.Enqueue(firstBrick);
@@ -38,18 +38,13 @@ public class Day22 : IDay
 
         while (fronteer.TryDequeue(out var brick))
         {
-            if (fallen.Contains(brick))
-            {
-                continue;
-            }
-
             fallen.Add(brick);
             ConsoleX.WriteLine($"{brick} has fallen");
 
-            foreach (var other in input.Except(fallen))
+            foreach (var other in GetAllBricksAbove(input, brick))
             {
                 var supports = GetAllBricksBelow(input, other).ToList();
-                if (supports.Any() && supports.All(b => fallen.Contains(b)))
+                if (supports.Count > 0 && supports.All(b => fallen.Contains(b)))
                 {
                     fronteer.Enqueue(other);
                 }
@@ -59,31 +54,29 @@ public class Day22 : IDay
         return fallen.Count - 1;
     }
 
-    private static void FreeFall(Brick[] input)
+    private static void FreeFall(IList<Brick> input)
     {
-        bool hasMoved;
-
-        do
+        foreach (var brick in input)
         {
-            hasMoved = false;
-
-            foreach (var brick in input)
+            if (brick.MinZ == 1)
             {
-                while (brick.MinZ > 1 && !input.Any(b => b != brick && b.IsDirectlyBelow(brick)))
-                { 
-                    brick.MoveOneDown();
-                    hasMoved = true;
-                }
+                continue;
             }
-        } while (hasMoved);
+
+            var below = input.Where(b => b.MaxZ < brick.MinZ).ToList();
+            while (brick.MinZ > 1 && !below.Any(b => b != brick && b.IsDirectlyBelow(brick)))
+            {
+                brick.MoveOneDown();
+            }
+        }
     }
 
-    private bool CanBeSafelyDisIntegrated(HashSet<Brick> input, Brick brick)
+    private bool CanBeSafelyDisIntegrated(IList<Brick> input, Brick brick)
     {
         var supportedBricks = GetAllBricksAbove(input, brick).ToList();
 
         // if the brick is not supporting any other brick, it can be disintegrated
-        if (!supportedBricks.Any())
+        if (supportedBricks.Count == 0)
         {
             return true;
         }
@@ -99,7 +92,7 @@ public class Day22 : IDay
 
 
     private Dictionary<Brick, IEnumerable<Brick>> _aboveCache = new();
-    private IEnumerable<Brick> GetAllBricksAbove(HashSet<Brick> input, Brick brick)
+    private IEnumerable<Brick> GetAllBricksAbove(IList<Brick> input, Brick brick)
     {
         if (_aboveCache.TryGetValue(brick, out var cached))
         {
@@ -112,7 +105,7 @@ public class Day22 : IDay
     }
 
     private Dictionary<Brick, IEnumerable<Brick>> _belowCache = new();
-    private IEnumerable<Brick> GetAllBricksBelow(HashSet<Brick> input, Brick brick)
+    private IEnumerable<Brick> GetAllBricksBelow(IList<Brick> input, Brick brick)
     {
         if (_belowCache.TryGetValue(brick, out var cached))
         {

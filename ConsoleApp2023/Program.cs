@@ -3,7 +3,7 @@ using TextCopy;
 
 var dayClasses = DayRunner.GetAllIDays();
 var dayClass = dayClasses
-   // .Where(d => d.Name == "Day14")
+    //.Where(d => d.Name == "Day05")
     .Last();
 
 var runner = new DayRunner(dayClass);
