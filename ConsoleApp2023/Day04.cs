@@ -19,7 +19,7 @@ public class Day04 : IDay
 			var value = (int)Math.Pow(2, count-1);
 			sum += value;
 
-            Console.WriteLine($"Card {draw.card} Matches {count} Value {value}");
+            ConsoleX.WriteLine($"Card {draw.card} Matches {count} Value {value}");
         }
 
 		return sum;
@@ -58,7 +58,7 @@ public class Day04 : IDay
 				}
 			}
 
-			Console.WriteLine($"Card {draw.card} Matches {count} Value {value} Copies {cardcopies}");
+			ConsoleX.WriteLine($"Card {draw.card} Matches {count} Value {value} Copies {cardcopies}");
 		}
 
 		return copies.Values.Sum();

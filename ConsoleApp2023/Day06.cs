@@ -39,8 +39,7 @@ public class Day06 : IDay
 			var options = 1 + (maxtime - mintime);
 			result *= options;
 		}
-
-		return result;
+        return result;
 	}
 
 	public long Part2()
