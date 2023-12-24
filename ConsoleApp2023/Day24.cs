@@ -68,6 +68,11 @@ public class Day24 : IDay
 
         var input = PuzzleContext.Input.Select(Parse3d).ToArray();
 
+        return SolveWithZ3(input);
+    }
+
+    private static long SolveWithZ3(((long X, long Y, long Z) p, (long X, long Y, long Z) d)[] input)
+    {
         // I'm totally going to cheat this just like everyone else...
         // by using the Z3 solver
         // This was the worst AoC puzzle ever.
@@ -110,7 +115,7 @@ public class Day24 : IDay
         }
 
         Debug.Assert(s.Check() == Status.SATISFIABLE);
-        
+
         var m = s.Model;
 
         var sx = (IntNum) m.Eval(x);
@@ -128,8 +133,6 @@ public class Day24 : IDay
     private bool IsInTestArea(Vector2 p, (Vector2 a, Vector2 b) testarea)
     {
         bool xInRange = p.X >= testarea.a.X && p.X <= testarea.b.X;
-
-        // Check if point.Y is within the y-range of the rectangle
         bool yInRange = p.Y >= testarea.a.Y && p.Y <= testarea.b.Y;
 
         return xInRange && yInRange;
