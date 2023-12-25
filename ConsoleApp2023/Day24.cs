@@ -3,6 +3,7 @@ using System.Numerics;
 using Common;
 using Microsoft.Z3;
 
+
 namespace ConsoleApp2023;
 
 public class Day24 : IDay
@@ -18,7 +19,7 @@ public class Day24 : IDay
 
         long sum = 0L;
 
-        var paired = input.SelectMany((x, i) => input.Skip(i + 1), (a, b) => (a, b));
+        IEnumerable<((Vector2 p, Vector2 v) a, (Vector2 p, Vector2 d) b)> paired = input.SelectMany((x, i) => input.Skip(i + 1), (a, b) => (a, b));
         foreach (var (stoneA, stoneB) in paired)
         {
             //ConsoleX.WriteLine();
@@ -52,7 +53,6 @@ public class Day24 : IDay
             {
                 //ConsoleX.WriteLine($"Hailstones' paths crossed at {intersectionA} {intersectionB}.");
                 sum++;
-                continue;
             }
             //ConsoleX.WriteLine($"Hailstones' paths crossed outside test area at {intersectionA}.");
         }
@@ -68,9 +68,124 @@ public class Day24 : IDay
 
         var input = PuzzleContext.Input.Select(Parse3d).ToArray();
 
-        return SolveWithZ3(input);
+        var mathAns = SolveWithMath(input);
+        var z3Ans = SolveWithZ3(input);
+        
+        Debug.Assert(z3Ans == mathAns);
+        return mathAns;
     }
 
+    private long SolveWithMath(((long X, long Y, long Z) p, (long X, long Y, long Z) d)[] input)
+    {
+        var vectors = input.Select(i =>
+        {
+            var p2 = (i.p.X, i.p.Y);
+            var d2 = (i.d.X, i.d.Y);
+            var p3 = (i.p.X, i.p.Y, i.p.Z);
+            var d3 = (i.d.X, i.d.Y, i.d.Z);
+            return (p2, d2, p3, d3);
+        }).ToList();
+
+        var searchRange = Enumerable.Range(-1000, 2000).ToList();
+
+        var samples = vectors.SelectMany((x, i) => vectors.Skip(i + 1), (a, b) => (a, b)).Take(3).ToList();
+     
+        foreach (long x in searchRange)
+        {
+            foreach (long y in searchRange)
+            {
+                var d2 = (X: x, Y: y);
+
+                var intersects2 = samples.Select(s => (s: s, i: Intersects(s.a, d2, s.b))).ToList();
+               
+                if (!intersects2.All(i => i.i.intersects))
+                    continue;
+                
+                foreach (long z in searchRange)
+                {
+                    var d3 = (X: x, Y: y, Z: z);
+
+                    var points = intersects2.Select(i =>
+                    {
+                        var (a, b) = i.s;
+                        var ad = Subtract(a.d3, d3);
+                        var bd = Subtract(b.d3, d3);
+                        var ap = a.p3;
+                        var bp = b.p3;
+
+                        var pointA = PositionAtT((ap, ad), i.i.ta.Value);
+                        var pointB = PositionAtT((bp, bd), i.i.tb.Value);
+
+                        return (pointA, pointB);
+                    }).ToList();
+
+                    if (points.Any(p => p.pointA != p.pointB))
+                        continue;
+
+                    var point = points.First().pointA;
+                    return (long)point.X + (long)point.Y + (long)point.Z;
+                }
+            }
+        }
+
+        return 0L;
+    }
+
+    private (bool intersects, (BigInteger X, BigInteger Y)? p, BigInteger? ta, BigInteger? tb) Intersects(
+        ((long X, long Y) p2, (long X, long Y) d2, (long X, long Y, long Z) p3, (long X, long Y, long Z) d3) a,
+        (long X, long Y) d2,
+        ((long X, long Y) p2, (long X, long Y) d2, (long X, long Y, long Z) p3, (long X, long Y, long Z) d3) b)
+    {
+        var ad = Subtract(a.d2, d2);
+        var bd = Subtract(b.d2, d2);
+        var ap = a.p2;
+        var bp = b.p2;
+
+        var ta = StoneIntersectionTime((ap, ad), (bp, bd));
+        if (!ta.HasValue || ta < 0)
+            return (false, null, null, null);
+        var tb = StoneIntersectionTime((bp, bd), (ap, ad));
+        if (!tb.HasValue || tb < 0)
+            return (false, null, null, null);
+
+        var pointA = PositionAtT((ap, ad), ta.Value);
+        var pointB = PositionAtT((bp, bd), tb.Value);
+
+        if (pointA != pointB)
+            return (false, null, null, null);
+        return (true, pointA, ta, tb);
+    }
+
+    private static (T X, T Y, T Z) Add<T>((T X, T Y, T Z) a, (T X, T Y, T Z) b) where T : INumber<T>
+    {
+        return (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+    }
+
+    private static (T X, T Y) Add<T>((T X, T Y) a, (T X, T Y) b) where T : INumber<T>
+    {
+        return (a.X + b.X, a.Y + b.Y);
+    }
+
+    private static (T X, T Y, T Z) Multiply<T>((T X, T Y, T Z) v, T t) where T : INumber<T>
+    {
+        return ((v.X * t), (v.Y * t), (v.Z * t));
+    }
+
+    private static (T X, T Y) Multiply<T>((T X, T Y) v, T t) where T : INumber<T>
+    {
+        return ((v.X * t), (v.Y * t));
+    }
+
+    private (long X, long Y) Subtract((long X, long Y) a, (long X, long Y) b)
+    {
+        return (a.X - b.X, a.Y - b.Y);
+    }
+
+    private (long X, long Y, long Z) Subtract((long X, long Y, long Z) a, (long X, long Y, long Z) b)
+    {
+        return (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+    }
+    
     private static long SolveWithZ3(((long X, long Y, long Z) p, (long X, long Y, long Z) d)[] input)
     {
         // I'm totally going to cheat this just like everyone else...
@@ -122,14 +237,26 @@ public class Day24 : IDay
         var sy = (IntNum) m.Eval(y);
         var sz = (IntNum) m.Eval(z);
 
+        ConsoleX.WriteLine(m);
+
         return sx.Int64 + sy.Int64 + sz.Int64;
     }
 
-    private static Vector2 PositionAtT((Vector2 p, Vector2 d) stoneA, float t)
+    private static Vector2 PositionAtT((Vector2 p, Vector2 v) stoneA, float t)
     {
-        return stoneA.p + (stoneA.d * t);
+        return stoneA.p + (stoneA.v * t);
     }
 
+    private static (BigInteger X, BigInteger Y, BigInteger Z) PositionAtT(((long X, long Y, long Z) p, (long X, long Y, long Z) d) a, BigInteger t)
+    {
+        return Add<BigInteger>(a.p, Multiply<BigInteger>(a.d, t));
+    }
+
+    private static (BigInteger X, BigInteger Y) PositionAtT(((long X, long Y) p, (long X, long Y) d) a, BigInteger t)
+    {
+        return Add<BigInteger>(a.p, Multiply<BigInteger>(a.d, t));
+    }
+    
     private bool IsInTestArea(Vector2 p, (Vector2 a, Vector2 b) testarea)
     {
         bool xInRange = p.X >= testarea.a.X && p.X <= testarea.b.X;
@@ -137,11 +264,27 @@ public class Day24 : IDay
 
         return xInRange && yInRange;
     }
-    
-    static float StoneIntersectionTime((Vector2 p, Vector2 d) a, (Vector2 p, Vector2 d) b)
+
+    private BigInteger? StoneIntersectionTime(((long X, long Y) p, (long X, long Y) v) a, ((long X, long Y) p, (long X, long Y) v) b)
+    {
+        BigInteger D = (a.v.X * -1 * b.v.Y) - (a.v.Y * -1 * b.v.X);
+
+        if (D == 0)
+            return null ;
+
+        var Qx = (-1 * b.v.Y * (b.p.X - a.p.X)) - (-1 * b.v.X * (b.p.Y - a.p.Y));
+        var Qy = (a.v.X * (b.p.Y - a.p.Y)) - (a.v.Y * (b.p.X - a.p.X));
+
+        var t = Qx / D;
+        var s = Qy / D;
+
+        return t;
+    }
+
+    static float StoneIntersectionTime((Vector2 p, Vector2 v) a, (Vector2 p, Vector2 v) b)
     {
         // Calculate the intersection time using vector algebra
-        float denominator = a.d.X * b.d.Y - a.d.Y * b.d.X;
+        float denominator = a.v.X * b.v.Y - a.v.Y * b.v.X;
 
         if (Math.Abs(denominator) < float.Epsilon)
         {
@@ -149,7 +292,7 @@ public class Day24 : IDay
             return float.NaN;
         }
 
-        var numerator = (a.p.Y - b.p.Y) * b.d.X - (a.p.X - b.p.X) * b.d.Y;
+        var numerator = (a.p.Y - b.p.Y) * b.v.X - (a.p.X - b.p.X) * b.v.Y;
         return numerator / denominator;
     }
 
