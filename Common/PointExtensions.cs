@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common
 {
@@ -23,5 +18,12 @@ namespace Common
             yield return point - (T.One, T.Zero);
             yield return point - (T.Zero, T.One);
         }
+
+        public static long Magnitude(this Point<int> point)
+        {
+            var d = Convert.ToDouble(point.x * (long)point.x + point.y * (long)point.y);
+            return (long)Math.Sqrt(d);
+        }
+
     }
 }

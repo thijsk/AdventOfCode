@@ -26,6 +26,8 @@ namespace Common
             return result.ToArray();
         }
 
+        public static char[,] GetGrid(this string[] lines) => GetGrid(lines, c => c);
+        
         public static T[,] GetGrid<T>(this string[] lines, Func<char, T> parse)
         {
             var width = lines.First().Length;

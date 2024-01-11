@@ -6,34 +6,73 @@ namespace ConsoleAppTests
     [TestClass] 
     public class DayTest
     {
-        private DayRunner _sut;
-
-        [TestInitialize]
-        public void Init()
+        public static IEnumerable<object[]> DaysForTest
         {
-            var files = Directory.EnumerateFiles(AppContext.BaseDirectory, "ConsoleApp*.dll");
-            foreach (var file in files)
+            get
             {
-                Assembly.LoadFrom(file);
+                var files = Directory.EnumerateFiles(AppContext.BaseDirectory, "ConsoleApp*.dll");
+                foreach (var file in files)
+                {
+                    Assembly.LoadFrom(file);
+                }
+                var days = DayRunner.GetAllIDays();
+                return days.SelectMany(GetWrapper);
             }
-            var days = DayRunner.GetAllIDays();
-            _sut = new DayRunner(days.Last());
+        }
 
+        private static IEnumerable<object[]> GetWrapper(Type arg)
+        {
+            yield return new[] { new DayWrapper(arg, 1) };
+            yield return new[] { new DayWrapper(arg, 2) };
+        }
+
+        public class DayWrapper
+        {
+            public DayWrapper(Type dayType, int part)
+            {
+                this.dayType = dayType;
+                this.part = part;
+            }
+
+            private Type dayType { get; }
+            private int part { get; }
+
+            public (long expected, long actual) Invoke()
+            {
+                var day = new DayRunner(dayType);
+
+                if (part == 1)
+                { 
+                    var actual = day.RunPart1();
+                    var expected = PuzzleContext.Answer1;
+                    return (expected, actual);
+                }
+
+                if (part == 2)
+                {
+                    var actual = day.RunPart2();
+                    var expected = PuzzleContext.Answer2;
+                    return (expected, actual);
+                }
+                throw new Exception("Invalid part");
+            }
+
+            public override string ToString()
+            {
+                return $"{dayType.Name} Part {part}";
+            }
+        }
+
+        public static string GetDynamicDataDisplayName(MethodInfo methodInfo, object[] data)
+        {
+            return ((DayWrapper)data[0]).ToString();
         }
 
         [TestMethod]
-        public void TestPart1()
+        [DynamicData(nameof(DaysForTest), DynamicDataDisplayName = nameof(GetDynamicDataDisplayName))]
+        public void TestDayPart(DayWrapper sut)
         {
-            var actual = _sut.RunPart1();
-            var expected = PuzzleContext.Answer1;
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void TestPart2()
-        {
-            var actual = _sut.RunPart2();
-            var expected = PuzzleContext.Answer2;
+            var (expected, actual) = sut.Invoke();
             Assert.AreEqual(expected, actual);
         }
     }

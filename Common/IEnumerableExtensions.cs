@@ -26,6 +26,11 @@ namespace Common
             yield return (prevItem, currentItem, emptyValue);
         }
 
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IList<T> source)
+        {
+            return source.GetPermutations(source.Count);
+        }
+
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> source, int length)
         {
             var list = source as IList<T> ?? source.ToList();
@@ -146,6 +151,31 @@ namespace Common
             }
             return hash.ToHashCode();
         }
-        
+
+        public static IEnumerable<T[]> Combinations<T>(this IEnumerable<T> elements, int k)
+        {
+            List<T[]> result = new List<T[]>();
+
+            if (k == 0)
+            {
+                // single combination: empty set
+                result.Add(new T[0]);
+            }
+            else
+            {
+                int current = 1;
+                foreach (T element in elements)
+                {
+                    // combine each element with (k - 1)-combinations of subsequent elements
+                    result.AddRange(elements
+                        .Skip(current++)
+                        .Combinations(k - 1)
+                        .Select(combination => (new T[] { element }).Concat(combination).ToArray())
+                    );
+                }
+            }
+
+            return result;
+        }
     }
 }
