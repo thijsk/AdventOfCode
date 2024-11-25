@@ -30,7 +30,7 @@ public class DayRunner
     public static IOrderedEnumerable<Type> GetAllIDays()
     {
         return AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly =>
-            assembly.GetTypes().Where(thetype => thetype.GetInterfaces().Contains(typeof(IDay)))).OrderBy(t => t.Name);
+            assembly.GetTypes().Where(theType => theType.GetInterfaces().Contains(typeof(IDay)))).OrderBy(t => t.Name);
     }
 
     public override string ToString()
