@@ -29,7 +29,7 @@ public class Day01 : IDay
 
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 26593248;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.Select(Parse);
@@ -55,8 +55,8 @@ public class Day01 : IDay
 
 	private (long left, long right) Parse(string line)
 	{
-		var parts = line.Split("   ").Select(long.Parse).ToArray();
-		return (parts[0], parts[1]);
+		(long left, long right) = line.Split("   ").Select(long.Parse).ToArray();
+		return (left, right);
 	}
 
 }	

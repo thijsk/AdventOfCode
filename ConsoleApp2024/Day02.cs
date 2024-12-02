@@ -50,8 +50,8 @@ public class Day02 : IDay
 				{
 					var copy = level.ToList();
 					copy.RemoveAt(i);
-					var reversecopy = copy.ToArray().Reverse().ToArray();
-					var ok2 = isOk(copy.ToArray()) || isOk(reversecopy);
+					var reverseCopy = copy.AsEnumerable().Reverse().ToArray();
+					var ok2 = isOk(copy.ToArray()) || isOk(reverseCopy);
 					if (ok2)
 					{
 						safe++;
@@ -67,21 +67,20 @@ public class Day02 : IDay
 	private static bool isOk(long[] level)
 	{
 		var ok = true;
-		for (int i = 0; i < level.Length - 1; i++)
+		for (var i = 0; i < level.Length - 1; i++)
 		{
 			var difference = level[i + 1] - level[i];
-			if (difference is > 0 and <= 3)
+			if (difference is <= 0 or > 3)
 			{
-				continue;
+				ok = false;
+				break;
 			}
-			ok = false;
-			break;
 		}
 
 		return ok;
 	}
 
-	private long[] Parse(string line)
+	private static long[] Parse(string line)
 	{
 		return line.Split(' ').Select(long.Parse).ToArray();
 	}
