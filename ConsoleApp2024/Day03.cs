@@ -28,7 +28,7 @@ public class Day03 : IDay
 
 	private long Parse1(string line)
 	{
-		var matches = new Regex(@"mul\((\d\d?\d?),(\d\d?\d?)\)").Matches(line);
+		var matches = new Regex(@"mul\((\d{1,3}),(\d{1,3})\)").Matches(line);
 
 		return matches.Sum(m => long.Parse(m.Groups[1].Value) * long.Parse(m.Groups[2].Value));
 	}
@@ -36,7 +36,7 @@ public class Day03 : IDay
 
 	private long Parse2(string line)
 	{
-		var mulMatches = new Regex(@"mul\((\d\d?\d?),(\d\d?\d?)\)").Matches(line);
+		var mulMatches = new Regex(@"mul\((\d{1,3}),(\d{1,3})\)").Matches(line);
 		var doMatches = new Regex(@"do\(\)").Matches(line);
 		var dontMatches = new Regex(@"don't\(\)").Matches(line);
 
