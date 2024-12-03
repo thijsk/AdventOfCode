@@ -13,6 +13,7 @@ public class Day02 : IDay
 
 		long safe = 0;
 
+		var line = 1;
 		foreach (var level in input)
 		{
 			var reverse = level.Reverse().ToArray();
@@ -20,10 +21,15 @@ public class Day02 : IDay
 			var ok = isOk(level) || isOk(reverse);
 			if (ok)
 			{
+				Console.WriteLine($"Line {line} is ok");
 				safe++;
 			}
+			else
+			{
+				Console.WriteLine($"Line {line} is not ok");
+			}
+			line++;
 		}
-
 		return safe;
 	}
 
