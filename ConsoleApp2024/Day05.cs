@@ -132,6 +132,14 @@ public class Day05 : IDay
 		}
 
 		return newUpdate.ToArray();
+
+		//var sorted = update.ToList();
+		//sorted.Sort((first, second) =>
+		//{
+		//	var followers = rules.Where(r => r.first == first).Select(r => r.second).ToArray();
+		//	return followers.Contains(second) ? -1 : 1;
+		//});
+		//return sorted.ToArray();
 	}
 
 	private (int first, int second) ParseRule(string line)
