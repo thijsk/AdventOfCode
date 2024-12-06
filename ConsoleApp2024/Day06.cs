@@ -27,24 +27,9 @@ public class Day06 : IDay
 		var input = PuzzleContext.Input.GetGrid(c => c);
 		var visited = Solve(input);
 
-		long options = 0;
-
-		foreach (var (x, y) in visited)
-		{
-			if (input[x, y] != '.') 
-				continue;
-			input[x, y] = '#';
-
-			if (GetsStuck(input))
-			{
-				options++;
-			}
-
-			input[x, y] = '.';
-
-			highlight = (-1, -1);
-			printGrid = false;
-		}
+		long options = visited.Where(v => input[v.x, v.y] == '.')
+			.AsParallel()
+			.Sum(v => GetsStuck(input, v) ? 1 : 0);
 
 		return options;
 	}
@@ -77,7 +62,7 @@ public class Day06 : IDay
 		return visited;
 	}
 
-	private static bool GetsStuck(char[,] input)
+	private static bool GetsStuck(char[,] input, (int x, int y) block)
 	{
 		var guard = input.Find('^').First();
 		var facing = Directions.Up;
@@ -94,7 +79,7 @@ public class Day06 : IDay
 				return false;
 			}
 
-			while (next.HasValue && input[next.Value.x, next.Value.y] == '#')
+			while (next.HasValue && (input[next.Value.x, next.Value.y] == '#' || next.Value == block))
 			{
 				facing = Directions.TurnRight(facing);
 				next = input.GetNeighborInDirection(guard, facing);
