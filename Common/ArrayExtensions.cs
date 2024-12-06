@@ -205,7 +205,13 @@ namespace Common
             return ((index.x % maxx + maxx) % maxx, (index.y % maxy + maxy) % maxy);
         }
 
-        public static (int x, int y)[] GetNeighborsInDirection<T>(this T[,] grid, (int ix, int iy) index, params (int x, int y)[] directions)
+        public static (int x, int y)? GetNeighborInDirection<T>(this T[,] grid, (int x, int y) index, (int x, int y) direction)
+		{
+			var (x, y) = index.Add(direction);
+			return IsInGrid(grid, (x, y)) ? (x, y) : null;
+		}
+
+		public static (int x, int y)[] GetNeighborsInDirection<T>(this T[,] grid, (int ix, int iy) index, params (int x, int y)[] directions)
         {
             return directions.Select(d => index.Add(d)).Where(i => IsInGrid(grid, i)).ToArray();
         }
