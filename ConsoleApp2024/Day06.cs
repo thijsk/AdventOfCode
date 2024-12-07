@@ -13,7 +13,6 @@ public class Day06 : IDay
 
 		var visited = Solve(input);
 
-
 		return visited.Count;
 	}
 
@@ -48,10 +47,10 @@ public class Day06 : IDay
 			if (!next.HasValue)
 				break;
 
-			while (next.HasValue && input[next.Value.x, next.Value.y] == '#')
+			if (input[next.Value.x, next.Value.y] == '#')
 			{
 				facing = Directions.TurnRight(facing);
-				next = input.GetNeighborInDirection(guard, facing);
+				continue;
 			}
 
 			guard = next.Value;
@@ -74,15 +73,15 @@ public class Day06 : IDay
 
 			if (!next.HasValue)
 			{
-				highlight = guard;
-				PrintGrid(input, visited);
+				//highlight = guard;
+				//PrintGrid(input, visited);
 				return false;
 			}
 
-			while (next.HasValue && (input[next.Value.x, next.Value.y] == '#' || next.Value == block))
+			if (input[next.Value.x, next.Value.y] == '#' || next.Value == block)
 			{
 				facing = Directions.TurnRight(facing);
-				next = input.GetNeighborInDirection(guard, facing);
+				continue;
 			}
 
 			guard = next.Value;
