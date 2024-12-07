@@ -49,5 +49,18 @@ namespace Common
             }
             return value;
         }
-    }
+
+		public static T Concat<T>(T a, T b) where T : INumber<T>
+		{
+            T ten = T.CreateChecked(10);
+            T bLen = ten;
+
+			while (b >= bLen)
+			{
+				bLen *= ten;
+			}
+
+			return a * bLen + b;
+		}
+	}
 }

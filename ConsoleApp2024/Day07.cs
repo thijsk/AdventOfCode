@@ -64,20 +64,6 @@ public class Day07 : IDay
 		return answers;
 	}
 
-	static long fastconcat(long a, long b)
-	{
-		if (b < 0L) { throw new ArgumentOutOfRangeException("b", "b must be greater than or equal to 0"); }
-		if (b < 10L) return 10L * a + b;
-		if (b < 100L) return 100L * a + b;
-		if (b < 1000L) return 1000L * a + b;
-		if (b < 10000L) return 10000L * a + b;
-		if (b < 100000L) return 100000L * a + b;
-		if (b < 1000000L) return 1000000L * a + b;
-		if (b < 10000000L) return 10000000L * a + b;
-		if (b < 100000000L) return 100000000L * a + b;
-		return long.Parse(a.ToString() + b.ToString());
-	}
-
 	private int Solve2(long equationAnswer, List<long> equationValues)
 	{
 		var answers = 0;
@@ -87,8 +73,8 @@ public class Day07 : IDay
 
 		var sum = first + second;
 		var multiple = first * second;
-		var concat = fastconcat(first, second);
-
+		var concat = Math2.Concat(first, second);
+		
 		if (equationValues.Count > 2)
 		{
 			var remaining = equationValues.Skip(2).ToList();
