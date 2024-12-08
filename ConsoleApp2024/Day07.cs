@@ -12,7 +12,7 @@ public class Day07 : IDay
 		var input = PuzzleContext.Input.Select(Parse).ToArray();
 
 		return input.AsParallel()
-			.Where(i => Solve(i.answer, i.values.ToList()) > 0)
+			.Where(i => Solve(i.answer, i.values) > 0)
 			.Sum(i => i.answer);
 	}
 
@@ -24,88 +24,43 @@ public class Day07 : IDay
 		var input = PuzzleContext.Input.Select(Parse).ToArray();
 
 		return input.AsParallel()
-			.Where(i => Solve2(i.answer, i.values.ToList()) > 0)
+			.Where(i => Solve2(i.answer, i.values.ToArray()) > 0)
 			.Sum(i => i.answer);
 	}
 
-	private int Solve(long equationAnswer, List<long> equationValues)
+	private int Solve(long equationAnswer, long[] equationValues)
 	{
 		var answers = 0;
+
+		if (equationValues.Length == 1)
+		{
+			return equationValues[0] == equationAnswer ? 1 : 0;
+		}
 
 		var first = equationValues[0];
 		var second = equationValues[1];
 
-		var sum = first + second;
-		var multiple = first * second;
-
-		var remaining = equationValues.Skip(2).ToList();
-		if (remaining.Any())
-		{
-			var sumremaining = new List<long> { sum };
-			sumremaining.AddRange(remaining);
-			answers += Solve(equationAnswer, sumremaining);
-
-			var multipleremaining = new List<long> { multiple };
-			multipleremaining.AddRange(remaining);
-			answers += Solve(equationAnswer, multipleremaining);
-		}
-		else
-		{
-			if (sum == equationAnswer)
-			{
-				answers++;
-			}
-			if (multiple == equationAnswer)
-			{
-				answers++;
-			}
-		}
+		answers += Solve(equationAnswer, new[] { first + second }.Concat(equationValues[2..]).ToArray());
+		answers += Solve(equationAnswer, new[] { first * second }.Concat(equationValues[2..]).ToArray());
 
 		return answers;
 	}
 
-	private int Solve2(long equationAnswer, List<long> equationValues)
+	private int Solve2(long equationAnswer, long[] equationValues)
 	{
 		var answers = 0;
+
+		if (equationValues.Length == 1)
+		{
+			return equationValues[0] == equationAnswer ? 1 : 0;
+		}
 
 		var first = equationValues[0];
 		var second = equationValues[1];
 
-		var sum = first + second;
-		var multiple = first * second;
-		var concat = Math2.Concat(first, second);
-		
-		if (equationValues.Count > 2)
-		{
-			var remaining = equationValues.Skip(2).ToList();
-
-			var sumremaining = new List<long> { sum };
-			sumremaining.AddRange(remaining);
-			answers += Solve2(equationAnswer, sumremaining);
-
-			var multipleremaining = new List<long> { multiple };
-			multipleremaining.AddRange(remaining);
-			answers += Solve2(equationAnswer, multipleremaining);
-
-			var concatremaining = new List<long> { concat };
-			concatremaining.AddRange(remaining);
-			answers += Solve2(equationAnswer, concatremaining);
-		}
-		else
-		{
-			if (sum == equationAnswer)
-			{
-				answers++;
-			}
-			if (multiple == equationAnswer)
-			{
-				answers++;
-			}
-			if (concat == equationAnswer)
-			{
-				answers++;
-			}
-		}
+		answers += Solve2(equationAnswer, new[] { first + second }.Concat(equationValues[2..]).ToArray());
+		answers += Solve2(equationAnswer, new[] { first * second }.Concat(equationValues[2..]).ToArray());
+		answers += Solve2(equationAnswer, new[] { Math2.Concat(first,second) }.Concat(equationValues[2..]).ToArray());
 
 		return answers;
 	}
