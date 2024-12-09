@@ -30,8 +30,6 @@ public class Day07 : IDay
 
 	private int Solve(long equationAnswer, long[] equationValues)
 	{
-		var answers = 0;
-
 		if (equationValues.Length == 1)
 		{
 			return equationValues[0] == equationAnswer ? 1 : 0;
@@ -40,6 +38,7 @@ public class Day07 : IDay
 		var first = equationValues[0];
 		var second = equationValues[1];
 
+		var answers = 0;
 		answers += Solve(equationAnswer, new[] { first + second }.Concat(equationValues[2..]).ToArray());
 		answers += Solve(equationAnswer, new[] { first * second }.Concat(equationValues[2..]).ToArray());
 
@@ -48,7 +47,7 @@ public class Day07 : IDay
 
 	private int Solve2(long equationAnswer, long[] equationValues)
 	{
-		var answers = 0;
+	
 
 		if (equationValues.Length == 1)
 		{
@@ -58,6 +57,7 @@ public class Day07 : IDay
 		var first = equationValues[0];
 		var second = equationValues[1];
 
+		var answers = 0;
 		answers += Solve2(equationAnswer, new[] { first + second }.Concat(equationValues[2..]).ToArray());
 		answers += Solve2(equationAnswer, new[] { first * second }.Concat(equationValues[2..]).ToArray());
 		answers += Solve2(equationAnswer, new[] { Math2.Concat(first,second) }.Concat(equationValues[2..]).ToArray());
