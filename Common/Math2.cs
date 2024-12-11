@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Common
 {
@@ -50,7 +52,7 @@ namespace Common
             return value;
         }
 
-		public static T Concat<T>(T a, T b) where T : INumber<T>
+		public static T Concat<T>(this T a, T b) where T : INumber<T>
 		{
             T ten = T.CreateChecked(10);
             T bLen = ten;
@@ -62,5 +64,38 @@ namespace Common
 
 			return a * bLen + b;
 		}
-	}
+
+        public static bool IsEven<T>(this T value) where T : INumber<T>
+		{
+			return value % T.CreateChecked(2) == T.Zero;
+		}
+
+		public static int NumberOfDigits<T>(this T number) where T : INumber<T>
+		{
+            if (number == T.Zero)
+			{
+				return 1;
+			}
+
+            if (number < T.Zero)
+            {
+                number = -number;
+            }
+
+			int count = 0;
+            var ten = T.CreateChecked(10);
+			while (number > T.Zero)
+			{
+                number /= ten;
+				count++;
+			}
+			return count;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static long Pow(long baseValue, int exponent)
+		{
+			return (long)Math.Pow(baseValue, exponent);
+		}
+    }
 }
