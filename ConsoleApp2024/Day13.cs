@@ -14,7 +14,7 @@ public class Day13 : IDay
 
 		var input = PuzzleContext.Input.SplitByEmptyLines().Select(Parse);
 
-		return input.Sum(Solve);
+		return input.Sum(SolveWithMath);
 	}
 
 	public long Part2()
@@ -24,11 +24,15 @@ public class Day13 : IDay
 
 		var input = PuzzleContext.Input.SplitByEmptyLines().Select(l => ParseWithOffset(l, 10000000000000));
 
-		return input.Sum(SolveWithZ3);
+		var result= input.Sum(SolveWithMath);
+
+
+		return result;
 	}
 
 	private long Solve(Puzzle puzzle)
 	{
+		// Use brute force
 		for (long apress = 1; apress <= 100; apress++)
 		{
 			for (long bpress = 1; bpress <= 100; bpress++)
@@ -47,6 +51,9 @@ public class Day13 : IDay
 	{
 		// px = ax * apress + bx * bpress
 		// py = ay * apress + by * bpress
+
+		// Just like last year, this is not a fun puzzle
+		// Lets just throw it in Z3
 
 		using var ctx = new Context();
 		var s = ctx.MkOptimize(); // optimize was optional
@@ -78,6 +85,24 @@ public class Day13 : IDay
 		return ((IntNum)result).Int64;
 	}
 
+	private long SolveWithMath(Puzzle puzzle)
+	{
+		// px = ax * apress + bx * bpress
+		// py = ay * apress + by * bpress
+
+		var d = puzzle.ax * puzzle.by - puzzle.ay * puzzle.bx;
+		var a = puzzle.px * puzzle.by - puzzle.bx * puzzle.py;
+		var b = puzzle.py * puzzle.ax - puzzle.ay * puzzle.px;
+
+		var apress = a / d;
+		var bpress = b / d;
+
+		if (a % d == 0 && b % d == 0)
+			return 3 * apress + bpress;
+
+		return 0;
+	}
+
 	private Puzzle Parse(string[] lines) => ParseWithOffset(lines, 0);
 
 	private Puzzle ParseWithOffset(string[] lines,long offset)
@@ -85,7 +110,7 @@ public class Day13 : IDay
 		//Button A: X + 94, Y + 34
 		//Button B: X + 22, Y + 67
 		//Prize: X = 8400, Y = 5400
-		Debug.Assert(lines.Count() == 3);
+		Debug.Assert(lines.Length == 3);
 
 		var getNumbers = new Regex(@"([\d]+)\D*([\d]+)");
 
