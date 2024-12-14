@@ -142,13 +142,14 @@ namespace Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetHashCodeOfList<T>(this IList<T> source)
+        public static int GetHashCodeOfList<T>(this IEnumerable<T> source)
         { 
             HashCode hash = new();
-            for (int i = 0; i < source.Count; i++)
+            foreach (var t in source)
             {
-                hash.Add(source[i]);
+	            hash.Add(t);
             }
+
             return hash.ToHashCode();
         }
 
