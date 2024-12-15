@@ -18,7 +18,10 @@ namespace Common
         public static readonly (int x, int y)[] AllOrdinal = [LeftUp, LeftDown, RightUp, RightDown];
         public static readonly (int x, int y)[] All = [Left, Right, Up, Down, LeftUp, LeftDown, RightUp, RightDown];
 
-        public static readonly (int x, int y) North = Up;
+        public static readonly (int x, int y)[] UpDown = [Up, Down];
+		public static readonly (int x, int y)[] LeftRight = [Left, Right];
+
+		public static readonly (int x, int y) North = Up;
         public static readonly (int x, int y) South = Down;
         public static readonly (int x, int y) East = Right;
         public static readonly (int x, int y) West = Left;

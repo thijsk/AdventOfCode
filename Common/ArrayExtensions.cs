@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -85,18 +86,23 @@ namespace Common
             return input.Skip(start).Take((end - start) + 1);
         }
 
-        public static void ToConsole<T>(this T[,] grid)
+        [Conditional("DEBUG")]
+		public static void ToConsole<T>(this T[,] grid)
         {
             grid.ToConsole(o => ConsoleX.Write(o));
         }
 
-        public static void ToConsole<T>(this T[,] grid, Func<T, char> convert)
+        [Conditional("DEBUG")]
+		public static void ToConsole<T>(this T[,] grid, Func<T, char> convert)
         {
 	        grid.ToConsole(o => ConsoleX.Write(convert(o)));
         }
 
-		public static void ToConsole<T>(this T[,] grid, Action<T> write)
+        [Conditional("DEBUG")]
+        public static void ToConsole<T>(this T[,] grid, Action<T> write)
         {
+            if (!Debugger.IsAttached)
+                return;
             for (var row = 0; row <= grid.GetUpperBound(0); row++)
             {
                 for (var col = 0; col <= grid.GetUpperBound(1); col++)
@@ -108,13 +114,14 @@ namespace Common
             }
         }
 
-        public static void ToConsole<T>(this T[,] grid, Action<(int x, int y), T> write)
+        [Conditional("DEBUG")]
+		public static void ToConsole<T>(this T[,] grid, Action<(int x, int y), T> write)
         {
             for (var row = 0; row <= grid.GetUpperBound(0); row++)
             {
                 for (var col = 0; col <= grid.GetUpperBound(1); col++)
                 {
-                    write((row, col), grid[row, col]);
+                    write((col, row), grid[col, row]);
                 }
 
                 ConsoleX.WriteLine();
@@ -461,20 +468,16 @@ namespace Common
         /// <returns></returns>
         public static IEnumerable<(int x, int y)> Find<T>(this T[,] grid, T search) where T : IEquatable<T>
         {
-            var result = new List<(int, int)>();
-
             for (var x = 0; x <= grid.GetUpperBound(0); x++)
             {
                 for (var y = 0; y <= grid.GetUpperBound(1); y++)
                 {
                     if (grid[x, y].Equals(search))
                     {
-                        result.Add((x, y));
+                        yield return (x, y);
                     }
                 }
             }
-
-            return result;
         }
 
         public static bool IsInGrid<T>(this T[,] grid, (int x, int y) point)
