@@ -121,7 +121,7 @@ namespace Common
             {
                 for (var col = 0; col <= grid.GetUpperBound(1); col++)
                 {
-                    write((col, row), grid[col, row]);
+                    write((row, col), grid[row, col]);
                 }
 
                 ConsoleX.WriteLine();

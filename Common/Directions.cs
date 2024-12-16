@@ -36,7 +36,7 @@ namespace Common
             return (-direction.x, -direction.y);
         }
 
-        public static (int x, int y) TurnRight((int x, int y) facing)
+        public static (int x, int y) TurnRight(this (int x, int y) facing)
         {
 	        if (facing == Up) return Right;
 			if (facing == Right) return Down;
@@ -49,7 +49,7 @@ namespace Common
 			throw new ArgumentException("Invalid facing");
 		}
 
-		public static (int x, int y) TurnLeft((int x, int y) facing)
+		public static (int x, int y) TurnLeft(this (int x, int y) facing)
 		{
 			if (facing == Up) return Left;
 			if (facing == Left) return Down;
