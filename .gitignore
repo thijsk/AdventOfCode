@@ -313,3 +313,8 @@ OpenCover/
 
 # Azure Stream Analytics local run output 
 ASALocalRun/
+
+## Aoc
+
+Day??.txt
+Day??-Example.txt

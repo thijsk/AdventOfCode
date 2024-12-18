@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Common;
@@ -30,7 +31,18 @@ public class DayRunner
     public static IOrderedEnumerable<Type> GetAllIDays()
     {
         return AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly =>
-            assembly.GetTypes().Where(theType => theType.GetInterfaces().Contains(typeof(IDay)))).OrderBy(t => t.Name);
+        {
+			Type[] types;
+			try
+			{
+				types = assembly.GetTypes();
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+				types = e.Types;
+			}
+			return types.Where(theType => theType != null && theType.GetInterfaces().Contains(typeof(IDay)));
+        }).OrderBy(t => t.Name);
     }
 
     public override string ToString()

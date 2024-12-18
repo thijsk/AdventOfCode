@@ -1,79 +1,74 @@
 using System.Reflection;
 using Common;
+using Xunit;
+using Xunit.Internal;
 
 namespace ConsoleAppTests
 {
-    [TestClass] 
-    public class DayTest
-    {
-        public static IEnumerable<object[]> DaysForTest
+	public class DayTest
+	{
+		[Theory(DisableDiscoveryEnumeration =false)]
+		[ClassData(typeof(GetDaysForTest))]
+		public void TestDayPart2(Type day, int part)
+		{
+			var runner = new DayPartTestRunner(day, part);
+			var (expected, actual) = runner.Invoke();
+			Assert.Equal(expected, actual);
+		}
+
+		class GetDaysForTest : TheoryData<Type, int>
         {
-            get
+            public GetDaysForTest()
             {
-                var files = Directory.EnumerateFiles(AppContext.BaseDirectory, "ConsoleApp*.dll");
-                foreach (var file in files)
-                {
-                    Assembly.LoadFrom(file);
-                }
-                var days = DayRunner.GetAllIDays();
-                return days.SelectMany(GetWrapper);
+				var files = Directory.EnumerateFiles(AppContext.BaseDirectory, "ConsoleApp*.dll").ToArray();
+				files.ForEach(file => Assembly.LoadFrom(file));
+				
+				var days = DayRunner.GetAllIDays();
+				foreach (var day in days)
+				{
+					var part1 = new TheoryDataRow<Type, int>(day, 1)
+					{
+						TestDisplayName = $"{day.Name} Part 1 "
+					};
+					Add(part1);
+					var part2 = new TheoryDataRow<Type, int>(day, 2)
+					{
+						TestDisplayName = $"{day.Name} Part 2 "
+					};
+					Add(part2);
+				}
             }
-        }
+		}
 
-        private static IEnumerable<object[]> GetWrapper(Type arg)
+		public class DayPartTestRunner(Type dayType, int part)
         {
-            yield return new[] { new DayWrapper(arg, 1) };
-            yield return new[] { new DayWrapper(arg, 2) };
+	        private Type DayType { get; } = dayType;
+	        private int Part { get; } = part;
+
+	        public (long expected, long actual) Invoke()
+	        {
+		        var day = new DayRunner(DayType);
+
+		        if (Part == 1)
+		        {
+			        var actual = day.RunPart1();
+			        var expected = PuzzleContext.Answer1;
+			        return (expected, actual);
+		        }
+
+		        if (Part == 2)
+		        {
+			        var actual = day.RunPart2();
+			        var expected = PuzzleContext.Answer2;
+			        return (expected, actual);
+		        }
+		        throw new Exception("Invalid part");
+	        }
+
+	        public override string ToString()
+	        {
+		        return $"{DayType.Name} Part {Part}";
+	        }
         }
-
-        public class DayWrapper
-        {
-            public DayWrapper(Type dayType, int part)
-            {
-                this.dayType = dayType;
-                this.part = part;
-            }
-
-            private Type dayType { get; }
-            private int part { get; }
-
-            public (long expected, long actual) Invoke()
-            {
-                var day = new DayRunner(dayType);
-
-                if (part == 1)
-                { 
-                    var actual = day.RunPart1();
-                    var expected = PuzzleContext.Answer1;
-                    return (expected, actual);
-                }
-
-                if (part == 2)
-                {
-                    var actual = day.RunPart2();
-                    var expected = PuzzleContext.Answer2;
-                    return (expected, actual);
-                }
-                throw new Exception("Invalid part");
-            }
-
-            public override string ToString()
-            {
-                return $"{dayType.Name} Part {part}";
-            }
-        }
-
-        public static string GetDynamicDataDisplayName(MethodInfo methodInfo, object[] data)
-        {
-            return ((DayWrapper)data[0]).ToString();
-        }
-
-        [TestMethod]
-        [DynamicData(nameof(DaysForTest), DynamicDataDisplayName = nameof(GetDynamicDataDisplayName))]
-        public void TestDayPart(DayWrapper sut)
-        {
-            var (expected, actual) = sut.Invoke();
-            Assert.AreEqual(expected, actual);
-        }
-    }
+	}
 }
