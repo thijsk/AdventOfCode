@@ -1,5 +1,0 @@
-﻿draai 90
-loop 6
-spring 2
-draai -45
-loop 2
