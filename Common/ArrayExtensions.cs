@@ -459,14 +459,84 @@ namespace Common
             return (path.ToArray(), pathWeight[goal]);
         }
 
-        /// <summary>
-        /// Finds the coordinates of a given value in a grid
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="grid"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
-        public static IEnumerable<(int x, int y)> Find<T>(this T[,] grid, T search) where T : IEquatable<T>
+        public static List<TStep> DijkstraAllShortestPathPoints<TCell, TStep>(this TCell[,] grid, TStep start,
+	        Func<TCell[,], TStep, IEnumerable<(TStep point, long weight)>> getNeighbors, Func<TStep, bool> isGoal) where TStep : notnull
+        {
+	        PriorityQueue<TStep, long> frontier = new();
+	        Dictionary<TStep, long> pathWeight = new();
+	        HashSet<TStep> visited = new();
+	        Dictionary<TStep, List<TStep>> moveMap = new();
+	        List<TStep> allPathSteps = new();
+	        List<TStep> goals = new();
+
+	        frontier.Enqueue(start, 0);
+
+	        while (frontier.Count > 0)
+	        {
+		        //move
+		        var current = frontier.Dequeue();
+		        visited.Add(current);
+
+		        if (isGoal(current))
+		        {
+			        goals.Add(current);
+		        }
+
+		        // explore
+		        var neighbors = getNeighbors(grid, current);
+		        foreach (var neighbor in neighbors.Where(n => !visited.Contains(n.point)))
+		        {
+			        var currentWeigth = pathWeight.GetValueOrDefault(current, 0);
+			        var neighborPathWeight = currentWeigth + neighbor.weight;
+
+			        var oldNeighborWeight = pathWeight.GetValueOrDefault(neighbor.point, long.MaxValue);
+
+			        if (oldNeighborWeight > neighborPathWeight)
+			        {
+				        frontier.Enqueue(neighbor.point, neighborPathWeight);
+
+				        pathWeight.AddOrSet(neighbor.point, neighborPathWeight);
+				        moveMap.AddOrSet(neighbor.point, [current]);
+			        }
+			        else if (oldNeighborWeight == neighborPathWeight)
+			        {
+				        frontier.Enqueue(neighbor.point, neighborPathWeight);
+				        if (!moveMap[neighbor.point].Contains(current))
+					        moveMap[neighbor.point].Add(current);
+			        }
+		        }
+	        }
+
+	        // Backtrack
+	        Queue<TStep> allinPath = new();
+	        var minWeight = goals.Min(g => pathWeight[g]);
+	        foreach (var goal in goals)
+	        {
+		        var pw = pathWeight[goal];
+		        if (pw == minWeight)
+			        allinPath.Enqueue(goal);
+	        }
+	        while (allinPath.Count > 0)
+	        {
+		        var current = allinPath.Dequeue();
+		        allPathSteps.Add(current);
+		        if (!moveMap.TryGetValue(current, out var next)) continue;
+		        foreach (var n in next.Where(n => !allPathSteps.Contains(n)))
+		        {
+			        allinPath.Enqueue(n);
+		        }
+	        }
+	        return allPathSteps;
+        }
+
+		/// <summary>
+		/// Finds the coordinates of a given value in a grid
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="grid"></param>
+		/// <param name="search"></param>
+		/// <returns></returns>
+		public static IEnumerable<(int x, int y)> Find<T>(this T[,] grid, T search) where T : IEquatable<T>
         {
             for (var x = 0; x <= grid.GetUpperBound(0); x++)
             {

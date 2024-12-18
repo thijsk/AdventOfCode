@@ -58,7 +58,7 @@ public class Day16 : IDay
 
 		var start = (startp, Directions.Right);
 
-		var result = NotDijkstra<char, ((int x, int y) p, (int x, int y) d)>(input, start, GetNeighbors, s => s.p == endp);
+		var result = input.DijkstraAllShortestPathPoints<char, ((int x, int y) p, (int x, int y) d)>(start, GetNeighbors, s => s.p == endp);
 
 		var resultp = result.Select(p => p.p).ToHashSet();
 
@@ -73,79 +73,7 @@ public class Day16 : IDay
 
 		return resultp.Count;
 	}
-
-	public static List<TStep> NotDijkstra<TCell, TStep>(TCell[,] grid, TStep start,
-		Func<TCell[,], TStep, IEnumerable<(TStep point, long weight)>> getNeighbors, Func<TStep, bool> isGoal) where TStep : notnull
-	{
-		PriorityQueue<TStep, long> frontier = new();
-		Dictionary<TStep, long> pathWeight = new();
-		HashSet<TStep> visited = new();
-		Dictionary<TStep, List<TStep>> moveMap = new();
-		List<TStep> path = new();
-		List<TStep> goals = new();
-
-		frontier.Enqueue(start, 0);
-
-		while (frontier.Count > 0)
-		{
-			//move
-			var current = frontier.Dequeue();
-			visited.Add(current);
-
-			if (isGoal(current))
-			{
-				goals.Add(current);
-			}
-
-			// explore
-			var neighbors = getNeighbors(grid, current);
-			foreach (var neighbor in neighbors.Where(n => !visited.Contains(n.point)))
-			{
-				var currentWeigth = pathWeight.GetValueOrDefault(current, 0);
-				var neighborPathWeight = currentWeigth + neighbor.weight;
-
-				var oldNeighborWeight = pathWeight.GetValueOrDefault(neighbor.point, long.MaxValue);
-
-				if (oldNeighborWeight > neighborPathWeight)
-				{
-					frontier.Enqueue(neighbor.point, neighborPathWeight);
-
-					pathWeight.AddOrSet(neighbor.point, neighborPathWeight);
-					moveMap.AddOrSet(neighbor.point, [current]);
-				} else if (oldNeighborWeight == neighborPathWeight)
-				{
-					frontier.Enqueue(neighbor.point, neighborPathWeight);
-					if (!moveMap[neighbor.point].Contains(current))
-						moveMap[neighbor.point].Add(current);
-				}
-			}
-		}
-
-		// Backtrack
-		Queue<TStep> allinPath = new();
-		var minWeight = goals.Min(g => pathWeight[g]);
-		foreach (var goal in goals)
-		{
-			var pw = pathWeight[goal];
-			if (pw == minWeight)
-				allinPath.Enqueue(goal);
-		}
-		while (allinPath.Count > 0)
-		{
-			var current = allinPath.Dequeue();
-			path.Add(current);
-			if (moveMap.TryGetValue(current, out var next))
-			{
-				foreach (var n in next)
-
-				{
-					if (!path.Contains(n))
-						allinPath.Enqueue(n);
-				}
-			}
-		}
-		return path;
-	}
+	
 
 	private IEnumerable<(((int x, int y) p, (int x, int y) d) point, long weight)> GetNeighbors(char[,] grid, ((int x, int y) p, (int x, int y) d) current)
 	{
