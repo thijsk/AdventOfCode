@@ -7,7 +7,7 @@ public class Day08 : IDay
 {
 	public long Part1()
 	{
-		PuzzleContext.Answer1 = 0;
+		PuzzleContext.Answer1 = 409;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.GetGrid();
@@ -73,7 +73,7 @@ public class Day08 : IDay
 
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 1308;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.GetGrid();

@@ -48,7 +48,7 @@ public class Day16 : IDay
 	}
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 481;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.GetGrid();

@@ -7,7 +7,7 @@ public class Day25 : IDay
 {
     public long Part1()
     {
-        PuzzleContext.Answer1 = 0;
+        PuzzleContext.Answer1 = 562978;
         PuzzleContext.UseExample = false;
 
         var input = PuzzleContext.Input.Select(Parse).ToDictionary( k => k.key, v => v.value);
