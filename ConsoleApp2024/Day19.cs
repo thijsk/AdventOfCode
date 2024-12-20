@@ -55,8 +55,7 @@ public class Day19 : IDay
 		return designs.Sum(d => Solve(d, patterns));
 	}
 
-	private Dictionary<string,long> cache = new();
-
+	private readonly Dictionary<string,long> cache = new();
 
 	long Solve(string design, string[] patterns)
 	{
