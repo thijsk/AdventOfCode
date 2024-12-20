@@ -53,4 +53,11 @@ public static class TupleExtensions
     {
         return (first.a * second, first.b * second);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T ManhattanDistance<T>(this (T a, T b) first, (T a, T b) second)
+	    where T : INumber<T>
+    {
+	    return Math2.Abs(first.a - second.a) + Math2.Abs(first.b - second.b);
+	}
 }

@@ -85,13 +85,8 @@ public class Day20 : IDay
 
 		const int maxDuration = 20;
 		const int minGain = 100;
-		return route.AsParallel().Select((p, i) => (p,i)).Sum(t => route.Skip(t.i + minGain + 1).Select(p => (p, ManhattanDistance(t.p, p), track[p] - t.i))
-			.Count(p => p is { Item2: <= maxDuration, Item3: > maxDuration } && (p.Item3 - p.Item2) >= minGain));
-	}
-
-	private int ManhattanDistance((int x, int y) a, (int x, int y) b)
-	{
-		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
+		return route.AsParallel().Select((p, i) => (p,i)).Sum(t => route.Skip(t.i + minGain + 1).Select(p => (t.p.ManhattanDistance(p), track[p] - t.i))
+			.Count(p => p is { Item1: <= maxDuration, Item2: > maxDuration } && (p.Item2 - p.Item1) >= minGain));
 	}
 
 	private static IEnumerable<((int x, int y) c, int duration)> FindCheats(char[,] input, (int x, int y) position, int maxduration, int currentduration, HashSet<((int x, int y), int d)> found)
