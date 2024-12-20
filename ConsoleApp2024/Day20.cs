@@ -53,14 +53,12 @@ public class Day20 : IDay
 			}
 		}
 
-		//foundCheats.GroupBy(c => c).OrderBy(c => c.Key).ToList().ForEach(c => Console.WriteLine($"{c.Count()} {c.Key}"));
-
 		return foundCheats.Count(c => c >= 100);
 	}
 
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 944910;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.GetGrid();
@@ -85,29 +83,15 @@ public class Day20 : IDay
 			current = next;
 		}
 
-		var foundCheats = new List<int>();
+		const int maxDuration = 20;
+		const int minGain = 100;
+		return route.AsParallel().Select((p, i) => (p,i)).Sum(t => route.Skip(t.i + minGain + 1).Select(p => (p, ManhattanDistance(t.p, p), track[p] - t.i))
+			.Count(p => p is { Item2: <= maxDuration, Item3: > maxDuration } && (p.Item3 - p.Item2) >= minGain));
+	}
 
-		for (int i = 0; i < track.Count; i++)
-		{
-			var position = route[i];
-			var time = i;
-			var options = FindCheats(input, position, 20, 1, new HashSet<((int x, int y), int d)>()).ToList();
-			var cheats = options.Where(c => track.ContainsKey(c.c) && track[c.c] > time + c.duration).OrderBy(c => c.duration).ToList();
-
-			HashSet<(int x, int y)> visited = new();
-			foreach (var (cheat, duration) in cheats)
-			{
-				if (!visited.Add(cheat)) continue;
-				var cheatTime = track[cheat];
-				var cheatDistance = cheatTime - time - duration;
-				if (duration > 0)
-					foundCheats.Add(cheatDistance);
-			}
-		}
-
-		foundCheats.GroupBy(c => c).OrderByDescending(c => c.Key).ThenByDescending(c => c.Count()).ToList().ForEach(c => Console.WriteLine($"There are {c.Count()} cheats that save {c.Key}"));
-
-		return foundCheats.Count(c => c >= 100);
+	private int ManhattanDistance((int x, int y) a, (int x, int y) b)
+	{
+		return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
 	}
 
 	private static IEnumerable<((int x, int y) c, int duration)> FindCheats(char[,] input, (int x, int y) position, int maxduration, int currentduration, HashSet<((int x, int y), int d)> found)
