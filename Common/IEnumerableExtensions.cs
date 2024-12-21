@@ -28,7 +28,7 @@ namespace Common
 
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IList<T> source)
         {
-            return source.GetPermutations(source.Count);
+            return source.GetPermutations(source.Count());
         }
 
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> source, int length)

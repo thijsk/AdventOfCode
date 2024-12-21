@@ -1,30 +1,33 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Common;
 
 namespace ConsoleApp2024;
 
 public class Day21 : IDay
 {
+	char[,] numpadKeys = new[,]
+	{
+		{'7','8','9'},
+		{'4','5','6'},
+		{'1','2','3'},
+		{' ','0','A'}
+	};
+
+	char[,] dpadKeys = new[,]
+	{
+		{' ', '^', 'A' },
+		{'<', 'v', '>' }
+	};
+
 	public long Part1()
 	{
-		PuzzleContext.Answer1 = 0;
+		PuzzleContext.Answer1 = 219254;
 		PuzzleContext.UseExample = false;
 
 		var codes= PuzzleContext.Input;
 
-		var numpadKeys = new[,]
-		{
-			{'7','8','9'},
-			{'4','5','6'},
-			{'1','2','3'},
-			{' ','0','A'}
-		};
 
-		var dpadKeys = new[,]
-		{
-			{' ', '^', 'A' },
-			{'<', 'v', '>' }
-		};
 
 		var numpad = new KeyPad(numpadKeys, dpadKeys);
 		var dpad1 = new KeyPad(dpadKeys, dpadKeys);
@@ -48,22 +51,16 @@ public class Day21 : IDay
 		return sum;
 	}
 
-	//"<v<A>A<A>>^AvAA<^A>A<v<A>>^AvA^A<vA^>A<v<A>^A>AAvA^A<v<A>A^>AAA<A>vA^A"
-	//"<vA<AA>>^  AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A"
-
-	//"v<<A>>^A<A>AvA<^AA>A<vAAA>^A"
-	//"<v<A>>^A<A>AvA<^AA>A<vAAA^>A"
-	//"<A^A>^^AvvvA"
-	//"<A^A>^^AvvvA"
-
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 264518225304496;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input;
 
-		return 0;
+		var keypad = new Keypad2(numpadKeys, dpadKeys);
+
+		return input.Sum(code => keypad.GetCodeCost(code, 25) * int.Parse(code.Trim('A')));
 	}
 	
 	private class KeyPad
@@ -154,6 +151,110 @@ public class Day21 : IDay
 		}
 	}
 
+}
+
+public class Keypad2
+{
+	private readonly char[,] _numpadKeys;
+	private readonly char[,] _dpadKeys;
+
+	private readonly Dictionary<char, (int x, int y)> _directions;
+
+	public Keypad2(char[,] numpadKeys, char[,] dpadKeys)
+	{
+		_numpadKeys = numpadKeys;
+		_dpadKeys = dpadKeys;
+
+		_directions = new Dictionary<char, (int x, int y)>
+		{
+			{'^', Directions.Up},
+			{'v', Directions.Down},
+			{'<', Directions.Left},
+			{'>', Directions.Right}
+		};
+	}
+
+	public long GetCodeCost(string code, int maxdepth)
+	{
+		var start = 'A';
+		long sum = 0;
+		foreach (var instruction in code)
+		{
+			sum += GetCost(start, instruction, 0, maxdepth);
+			start = instruction;
+		}
+		return sum;
+	}
+
+	Dictionary<(char from, char to, int depth), long>  _costCache = new ();
+	private long GetCost(char from, char to, int depth, int maxdepth)
+	{
+		if (_costCache.TryGetValue((from, to, depth), out var cost))
+		{
+			return cost;
+		}
+
+		var keypad = depth == 0 ? _numpadKeys : _dpadKeys;
+
+		var paths = GeneratePaths(keypad, from, to);
+		if (depth == maxdepth)
+		{
+			return paths[0].Length;
+		}
+
+	    cost = paths.Min(p =>
+		{
+			var start = 'A';
+			long sum = 0;
+			foreach (var instruction in p)
+			{
+				sum += GetCost(start, instruction, depth+1, maxdepth);
+				start = instruction;
+			}
+			return sum;
+		});
+
+		_costCache[(from, to, depth)] = cost;
+		return cost;
+	}
+
+	private string[] GeneratePaths(char[,] keypad, char from, char to)
+	{
+		if (from == to)
+		{
+			return ["A"];
+		}
+
+		var fromi = keypad.Find(from).First();
+		var toi = keypad.Find(to).First();
+
+		var xi = toi.x - fromi.x;
+		var yi = toi.y - fromi.y;
+
+		var path = new StringBuilder();
+		path.Append(xi > 0 ? 'v' : '^', Math.Abs(xi));
+		path.Append(yi > 0 ? '>' : '<', Math.Abs(yi));
+
+		var pathStr = path.ToString();
+		var options = pathStr.GetPermutations().Distinct().Where(p => IsValid(keypad, fromi, toi, p)).Select(p => p + "A");
+		Debug.Assert(options.Any());
+		return options.ToArray();
+	}
+
+	private bool IsValid(char[,] keypad, (int x, int y) fromi, (int x, int y) toi, string path)
+	{
+		var current = fromi;
+		foreach (var step in path)
+		{
+			current = current.Add(_directions[step]);
+			if (keypad[current.x, current.y] == ' ')
+			{
+				return false;
+			}
+		}
+		Debug.Assert(current == toi);
+		return true;
+	}
 }
 
 //<vA<AA>>^AvAA^<A>Av<<A>>^AvA^Av<<A>>^AAvA<A>^A<A>Av<<A>A>^AAAvA^<A>A

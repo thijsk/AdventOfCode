@@ -70,5 +70,24 @@ namespace Common
         {
 			return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(s => T.Parse(s, CultureInfo.InvariantCulture)).ToArray();
 		}
-    }
+
+        public static IEnumerable<string> GetPermutations(this string input)
+        {
+	        if (input.Length == 1)
+	        {
+		        yield return input;
+	        }
+	        else
+	        {
+		        for (int i = 0; i < input.Length; i++)
+		        {
+			        var remaining = input.Substring(0, i) + input.Substring(i + 1);
+			        foreach (var permutation in GetPermutations(remaining))
+			        {
+				        yield return input[i] + permutation;
+			        }
+		        }
+	        }
+        }
+	}
 }
