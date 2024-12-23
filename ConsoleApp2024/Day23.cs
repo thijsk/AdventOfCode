@@ -34,7 +34,7 @@ public class Day23 : IDay
 
 		var groups = FindGroups(graph);
 
-		var largest = groups.Single(g => g.Count == groups.Max(g => g.Count));
+		var largest = groups.MaxBy(g => g.Count);
 
 		var result = largest.OrderBy(n => n).ToList();
 
