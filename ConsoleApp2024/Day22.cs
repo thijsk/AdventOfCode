@@ -24,7 +24,7 @@ public class Day22 : IDay
 
 	public long Part2()
 	{
-		PuzzleContext.Answer2 = 0;
+		PuzzleContext.Answer2 = 2277;
 		PuzzleContext.UseExample = false;
 
 		var input = PuzzleContext.Input.Select(Parse).ToArray();
@@ -36,8 +36,6 @@ public class Day22 : IDay
 
 		Debug.Assert(37 == Mix(42, 15));
 		Debug.Assert(16113920 == Prune(100000000));
-
-		long sum = 0;
 
 		List<long[]> prices = new();
 		List<long[]> changes = new();
