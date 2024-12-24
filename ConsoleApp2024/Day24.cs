@@ -35,99 +35,68 @@ public class Day24 : IDay
 		var inputgates = input[1].Select(ParseGate).ToList();
 		var inputwires = input[0].Select(ParseWire).ToDictionary(x => x.Key, x => x.Value);
 
-		List<(string,string)> swaps = [
-			("qwf", "cnk"),
-			("z14", "vhm"),
-			("z27", "mps"),
-			("z39", "msq")
-		];
-
-		ApplySwaps(swaps, inputgates);
-
-		var susgates = inputgates.Where(x => x.outputwire.StartsWith('z')).Where(x => x.operand != "XOR" || x.wire1.StartsWith('x') || x.wire1.StartsWith('y') || x.wire2.StartsWith('x') || x.wire2.StartsWith('y')).Where(x => x.outputwire != "z00").ToList();
-		foreach (var (operand, wire1, wire2, outputwire) in susgates)
-		{
-			ConsoleX.WriteLine("These gates are suspect, because outputs should come from XORs and not contain any x or y wires as input:");
-			ConsoleX.WriteLine($"{wire1} {operand} {wire2} -> {outputwire}");
-		}
-
+		List<(string, string)> swaps = [];
+		
 		// https://www.101computing.net/binary-additions-using-logic-gates/
-		var carrywire = inputgates.Single(g => FindGate(g, "x00", "y00") && g.operand == "AND").outputwire;
-
-		foreach (int bit in Enumerable.Range(1, 44))
+		
+		var carrywire = string.Empty;
+		for (int bit = 0; bit < 45; bit++)
 		{
 			string xwire = $"x{bit:D2}";
 			string ywire = $"y{bit:D2}";
 			string outputwire = $"z{bit:D2}";
 
+			if (bit == 0)
+			{
+				carrywire = inputgates.Single(g => FindGate(g, "x00", "y00") && g.operand == "AND").outputwire;
+				continue;
+			}
+
 			ConsoleX.WriteLine($"Bit {bit:D2}: {xwire} {ywire} {carrywire}", ConsoleColor.Yellow);
 
-			// There should an XOR gate for the x and y wires
-			var sum1gate = inputgates.First(g => FindGate(g, xwire, ywire) && g.operand == "XOR");
-			var sum1 = sum1gate.outputwire;
+			var zgate = inputgates.FirstOrDefault(g => g.outputwire == outputwire);
 
-			// There should be an XOR gate for the carrywire and sum1
-			var sum2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1) && g.operand == "XOR");
-			// There should be an AND gate for the carrywire and sum1
-			var carry2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1) && g.operand == "AND");
+			var sum1gate = inputgates.FirstOrDefault(g => FindGate(g, xwire, ywire) && g.operand == "XOR");
+			var carry1gate = inputgates.FirstOrDefault(g => FindGate(g, xwire, ywire) && g.operand == "AND");
+			var sum2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1gate.outputwire) && g.operand == "XOR");
+			var carry2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1gate.outputwire) && g.operand == "AND");
+			var carry12gate = inputgates.FirstOrDefault(g => FindGate(g, carry1gate.outputwire, carry2gate.outputwire) && g.operand == "OR");
 
-			if (sum2gate == default && carry2gate == default)
+			ConsoleX.WriteLine($"zgate:       {zgate.wire1} {zgate.operand} {zgate.wire2} -> {zgate.outputwire}");
+			ConsoleX.WriteLine($"sum1gate:    {sum1gate.wire1} {sum1gate.operand} {sum1gate.wire2} -> {sum1gate.outputwire}");
+			ConsoleX.WriteLine($"carry1gate:  {carry1gate.wire1} {carry1gate.operand} {carry1gate.wire2} -> {carry1gate.outputwire}");
+			ConsoleX.WriteLine($"sum2gate:    {sum2gate.wire1} {sum2gate.operand} {sum2gate.wire2} -> {sum2gate.outputwire}");
+			ConsoleX.WriteLine($"carry2gate:  {carry2gate.wire1} {carry2gate.operand} {carry2gate.wire2} -> {carry2gate.outputwire}");
+			ConsoleX.WriteLine($"carry12gate: {carry12gate.wire1} {carry12gate.operand}  {carry12gate.wire2} -> {carry12gate.outputwire}");
+
+			if (zgate.wire1 == carrywire && zgate.wire2 != sum1gate.outputwire)
 			{
-				// if both are wrong, the carrywire is probably wrong
-				ConsoleX.WriteLine($"No sum2gate and carry2gate for {bit}: {carrywire} or {sum1} is probably wrong");
+				ConsoleX.WriteLine($"Swapping {zgate.wire2} && {sum1gate.outputwire}", ConsoleColor.Red);
+				Swap(inputgates, zgate.wire2, sum1gate.outputwire);
+				swaps.Add((zgate.wire2, sum1gate.outputwire));
+				bit--;
+				continue;
 			}
 
-			if (sum2gate == default)
+			if (zgate.wire2 == carrywire && zgate.wire1 != sum1gate.outputwire)
 			{
-				ConsoleX.WriteLine($"No sum2gate for {bit}: {carrywire} XOR {sum1} -> {outputwire} ; {sum1} is probably wrong");
-
-			} else if (sum2gate.outputwire != outputwire)
-			{ 
-				// see if I can find the gate that would have been the sum2gate
-				var expectedsum2GateOnOutput = inputgates.Single(g => (g.outputwire == outputwire));
-				ConsoleX.WriteLine($"Probable sum2gate for {bit}: {expectedsum2GateOnOutput.wire1} {expectedsum2GateOnOutput.operand} {expectedsum2GateOnOutput.wire2} -> {expectedsum2GateOnOutput.outputwire}");
-				var expectedsum2GateOnInputs = inputgates.Single(g => FindGate(g, carrywire, sum1) && g.operand == "XOR");
-				ConsoleX.WriteLine($"Probable sum2gate for {bit}: {expectedsum2GateOnInputs.wire1} {expectedsum2GateOnInputs.operand} {expectedsum2GateOnInputs.wire2} -> {expectedsum2GateOnInputs.outputwire}");
-
-				if (expectedsum2GateOnOutput.wire1 != carrywire && expectedsum2GateOnOutput.wire2 == carrywire)
-				{
-					ConsoleX.WriteLine($"Try swapping outputs {sum1} and {expectedsum2GateOnOutput.wire1}");
-				}
-				if (expectedsum2GateOnOutput.wire2 != carrywire && expectedsum2GateOnOutput.wire2 == carrywire)
-				{
-					ConsoleX.WriteLine($"Try swapping outputs {sum1} and {expectedsum2GateOnOutput.wire2}");
-				}
-				if (expectedsum2GateOnOutput.wire1 != carrywire && expectedsum2GateOnOutput.wire2 != carrywire)
-				{
-					ConsoleX.WriteLine($"output to {carrywire} is probably wrong");
-					ConsoleX.WriteLine($"Try swapping outputs {expectedsum2GateOnInputs.wire1} or {expectedsum2GateOnInputs.wire2} with {expectedsum2GateOnInputs.outputwire}");
-				}
+				ConsoleX.WriteLine($"Swapping {zgate.wire1} && {sum1gate.outputwire}", ConsoleColor.Red);
+				Swap(inputgates, zgate.wire1, sum1gate.outputwire);
+				swaps.Add((zgate.wire1, sum1gate.outputwire));
+				bit--;
+				continue;
 			}
 
-			if (carry2gate == default)
+			if (sum2gate.outputwire != outputwire)
 			{
-				ConsoleX.WriteLine($"No carry2gate for {bit}: {carrywire} AND {sum1}");
+				ConsoleX.WriteLine($"Swapping {sum2gate.outputwire} && {outputwire}", ConsoleColor.Red);
+				Swap(inputgates, sum2gate.outputwire, outputwire);
+				swaps.Add((sum2gate.outputwire, outputwire));
+				bit--;
+				continue;
 			}
 
-			var carry1gate = inputgates.First(g => FindGate(g, xwire, ywire) && g.operand == "AND");
-			
-			var carry1 = carry1gate.outputwire;
-			var carry2 = carry2gate.outputwire;
-
-			var carrygate = inputgates.FirstOrDefault(g => FindGate(g, carry1, carry2) && g.operand == "OR");
-			
-			if (carrygate == default)
-			{
-				ConsoleX.WriteLine($"No carrygate for {bit}: {carry1} OR {carry2} -> {outputwire}");
-				var candidateCarrygate = inputgates.Single(g => (g.outputwire == outputwire));
-				ConsoleX.WriteLine($"Probable carrygate for {bit}: {candidateCarrygate.wire1} {candidateCarrygate.operand} {candidateCarrygate.wire2} -> {candidateCarrygate.outputwire}");
-				var wrongWire = candidateCarrygate.wire1 == carrywire ? candidateCarrygate.wire2 : candidateCarrygate.wire1;
-				ConsoleX.WriteLine($"Output {wrongWire} is probably wrong");
-				break;
-			}
-
-			carrywire = carrygate.outputwire;
-			ConsoleX.WriteLine($"Carrywire       {carrywire}", ConsoleColor.Yellow);
+			carrywire = carry12gate.outputwire;
 		}
 
 		var wires = CalculateStates(inputwires, inputgates);
@@ -144,8 +113,10 @@ public class Day24 : IDay
 		Debug.Assert(zvalue == expected);
 
 		var swapped = swaps.SelectMany(swaps => new List<string>() { swaps.Item1, swaps.Item2 }).OrderBy(x => x).ToList();
+		var answer = string.Join(',', swapped);
 
-		Console.WriteLine(string.Join(',', swapped));
+		Debug.Assert(answer == "cnk,mps,msq,qwf,vhm,z14,z27,z39");
+		Console.WriteLine(answer);
 
 		return zvalue;
 	}
@@ -155,20 +126,25 @@ public class Day24 : IDay
 		foreach (var swap in swaps)
 		{
 			var (wire1, wire2) = swap;
-			var gate1 = inputgates.Single(gate => gate.outputwire == wire1);
-			var gate2 = inputgates.Single(gate => gate.outputwire == wire2);
-
-			ConsoleX.WriteLine($"Swapped {gate1.wire1} {gate1.operand} {gate1.wire2} -> {gate1.outputwire}");
-			ConsoleX.WriteLine($"With    {gate2.wire1} {gate2.operand} {gate2.wire2} -> {gate2.outputwire}");
-
-			inputgates.Remove(gate1);
-			gate1.outputwire = wire2;
-			inputgates.Add(gate1);
-
-			inputgates.Remove(gate2);
-			gate2.outputwire = wire1;
-			inputgates.Add(gate2);
+			Swap(inputgates, wire1, wire2);
 		}
+	}
+
+	private static void Swap(List<(string operand, string wire1, string wire2, string outputwire)> inputgates, string wire1, string wire2)
+	{
+		var gate1 = inputgates.Single(gate => gate.outputwire == wire1);
+		var gate2 = inputgates.Single(gate => gate.outputwire == wire2);
+
+		ConsoleX.WriteLine($"Swapped {gate1.wire1} {gate1.operand} {gate1.wire2} -> {gate1.outputwire}");
+		ConsoleX.WriteLine($"With    {gate2.wire1} {gate2.operand} {gate2.wire2} -> {gate2.outputwire}");
+
+		inputgates.Remove(gate1);
+		gate1.outputwire = wire2;
+		inputgates.Add(gate1);
+
+		inputgates.Remove(gate2);
+		gate2.outputwire = wire1;
+		inputgates.Add(gate2);
 	}
 
 	private static bool FindGate((string operand, string wire1, string wire2, string outputwire) gate, string xwire, string ywire)
