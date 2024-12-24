@@ -17,9 +17,9 @@ public class Day24 : IDay
 
 		var wires = CalculateStates(inputwires, inputgates);
 
-		var zwires = wires.Where(x => x.Key.StartsWith("z")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
-		var xwires = wires.Where(x => x.Key.StartsWith("x")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
-		var ywires = wires.Where(x => x.Key.StartsWith("y")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
+		var zwires = wires.Where(x => x.Key.StartsWith('z')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
+		var xwires = wires.Where(x => x.Key.StartsWith('x')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
+		var ywires = wires.Where(x => x.Key.StartsWith('y')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
 		var result = WiresToLong(zwires);
 
@@ -35,14 +35,20 @@ public class Day24 : IDay
 		var inputgates = input[1].Select(ParseGate).ToList();
 		var inputwires = input[0].Select(ParseWire).ToDictionary(x => x.Key, x => x.Value);
 
-		List<(string,string)> swaps = [("qwf", "cnk"), ("z14", "vhm"), ("z27", "mps"), ("z39","msq")];
+		List<(string,string)> swaps = [
+			("qwf", "cnk"),
+			("z14", "vhm"),
+			("z27", "mps"),
+			("z39", "msq")
+		];
 
 		ApplySwaps(swaps, inputgates);
 
-		var susgates = inputgates.Where(x => x.outputwire.StartsWith("z")).Where(x => x.operand != "XOR" || x.wire1.StartsWith('x') || x.wire1.StartsWith('y') || x.wire2.StartsWith('x') || x.wire2.StartsWith('y')).Where(x => x.outputwire != "z00").ToList();
-		foreach (var zg in susgates)
+		var susgates = inputgates.Where(x => x.outputwire.StartsWith('z')).Where(x => x.operand != "XOR" || x.wire1.StartsWith('x') || x.wire1.StartsWith('y') || x.wire2.StartsWith('x') || x.wire2.StartsWith('y')).Where(x => x.outputwire != "z00").ToList();
+		foreach (var (operand, wire1, wire2, outputwire) in susgates)
 		{
-			ConsoleX.WriteLine($"{zg.wire1} {zg.operand} {zg.wire2} -> {zg.outputwire}");
+			ConsoleX.WriteLine("These gates are suspect, because outputs should come from XORs and not contain any x or y wires as input:");
+			ConsoleX.WriteLine($"{wire1} {operand} {wire2} -> {outputwire}");
 		}
 
 		// https://www.101computing.net/binary-additions-using-logic-gates/
@@ -54,19 +60,21 @@ public class Day24 : IDay
 			string ywire = $"y{bit:D2}";
 			string outputwire = $"z{bit:D2}";
 
-			ConsoleX.WriteLine($"Bit {bit:D2} {xwire} {ywire} {carrywire}", ConsoleColor.Yellow);
+			ConsoleX.WriteLine($"Bit {bit:D2}: {xwire} {ywire} {carrywire}", ConsoleColor.Yellow);
 
-			// There should an XOR gat for the x and y wires
+			// There should an XOR gate for the x and y wires
 			var sum1gate = inputgates.First(g => FindGate(g, xwire, ywire) && g.operand == "XOR");
 			var sum1 = sum1gate.outputwire;
-			
+
+			// There should be an XOR gate for the carrywire and sum1
 			var sum2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1) && g.operand == "XOR");
+			// There should be an AND gate for the carrywire and sum1
 			var carry2gate = inputgates.FirstOrDefault(g => FindGate(g, carrywire, sum1) && g.operand == "AND");
 
-			if ((sum2gate == default || sum2gate.outputwire != outputwire) && carry2gate == default)
+			if (sum2gate == default && carry2gate == default)
 			{
 				// if both are wrong, the carrywire is probably wrong
-				ConsoleX.WriteLine($"No sum2gate and carry2gate for {bit}: {carrywire} is probably wrong");
+				ConsoleX.WriteLine($"No sum2gate and carry2gate for {bit}: {carrywire} or {sum1} is probably wrong");
 			}
 
 			if (sum2gate == default)
@@ -111,20 +119,22 @@ public class Day24 : IDay
 			if (carrygate == default)
 			{
 				ConsoleX.WriteLine($"No carrygate for {bit}: {carry1} OR {carry2} -> {outputwire}");
+				var candidateCarrygate = inputgates.Single(g => (g.outputwire == outputwire));
+				ConsoleX.WriteLine($"Probable carrygate for {bit}: {candidateCarrygate.wire1} {candidateCarrygate.operand} {candidateCarrygate.wire2} -> {candidateCarrygate.outputwire}");
+				var wrongWire = candidateCarrygate.wire1 == carrywire ? candidateCarrygate.wire2 : candidateCarrygate.wire1;
+				ConsoleX.WriteLine($"Output {wrongWire} is probably wrong");
 				break;
 			}
 
 			carrywire = carrygate.outputwire;
-			ConsoleX.WriteLine($"Carrywire {carrywire}");
+			ConsoleX.WriteLine($"Carrywire       {carrywire}", ConsoleColor.Yellow);
 		}
 
 		var wires = CalculateStates(inputwires, inputgates);
 
-		var xwires = wires.Where(x => x.Key.StartsWith("x")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
-		var ywires = wires.Where(x => x.Key.StartsWith("y")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
-		var zwires = wires.Where(x => x.Key.StartsWith("z")).OrderBy(x => x.Key).Select(x => x.Value).ToList();
-
-		var zs = wires.Where(x => x.Key.StartsWith("z")).OrderBy(x => x.Key).Select(x => x.Key).ToList();
+		var xwires = wires.Where(x => x.Key.StartsWith('x')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
+		var ywires = wires.Where(x => x.Key.StartsWith('y')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
+		var zwires = wires.Where(x => x.Key.StartsWith('z')).OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
 		var xvalue = WiresToLong(xwires);
 		var yvalue = WiresToLong(ywires);
@@ -140,7 +150,7 @@ public class Day24 : IDay
 		return zvalue;
 	}
 
-	private void ApplySwaps(List<(string, string)> swaps, List<(string operand, string wire1, string wire2, string outputwire)> inputgates)
+	private static void ApplySwaps(List<(string, string)> swaps, List<(string operand, string wire1, string wire2, string outputwire)> inputgates)
 	{
 		foreach (var swap in swaps)
 		{
@@ -186,7 +196,7 @@ public class Day24 : IDay
 		var wires = inputwires.ToDictionary(wire => wire.Key, wire => wire.Value);
 		var todo = new Queue<(string operand, string wire1, string wire2, string outputwire)>(inputgates);
 
-		while (todo.Any())
+		while (todo.Count > 0)
 		{
 			var (operand, wire1, wire2, outputwire) = todo.Dequeue();
 
