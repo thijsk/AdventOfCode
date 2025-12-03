@@ -2,7 +2,7 @@
 
 namespace ConsoleApp2025;
 
-public class Day00 : IDay
+public class Day04 : IDay
 {
 	public long Part1()
 	{
