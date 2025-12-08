@@ -45,6 +45,22 @@ namespace Common
 
         public static Point3<T> operator +(Point3<T> me, Point3<T> other) => new(me.x + other.x, me.y + other.y, me.z + other.z);
         public static Point3<T> operator -(Point3<T> me, Point3<T> other) => new(me.x - other.x, me.y - other.y, me.z - other.z);
-    }
+
+        public double DistanceTo(Point3<T> other)
+        {
+            dynamic dx = other.x - this.x;
+            dynamic dy = other.y - this.y;
+            dynamic dz = other.z - this.z;
+            return Math.Sqrt((double)(dx * dx + dy * dy + dz * dz));
+		}
+
+        public double ManhattanDistanceTo(Point3<T> other)
+        {
+            dynamic dx = other.x - this.x;
+            dynamic dy = other.y - this.y;
+            dynamic dz = other.z - this.z;
+            return Math.Abs((double)dx) + Math.Abs((double)dy) + Math.Abs((double)dz);
+		}
+	}
 
 }

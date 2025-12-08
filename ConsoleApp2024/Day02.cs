@@ -16,7 +16,7 @@ public class Day02 : IDay
 		var line = 1;
 		foreach (var level in input)
 		{
-			var reverse = level.Reverse().ToArray();
+			var reverse = level.AsEnumerable().Reverse().ToArray();
 
 			var ok = isOk(level) || isOk(reverse);
 			if (ok)
@@ -43,7 +43,7 @@ public class Day02 : IDay
 
 		foreach (var level in input)
 		{
-			var reverse = level.Reverse().ToArray();
+			var reverse = level.AsEnumerable().Reverse().ToArray();
 
 			var ok = isOk(level) || isOk(reverse);
 			if (ok)
