@@ -567,7 +567,17 @@ namespace Common
         }
 
 
-        public static string ToSingleString<T>(this T[,] array)
+        public static int GetHashCode<T>(this T[] array)
+        {
+            HashCode hashCode = new HashCode();
+            foreach (var item in array)
+            {
+                hashCode.Add(item);
+            }
+            return hashCode.ToHashCode();
+		}
+
+		public static string ToSingleString<T>(this T[,] array)
         {
             StringBuilder stringBuilder = new();
             foreach (var item in array)
