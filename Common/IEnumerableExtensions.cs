@@ -159,8 +159,8 @@ namespace Common
 
             if (k == 0)
             {
-                // single combination: empty set
-                result.Add(new T[0]);
+				// single combination: empty set
+				result.Add([]);
             }
             else
             {

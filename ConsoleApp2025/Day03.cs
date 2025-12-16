@@ -11,7 +11,7 @@ public class Day03 : IDay
 
 		var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-		long totalOutput = 0l;
+		long totalOutput = 0L;
 
 		foreach (var battery in input)
 		{
@@ -46,7 +46,7 @@ public class Day03 : IDay
 
 		var input = PuzzleContext.Input.Select(Parse).ToArray();
 
-		long totalOutput = 0l;
+		long totalOutput = 0L;
 
 		foreach (var battery in input)
 		{
